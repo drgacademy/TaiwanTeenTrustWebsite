@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>專案管理 — TTT Admin</title>
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <svg viewBox="0 0 120 130" fill="none" width="24" height="26">
+        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <div><div class="sidebar-brand-text">TTT Admin</div><div class="sidebar-brand-sub">管理後台</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">主選單</div>
+      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>儀表板</a>
+      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>團隊成員</a>
+      <a href="projects.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>專案管理</a>
+      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>部落格文章</a>
+      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>地圖資料點</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">系統</div>
+      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>前台預覽</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role">管理員</div></div></div>
+      <button class="btn-logout">登出</button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-breadcrumb"><a href="dashboard.html">首頁</a><span>/</span><span style="color:var(--text)">專案管理</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn--primary btn--sm" id="btn-new-project">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新增專案
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="panel">
+        <div class="panel__header">
+          <div class="panel__title">所有專案</div>
+          <div class="panel__toolbar">
+            <div class="search-input">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="search-projects" placeholder="搜尋專案名稱…" />
+            </div>
+            <select class="select-input" id="filter-cat">
+              <option value="">所有類別</option>
+              <option value="animals">動物</option>
+              <option value="advocacy">倡議</option>
+              <option value="research">研究</option>
+              <option value="education">教育</option>
+            </select>
+            <select class="select-input" id="filter-pstatus">
+              <option value="">所有狀態</option>
+              <option value="active">進行中</option>
+              <option value="completed">已完成</option>
+              <option value="planned">規劃中</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>專案名稱</th>
+                <th>Slug</th>
+                <th>類別</th>
+                <th>狀態</th>
+                <th>年度</th>
+                <th>最後更新</th>
+                <th style="text-align:right">操作</th>
+              </tr>
+            </thead>
+            <tbody id="projects-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div id="projects-count" style="color:var(--text-3);font-size:.75rem"></div>
+          <div class="pagination__pages" id="projects-pages"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="project-modal">
+  <div class="modal modal--lg">
+    <div class="modal__header">
+      <div class="modal__title" id="project-modal-title">新增專案</div>
+      <button class="modal__close" data-close-modal>✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="project-id" />
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">專案名稱（中文）*</label>
+          <input class="field-input" id="p-title" placeholder="Stray Aid Map" required />
+        </div>
+        <div class="field">
+          <label class="field-label">專案名稱（英文）</label>
+          <input class="field-input" id="p-title-en" placeholder="Stray Aid Map" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Slug（URL 用）</label>
+        <input class="field-input" id="p-slug" placeholder="stray-aid-map" />
+        <div class="field-hint">小寫英文加連字號，例如：stray-aid-map</div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">類別</label>
+          <select class="field-select" id="p-category">
+            <option value="">選擇類別</option>
+            <option value="animals">動物</option>
+            <option value="advocacy">倡議</option>
+            <option value="research">研究</option>
+            <option value="education">教育</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">狀態</label>
+          <select class="field-select" id="p-status">
+            <option value="active">進行中</option>
+            <option value="planned">規劃中</option>
+            <option value="completed">已完成</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">年度</label>
+        <input class="field-input" id="p-year" placeholder="2026" />
+      </div>
+      <div class="field">
+        <label class="field-label">簡介（中文）</label>
+        <textarea class="field-textarea" id="p-summary" placeholder="專案簡介…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">簡介（英文）</label>
+        <textarea class="field-textarea" id="p-summary-en" placeholder="Project summary…"></textarea>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" data-close-modal>取消</button>
+      <button class="btn btn--primary" id="btn-save-project">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+const CAT_LABEL = { animals:'動物', advocacy:'倡議', research:'研究', education:'教育' };
+const STATUS_LABEL = { active:'進行中', completed:'已完成', planned:'規劃中' };
+const STATUS_BADGE = { active:'badge--green', completed:'badge--gray', planned:'badge--gold' };
+
+let allProjects = [], filteredProjects = [];
+const PAGE_SIZE = 10;
+let currentPage = 1;
+
+function renderTable() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const page  = filteredProjects.slice(start, start + PAGE_SIZE);
+  const tbody = document.getElementById('projects-tbody');
+
+  if (filteredProjects.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state__icon">📁</div><div class="empty-state__title">找不到專案</div><div class="empty-state__text">請調整篩選條件或新增專案。</div></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = page.map(p => `
+    <tr>
+      <td class="td-name">${p.title}</td>
+      <td class="td-mono" style="font-size:.72rem;color:var(--text-3)">${p.slug || '—'}</td>
+      <td>${p.category ? `<span class="badge badge--cyan">${CAT_LABEL[p.category]||p.category}</span>` : '—'}</td>
+      <td><span class="badge ${STATUS_BADGE[p.status]||'badge--gray'}">${STATUS_LABEL[p.status]||p.status}</span></td>
+      <td>${p.year || '—'}</td>
+      <td style="color:var(--text-3);font-size:.75rem">${fmtDate(p.updated_at)}</td>
+      <td><div class="td-actions">
+        <button class="btn btn--ghost btn--sm" onclick="editProject(${p.id})">編輯</button>
+        <button class="btn btn--danger-ghost btn--sm" onclick="deleteProject(${p.id})">刪除</button>
+      </div></td>
+    </tr>`).join('');
+
+  document.getElementById('projects-count').textContent = `共 ${filteredProjects.length} 筆`;
+  const total = Math.ceil(filteredProjects.length / PAGE_SIZE);
+  const pages = document.getElementById('projects-pages');
+  pages.innerHTML = total <= 1 ? '' : Array.from({length:total},(_,i)=>
+    `<button class="page-btn${i+1===currentPage?' active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
+}
+
+function goPage(n) { currentPage = n; renderTable(); }
+
+function applyFilter() {
+  const q   = document.getElementById('search-projects').value.trim().toLowerCase();
+  const cat = document.getElementById('filter-cat').value;
+  const st  = document.getElementById('filter-pstatus').value;
+  filteredProjects = allProjects.filter(p => {
+    const text = !q || [p.title, p.title_en, p.slug].some(f => (f||'').toLowerCase().includes(q));
+    return text && (!cat || p.category === cat) && (!st || p.status === st);
+  });
+  currentPage = 1;
+  renderTable();
+}
+
+function openNewModal() {
+  document.getElementById('project-id').value = '';
+  document.getElementById('project-modal-title').textContent = '新增專案';
+  ['title','title-en','slug','year','summary','summary-en'].forEach(f => { const el = document.getElementById('p-'+f); if (el) el.value = ''; });
+  document.getElementById('p-category').value = '';
+  document.getElementById('p-status').value = 'active';
+  openModal('project-modal');
+}
+
+function editProject(id) {
+  const p = DB.getById('projects', id);
+  if (!p) return;
+  document.getElementById('project-id').value   = p.id;
+  document.getElementById('project-modal-title').textContent = '編輯專案';
+  document.getElementById('p-title').value      = p.title || '';
+  document.getElementById('p-title-en').value   = p.title_en || '';
+  document.getElementById('p-slug').value       = p.slug || '';
+  document.getElementById('p-category').value   = p.category || '';
+  document.getElementById('p-status').value     = p.status || 'active';
+  document.getElementById('p-year').value       = p.year || '';
+  document.getElementById('p-summary').value    = p.summary || '';
+  document.getElementById('p-summary-en').value = p.summary_en || '';
+  openModal('project-modal');
+}
+
+function deleteProject(id) {
+  const p = DB.getById('projects', id);
+  confirmAction('確認刪除', `確定要刪除「${p.title}」嗎？`, () => {
+    DB.delete('projects', id);
+    allProjects = DB.getAll('projects');
+    applyFilter();
+    showToast('專案已刪除', 'success');
+  });
+}
+
+document.getElementById('btn-save-project').addEventListener('click', () => {
+  const id = parseInt(document.getElementById('project-id').value) || null;
+  const data = {
+    title:      document.getElementById('p-title').value.trim(),
+    title_en:   document.getElementById('p-title-en').value.trim(),
+    slug:       document.getElementById('p-slug').value.trim(),
+    category:   document.getElementById('p-category').value,
+    status:     document.getElementById('p-status').value,
+    year:       document.getElementById('p-year').value.trim(),
+    summary:    document.getElementById('p-summary').value.trim(),
+    summary_en: document.getElementById('p-summary-en').value.trim(),
+  };
+  if (!data.title) { showToast('請填寫專案名稱', 'error'); return; }
+  if (id) { DB.update('projects', id, data); showToast('專案已更新', 'success'); }
+  else     { DB.insert('projects', data);    showToast('專案已新增', 'success'); }
+  closeModal('project-modal');
+  allProjects = DB.getAll('projects');
+  applyFilter();
+});
+
+document.getElementById('btn-new-project').addEventListener('click', openNewModal);
+document.getElementById('search-projects').addEventListener('input', applyFilter);
+document.getElementById('filter-cat').addEventListener('change', applyFilter);
+document.getElementById('filter-pstatus').addEventListener('change', applyFilter);
+
+document.addEventListener('DOMContentLoaded', () => {
+  allProjects = DB.getAll('projects');
+  filteredProjects = allProjects;
+  renderTable();
+  if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();
+});
+</script>
+</body>
+</html>

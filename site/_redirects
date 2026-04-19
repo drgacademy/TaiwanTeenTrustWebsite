@@ -1,0 +1,13 @@
+# Taiwan Teen Trust — Cloudflare Pages redirects
+
+# Admin login shortcut
+/admin  /admin/index.html  302
+
+# Stray Aid Map shorthand
+/map  /projects/stray-aid-map.html  302
+
+# Blog pretty URLs (future slug routing — currently fallback to blog listing)
+/blog/:slug  /blog.html  302
+
+# 404 fallback
+/*  /404.html  404

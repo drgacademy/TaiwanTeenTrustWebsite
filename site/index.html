@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taiwan Teen Trust — 青年驅動，改變台灣</title>
+  <meta name="description" content="Taiwan Teen Trust 是台灣第一個由青少年完全主導的社會創新組織，致力於動物福利、青年倡議與環境永續。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+/* ═══════════════════════════════════════════════
+   RESET + BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body {
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  background: #ffffff;
+  color: #0a0a0a;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+img, svg { display: block; max-width: 100%; }
+
+/* ═══════════════════════════════════════════════
+   RAINBOW SYSTEM
+═══════════════════════════════════════════════ */
+:root {
+  --r1: #ff3b3b;
+  --r2: #ff8c00;
+  --r3: #ffd600;
+  --r4: #00c95d;
+  --r5: #0099ff;
+  --r6: #7c3aff;
+  --r7: #ff2dca;
+  --rainbow: linear-gradient(90deg, #ff3b3b 0%, #ff8c00 16%, #ffd600 32%, #00c95d 48%, #0099ff 65%, #7c3aff 82%, #ff2dca 100%);
+  --black: #0a0a0a;
+  --white: #ffffff;
+  --gray: #f5f5f5;
+  --gray-2: #e8e8e8;
+  --text-2: rgba(10,10,10,.5);
+  --text-3: rgba(10,10,10,.28);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --ttt-cyan: #2ECAD4;
+}
+
+.rainbow-text {
+  background: var(--rainbow);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════
+   LOADER
+═══════════════════════════════════════════════ */
+.loader {
+  position: fixed; inset: 0;
+  background: #0a0a0a;
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 1.5rem;
+  transition: opacity .6s var(--ease), visibility .6s;
+}
+.loader.out { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader__logo { animation: loader-pulse 1.2s ease-in-out infinite; }
+.loader__bar { width: 100px; height: 2px; background: rgba(255,255,255,.1); border-radius: 1px; overflow: hidden; }
+.loader__fill { height: 100%; background: var(--rainbow); animation: loader-run .9s var(--ease) forwards; }
+@keyframes loader-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.9)} }
+@keyframes loader-run { from{width:0} to{width:100%} }
+
+/* ═══════════════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════════════ */
+.cur-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #0a0a0a;
+  position: fixed; pointer-events: none; z-index: 9998;
+  transition: transform .1s; mix-blend-mode: difference;
+}
+.cur-ring {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1.5px solid rgba(10,10,10,.25);
+  position: fixed; pointer-events: none; z-index: 9997;
+  transition: width .25s var(--ease), height .25s var(--ease), border-color .25s, opacity .25s;
+}
+.cur-ring.big { width: 52px; height: 52px; border-color: var(--r5); }
+
+/* ═══════════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 1.25rem var(--gutter);
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .4s var(--ease), border-color .4s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled {
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(16px);
+  border-bottom-color: rgba(0,0,0,.08);
+}
+.nav__logo {
+  display: flex; align-items: center; gap: .75rem;
+  font-size: .88rem; font-weight: 800; letter-spacing: -.01em; color: var(--black);
+}
+.nav__links { display: flex; align-items: center; gap: 2.5rem; }
+.nav__link {
+  font-size: .82rem; font-weight: 500; color: var(--text-2);
+  letter-spacing: .02em; transition: color .2s;
+  position: relative;
+}
+.nav__link:hover { color: var(--black); }
+.nav__link::after {
+  content: ''; position: absolute; bottom: -3px; left: 0;
+  width: 0; height: 1.5px; background: var(--rainbow);
+  transition: width .4s var(--ease);
+}
+.nav__link:hover::after { width: 100%; }
+.nav__actions { display: flex; align-items: center; gap: .9rem; }
+.nav__lang {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,.06); border-radius: 100px;
+  padding: 3px; gap: 2px;
+}
+.nav__lang-btn {
+  padding: .28rem .7rem; border-radius: 100px;
+  font-size: .75rem; font-weight: 600; color: var(--text-2);
+  transition: all .2s; background: none; font-family: inherit;
+}
+.nav__lang-btn.active { background: var(--black); color: white; }
+.nav__cta {
+  padding: .55rem 1.25rem; border-radius: 4px;
+  font-size: .8rem; font-weight: 700; letter-spacing: .02em;
+  background: var(--black); color: white;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.nav__cta::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--rainbow); opacity: 0; transition: opacity .3s;
+}
+.nav__cta:hover::before { opacity: 1; }
+.nav__cta span { position: relative; z-index: 1; }
+.nav__hamburger {
+  display: none; flex-direction: column; gap: 5px; padding: 4px;
+}
+.nav__hamburger span {
+  display: block; width: 22px; height: 1.5px;
+  background: var(--black); transition: all .35s var(--ease);
+  transform-origin: center;
+}
+.nav__hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.nav__hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav__hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.nav__drawer {
+  position: fixed; inset: 0; background: white; z-index: 490;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2.5rem;
+  transform: translateX(100%); transition: transform .5s var(--ease);
+}
+.nav__drawer.open { transform: translateX(0); }
+.nav__drawer .nav__link {
+  font-size: clamp(2rem, 7vw, 4rem); font-weight: 800; color: var(--black);
+}
+@media (max-width: 860px) {
+  .nav__links, .nav__actions { display: none; }
+  .nav__hamburger { display: flex; }
+}
+
+/* ═══════════════════════════════════════════════
+   LINE REVEAL — cargokite style
+   Each .lw (line-wrap) clips; .li (line-inner) slides up
+═══════════════════════════════════════════════ */
+.lw { overflow: hidden; display: block; }
+.li { display: block; transform: translateY(110%); will-change: transform; }
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+.hero {
+  min-height: 100svh;
+  padding: 0 var(--gutter);
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden; background: white;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(0,0,0,.06) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+.hero__inner {
+  max-width: 1600px; margin: 0 auto; width: 100%;
+  padding-top: 8rem; padding-bottom: 6rem;
+  position: relative; z-index: 1;
+}
+.hero__meta {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 2.5rem;
+  opacity: 0;
+}
+.hero__meta-sep { width: 20px; height: 1px; background: var(--gray-2); }
+
+.hero__title {
+  font-size: clamp(4.5rem, 11.5vw, 16rem);
+  font-weight: 900; line-height: .95;
+  letter-spacing: -.035em;
+  margin-bottom: 4rem;
+}
+
+.hero__body {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 3rem; align-items: flex-end;
+}
+.hero__desc {
+  font-size: clamp(.95rem, 1.3vw, 1.2rem);
+  color: var(--text-2); line-height: 1.8; max-width: 44ch;
+  opacity: 0; transform: translateY(1.5rem);
+}
+.hero__ctas {
+  display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;
+  opacity: 0; transform: translateY(1.5rem);
+}
+.btn-fill {
+  padding: .88rem 2.25rem; border-radius: 5px;
+  font-size: .85rem; font-weight: 700; letter-spacing: .02em;
+  background: var(--black); color: white;
+  transition: all .25s; position: relative; overflow: hidden;
+}
+.btn-fill::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--rainbow); opacity: 0; transition: opacity .3s;
+}
+.btn-fill span { position: relative; z-index: 1; }
+.btn-fill:hover::before { opacity: 1; }
+.btn-fill:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+.btn-stroke {
+  padding: .88rem 2.25rem; border-radius: 5px;
+  font-size: .85rem; font-weight: 700; letter-spacing: .02em;
+  border: 1.5px solid rgba(0,0,0,.18); color: var(--black);
+  transition: all .25s;
+}
+.btn-stroke:hover { border-color: var(--black); transform: translateY(-2px); }
+
+.hero__scroll {
+  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  font-size: .65rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); opacity: 0;
+}
+.hero__scroll-line {
+  width: 1px; height: 44px;
+  background: linear-gradient(to bottom, rgba(0,0,0,.2), transparent);
+  animation: scroll-bob 2s ease-in-out infinite;
+}
+@keyframes scroll-bob {
+  0%,100% { transform: scaleY(1) translateY(0); opacity: 1; }
+  50% { transform: scaleY(.6) translateY(4px); opacity: .4; }
+}
+@media (max-width: 640px) {
+  .hero__body { grid-template-columns: 1fr; gap: 1.5rem; }
+  .hero__ctas { justify-content: flex-start; }
+}
+
+/* ═══════════════════════════════════════════════
+   MARQUEE BAND
+═══════════════════════════════════════════════ */
+.marquee-band {
+  background: var(--black); overflow: hidden;
+  padding: 1rem 0; position: relative;
+}
+.marquee-band::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--rainbow);
+}
+.marquee-track {
+  display: inline-flex; white-space: nowrap;
+  animation: marquee 30s linear infinite;
+}
+.marquee-item {
+  font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.35); padding: 0 2rem;
+  display: flex; align-items: center; gap: 2rem;
+}
+.marquee-dot {
+  width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0;
+  background: var(--rainbow); opacity: .7;
+}
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ═══════════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════════ */
+.stats-section {
+  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
+  background: white; border-top: 1px solid var(--gray-2);
+}
+.stats-inner { max-width: 1200px; margin: 0 auto; }
+.stats-eyebrow {
+  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 3.5rem;
+  display: flex; align-items: center; gap: .9rem;
+}
+.stats-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--rainbow); }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+}
+.stat-item {
+  padding: 2.5rem 2rem;
+  border-right: 1px solid var(--gray-2);
+  opacity: 0; transform: translateY(2rem);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-size: clamp(3.5rem, 6vw, 7rem); font-weight: 900;
+  letter-spacing: -.04em; line-height: 1; margin-bottom: .6rem;
+  display: flex; align-items: baseline; gap: .1em;
+}
+.stat-suf { font-size: .42em; font-weight: 800; }
+.stat-label { font-size: .8rem; color: var(--text-2); font-weight: 500; }
+.stat-item:nth-child(1) .stat-num { color: var(--r1); }
+.stat-item:nth-child(2) .stat-num { color: var(--r3); }
+.stat-item:nth-child(3) .stat-num { color: var(--r4); }
+.stat-item:nth-child(4) .stat-num { color: var(--r5); }
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .stat-item { border-right: none; border-bottom: 1px solid var(--gray-2); padding: 2rem 1rem; }
+  .stat-item:nth-child(odd) { border-right: 1px solid var(--gray-2); }
+}
+
+/* ═══════════════════════════════════════════════
+   MISSION
+═══════════════════════════════════════════════ */
+.mission-section {
+  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
+  background: var(--gray); overflow: hidden;
+}
+.mission-inner {
+  max-width: 1300px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(3rem, 7vw, 9rem); align-items: center;
+}
+.mission-word {
+  font-size: clamp(7rem, 19vw, 22rem);
+  font-weight: 900; letter-spacing: -.05em; line-height: .9;
+  background: var(--rainbow);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.mission-sub {
+  font-size: clamp(1.2rem, 2vw, 2rem); font-weight: 800;
+  letter-spacing: -.02em; color: rgba(10,10,10,.18); margin-top: .5rem;
+}
+.mission-right {}
+.mission-title {
+  font-size: clamp(1.6rem, 2.8vw, 3.2rem); font-weight: 900;
+  letter-spacing: -.03em; line-height: 1.15; margin-bottom: 1.75rem;
+}
+.mission-body {
+  font-size: clamp(.9rem, 1.2vw, 1.1rem); color: var(--text-2);
+  line-height: 1.85; margin-bottom: 2.5rem;
+  opacity: 0; transform: translateY(1.5rem);
+}
+.mission-cta {
+  display: inline-flex; align-items: center; gap: .75rem;
+  font-size: .88rem; font-weight: 700; color: var(--black);
+  opacity: 0; transform: translateY(1.5rem);
+}
+.mission-cta-arr {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .25s; font-size: .9rem;
+}
+.mission-cta:hover .mission-cta-arr {
+  background: var(--black); color: white; border-color: var(--black);
+  transform: translateX(5px);
+}
+@media (max-width: 860px) {
+  .mission-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+
+/* ═══════════════════════════════════════════════
+   SECTION COMMON HEADER
+═══════════════════════════════════════════════ */
+.sec-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: clamp(2.5rem, 4vw, 4.5rem); gap: 2rem; flex-wrap: wrap;
+}
+.sec-tag {
+  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: .7rem;
+  display: flex; align-items: center; gap: .7rem;
+}
+.sec-tag::before { content: ''; width: 22px; height: 2px; background: var(--rainbow); }
+.sec-title {
+  font-size: clamp(2rem, 4.5vw, 5.5rem); font-weight: 900;
+  letter-spacing: -.035em; line-height: 1;
+}
+
+/* ═══════════════════════════════════════════════
+   PILLARS
+═══════════════════════════════════════════════ */
+.pillars-section {
+  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
+  background: white;
+}
+.pillars-inner { max-width: 1300px; margin: 0 auto; }
+.pillars-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0; background: var(--gray-2);
+}
+.pillar-card {
+  background: white; padding: 3rem 2.5rem;
+  display: flex; flex-direction: column;
+  transition: background .2s; cursor: default;
+  opacity: 0; transform: translateY(2.5rem);
+}
+.pillar-card:hover { background: #fafafa; }
+.pillar-num {
+  font-size: .72rem; font-weight: 700; letter-spacing: .12em;
+  color: var(--text-3); margin-bottom: 2rem;
+}
+.pillar-bar {
+  width: 36px; height: 3px; border-radius: 1px; margin-bottom: 2rem;
+  transition: width .4s var(--ease);
+}
+.pillar-card:hover .pillar-bar { width: 72px; }
+.pillar-title {
+  font-size: clamp(1.5rem, 2.5vw, 2.6rem); font-weight: 900;
+  letter-spacing: -.025em; line-height: 1.1; margin-bottom: 1.25rem; flex: 1;
+}
+.pillar-desc { font-size: .875rem; color: var(--text-2); line-height: 1.8; }
+@media (max-width: 768px) { .pillars-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) and (min-width: 769px) {
+  .pillars-grid { grid-template-columns: 1fr 1fr; }
+  .pillar-card:last-child { grid-column: 1 / -1; }
+}
+
+/* ═══════════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════════ */
+.projects-section {
+  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
+  background: var(--gray);
+}
+.projects-inner { max-width: 1300px; margin: 0 auto; }
+.projects-grid {
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  gap: 0; background: var(--gray-2);
+}
+.proj-card {
+  background: white; padding: 2.5rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  transition: background .2s; min-height: 280px;
+  opacity: 0; transform: translateY(2rem);
+}
+.proj-card:hover { background: #fafafa; }
+.proj-card:nth-child(1) { grid-column: span 7; }
+.proj-card:nth-child(2) { grid-column: span 5; }
+.proj-card:nth-child(3) { grid-column: span 5; }
+.proj-card:nth-child(4) { grid-column: span 7; }
+.proj-top { display: flex; align-items: center; justify-content: space-between; }
+.proj-tag {
+  font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: .22rem .65rem; border-radius: 3px;
+}
+.proj-year { font-size: .72rem; color: var(--text-3); }
+.proj-title {
+  font-size: clamp(1.2rem, 2vw, 2.1rem); font-weight: 900;
+  letter-spacing: -.02em; line-height: 1.15; flex: 1;
+}
+.proj-desc { font-size: .84rem; color: var(--text-2); line-height: 1.75; }
+.proj-link {
+  font-size: .78rem; font-weight: 700; display: inline-flex; align-items: center; gap: .4rem;
+  color: var(--black); margin-top: auto; transition: gap .25s;
+}
+.proj-link:hover { gap: .8rem; }
+.tag-animals  { background: rgba(0,201,93,.1);  color: #00a849; }
+.tag-advocacy { background: rgba(0,153,255,.1);  color: #0077cc; }
+.tag-research { background: rgba(124,58,255,.1); color: #6320cc; }
+.tag-education{ background: rgba(255,214,0,.18); color: #996600; }
+@media (max-width: 768px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .proj-card:nth-child(n) { grid-column: span 1; }
+}
+@media (max-width: 1024px) and (min-width: 769px) {
+  .projects-grid { grid-template-columns: 1fr 1fr; }
+  .proj-card:nth-child(n) { grid-column: span 1; }
+}
+
+/* ═══════════════════════════════════════════════
+   PARTNERS
+═══════════════════════════════════════════════ */
+.partners-section {
+  padding: clamp(4rem, 7vw, 7rem) 0;
+  border-top: 1px solid var(--gray-2);
+  border-bottom: 1px solid var(--gray-2);
+  overflow: hidden;
+}
+.partners-label {
+  text-align: center; font-size: .68rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 2.5rem;
+}
+.partners-row { display: flex; overflow: hidden; }
+.partners-track {
+  display: inline-flex; flex-shrink: 0;
+  animation: marquee 22s linear infinite;
+}
+.partners-track--rev { animation-direction: reverse; }
+.partner-item {
+  padding: .55rem 2.5rem; font-size: .8rem; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--text-3);
+  border-right: 1px solid var(--gray-2); white-space: nowrap;
+  transition: color .2s;
+}
+.partner-item:hover { color: var(--black); }
+
+/* ═══════════════════════════════════════════════
+   JOIN CTA
+═══════════════════════════════════════════════ */
+.join-section {
+  padding: clamp(7rem, 13vw, 16rem) var(--gutter);
+  background: var(--black); position: relative; overflow: hidden;
+  text-align: center;
+}
+.join-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; background: var(--rainbow);
+}
+.join-bg-word {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: clamp(8rem, 22vw, 28rem); font-weight: 900;
+  color: rgba(255,255,255,.03); white-space: nowrap; pointer-events: none;
+  user-select: none; letter-spacing: -.05em;
+}
+.join-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+.join-eyebrow {
+  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.28); margin-bottom: 2rem;
+  opacity: 0; transform: translateY(1.5rem);
+}
+.join-title {
+  font-size: clamp(2.8rem, 7vw, 9rem); font-weight: 900;
+  letter-spacing: -.04em; line-height: .95; margin-bottom: 2.5rem; color: white;
+}
+.join-title .rainbow-text {
+  background: var(--rainbow);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.join-desc {
+  font-size: clamp(.9rem, 1.3vw, 1.15rem); color: rgba(255,255,255,.4);
+  line-height: 1.85; max-width: 46ch; margin: 0 auto 3rem;
+  opacity: 0; transform: translateY(1.5rem);
+}
+.join-ctas { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; opacity: 0; transform: translateY(1.5rem); }
+.join-btn-r {
+  padding: 1rem 2.5rem; border-radius: 5px;
+  background: var(--rainbow); background-size: 200% 100%; background-position: 0 0;
+  color: white; font-size: .9rem; font-weight: 700; letter-spacing: .02em;
+  transition: background-position .5s, transform .2s;
+}
+.join-btn-r:hover { background-position: 100% 0; transform: translateY(-2px); }
+.join-btn-o {
+  padding: 1rem 2.5rem; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.65);
+  font-size: .9rem; font-weight: 700; letter-spacing: .02em; transition: all .2s;
+}
+.join-btn-o:hover { border-color: white; color: white; transform: translateY(-2px); }
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+.footer {
+  background: #0a0a0a; color: rgba(255,255,255,.6);
+  padding: clamp(3.5rem, 6vw, 6rem) var(--gutter) 2.5rem;
+}
+.footer-rainbow { height: 3px; background: var(--rainbow); margin-bottom: 3.5rem; border-radius: 2px; }
+.footer-grid {
+  max-width: 1300px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem; margin-bottom: 3.5rem;
+}
+.footer-brand-name {
+  display: flex; align-items: center; gap: .65rem;
+  font-size: .9rem; font-weight: 800; color: white; margin-bottom: .85rem;
+}
+.footer-tagline { font-size: .83rem; color: rgba(255,255,255,.3); line-height: 1.75; }
+.footer-col-title {
+  font-size: .67rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase;
+  color: rgba(255,255,255,.22); margin-bottom: 1.1rem;
+}
+.footer-col a {
+  display: block; font-size: .82rem; color: rgba(255,255,255,.38);
+  margin-bottom: .6rem; transition: color .2s;
+}
+.footer-col a:hover { color: white; }
+.footer-bottom {
+  max-width: 1300px; margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding-top: 2rem; font-size: .74rem; color: rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+@media (max-width: 768px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid > *:first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════
+   LANG TOGGLE
+═══════════════════════════════════════════════ */
+.lang-en { display: none; }
+body.lang-is-en .lang-zh { display: none; }
+body.lang-is-en .lang-en { display: block; }
+span.lang-en { display: none; }
+body.lang-is-en span.lang-zh { display: none; }
+body.lang-is-en span.lang-en { display: inline; }
+  </style>
+</head>
+<body>
+
+<!-- ════ LOADER ════ -->
+<div class="loader" id="loader">
+  <div class="loader__logo">
+    <svg viewBox="0 0 120 130" fill="none" width="44" height="48">
+      <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="loader__bar"><div class="loader__fill"></div></div>
+</div>
+
+<!-- ════ CURSOR ════ -->
+<div class="cur-dot" id="cur-dot"></div>
+<div class="cur-ring" id="cur-ring"></div>
+
+<!-- ════ NAVBAR ════ -->
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav__logo" aria-label="Taiwan Teen Trust">
+    <svg viewBox="0 0 120 130" fill="none" width="28" height="30">
+      <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+    <span>Taiwan Teen Trust</span>
+  </a>
+
+  <div class="nav__links">
+    <a href="about.html"    class="nav__link" data-zh="關於" data-en="About">關於</a>
+    <a href="team.html"     class="nav__link" data-zh="團隊" data-en="Team">團隊</a>
+    <a href="projects.html" class="nav__link" data-zh="專案" data-en="Projects">專案</a>
+    <a href="focus.html"    class="nav__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+    <a href="blog.html"     class="nav__link" data-zh="部落格" data-en="Blog">部落格</a>
+  </div>
+
+  <div class="nav__actions">
+    <div class="nav__lang">
+      <button class="nav__lang-btn active" data-lang="zh">中</button>
+      <button class="nav__lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="#join" class="nav__cta">
+      <span class="lang-zh">加入我們</span>
+      <span class="lang-en">Join Us</span>
+    </a>
+  </div>
+
+  <button class="nav__hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav__drawer" id="nav-drawer">
+  <a href="about.html"    class="nav__link">關於我們</a>
+  <a href="team.html"     class="nav__link">團隊</a>
+  <a href="projects.html" class="nav__link">專案</a>
+  <a href="focus.html"    class="nav__link">年度主題</a>
+  <a href="blog.html"     class="nav__link">部落格</a>
+</div>
+
+<!-- ════ HERO ════ -->
+<section class="hero">
+  <div class="hero__inner">
+    <div class="hero__meta" id="hero-meta">
+      <span class="lang-zh">Taiwan Teen Trust</span>
+      <span class="lang-en">Taiwan Teen Trust</span>
+      <span class="hero__meta-sep"></span>
+      <span class="lang-zh">台灣・2020</span>
+      <span class="lang-en">Taiwan・2020</span>
+      <span class="hero__meta-sep"></span>
+      <span class="lang-zh">青年社會創新</span>
+      <span class="lang-en">Youth Social Innovation</span>
+    </div>
+
+    <h1 class="hero__title" id="hero-title">
+      <span class="lw">
+        <span class="li">
+          <span class="lang-zh">改變台灣，</span>
+          <span class="lang-en">Changing Taiwan,</span>
+        </span>
+      </span>
+      <span class="lw">
+        <span class="li">
+          <span class="lang-zh">從<span class="rainbow-text">青年</span>開始。</span>
+          <span class="lang-en">Starting with <span class="rainbow-text">Youth.</span></span>
+        </span>
+      </span>
+    </h1>
+
+    <div class="hero__body">
+      <p class="hero__desc" id="hero-desc">
+        <span class="lang-zh">Taiwan Teen Trust 是台灣第一個由青少年完全主導的社會創新組織。我們相信，改變不需要等到長大。</span>
+        <span class="lang-en">Taiwan Teen Trust is Taiwan's first social innovation organization entirely led by teenagers. We believe change doesn't have to wait until you grow up.</span>
+      </p>
+      <div class="hero__ctas" id="hero-ctas">
+        <a href="#join" class="btn-fill">
+          <span><span class="lang-zh">加入我們</span><span class="lang-en">Join Us</span></span>
+        </a>
+        <a href="about.html" class="btn-stroke">
+          <span class="lang-zh">了解更多 →</span>
+          <span class="lang-en">Learn More →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__scroll" id="hero-scroll">
+    <div class="hero__scroll-line"></div>
+    <span class="lang-zh">滑動</span>
+    <span class="lang-en">Scroll</span>
+  </div>
+</section>
+
+<!-- ════ MARQUEE ════ -->
+<div class="marquee-band" aria-hidden="true">
+  <div class="marquee-track" id="mq">
+    <span class="marquee-item lang-zh">台灣青年社會創新<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">動物友善倡議<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">環境永續行動<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">流浪動物救援<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">青年賦權教育<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">政策研究倡議<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Youth Social Innovation<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Animal Welfare<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Environmental Action<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Stray Animal Rescue<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Youth Empowerment<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Policy Research<span class="marquee-dot"></span></span>
+    <!-- duplicate for seamless -->
+    <span class="marquee-item lang-zh">台灣青年社會創新<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">動物友善倡議<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">環境永續行動<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">流浪動物救援<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">青年賦權教育<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-zh">政策研究倡議<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Youth Social Innovation<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Animal Welfare<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Environmental Action<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Stray Animal Rescue<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Youth Empowerment<span class="marquee-dot"></span></span>
+    <span class="marquee-item lang-en">Policy Research<span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- ════ STATS ════ -->
+<section class="stats-section">
+  <div class="stats-inner">
+    <div class="stats-eyebrow">
+      <span class="lang-zh">我們的規模</span>
+      <span class="lang-en">Our Scale</span>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">
+          <span class="counter" data-target="50">0</span><span class="stat-suf">+</span>
+        </div>
+        <div class="stat-label lang-zh">現役成員</div>
+        <div class="stat-label lang-en">Active Members</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">
+          <span class="counter" data-target="12">0</span>
+        </div>
+        <div class="stat-label lang-zh">進行中專案</div>
+        <div class="stat-label lang-en">Active Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">
+          <span class="counter" data-target="5">0</span>
+        </div>
+        <div class="stat-label lang-zh">年度主題</div>
+        <div class="stat-label lang-en">Annual Themes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">
+          <span class="counter" data-target="10000">0</span><span class="stat-suf">+</span>
+        </div>
+        <div class="stat-label lang-zh">觸及人次</div>
+        <div class="stat-label lang-en">People Reached</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ MISSION ════ -->
+<section class="mission-section">
+  <div class="mission-inner">
+    <div class="mission-left">
+      <div class="lw"><div class="li mission-word lang-zh">信任</div></div>
+      <div class="lw"><div class="li mission-word lang-en">TRUST</div></div>
+      <div class="mission-sub lang-zh">TRUST</div>
+      <div class="mission-sub lang-en">信任</div>
+    </div>
+    <div class="mission-right">
+      <h2 class="mission-title">
+        <span class="lw"><span class="li lang-zh">我們相信</span></span>
+        <span class="lw"><span class="li lang-zh">青年有能力</span></span>
+        <span class="lw"><span class="li lang-zh">改變世界</span></span>
+        <span class="lw"><span class="li lang-en">We believe teenagers</span></span>
+        <span class="lw"><span class="li lang-en">have the power</span></span>
+        <span class="lw"><span class="li lang-en">to change the world</span></span>
+      </h2>
+      <p class="mission-body" id="mission-body">
+        <span class="lang-zh">Taiwan Teen Trust 成立於 2020 年，是由一群高中生發起的非營利組織。我們不等待大人的許可，我們自己動手創造改變——從台灣的流浪動物問題到青年政策倡議，每一個專案都是我們對社會的承諾。</span>
+        <span class="lang-en">Founded in 2020 by a group of high school students, Taiwan Teen Trust is a nonprofit that refuses to wait for adults' permission. We create change ourselves — from Taiwan's stray animal crisis to youth policy advocacy.</span>
+      </p>
+      <a href="about.html" class="mission-cta" id="mission-cta">
+        <span class="lang-zh">認識我們的故事</span>
+        <span class="lang-en">Our Story</span>
+        <span class="mission-cta-arr">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PILLARS ════ -->
+<section class="pillars-section">
+  <div class="pillars-inner">
+    <div class="sec-head">
+      <div>
+        <div class="sec-tag lang-zh">我們關注</div>
+        <div class="sec-tag lang-en">Focus Areas</div>
+        <h2 class="sec-title">
+          <span class="lw"><span class="li lang-zh">三大行動方向</span></span>
+          <span class="lw"><span class="li lang-en">Three Core Pillars</span></span>
+        </h2>
+      </div>
+      <a href="focus.html" class="btn-stroke" style="opacity:0;transform:translateY(1.5rem)" id="btn-pillars-more">
+        <span class="lang-zh">全部主題 →</span>
+        <span class="lang-en">All Themes →</span>
+      </a>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-num">01</div>
+        <div class="pillar-bar" style="background:var(--r1)"></div>
+        <div class="pillar-title lang-zh">動物福利</div>
+        <div class="pillar-title lang-en">Animal Welfare</div>
+        <p class="pillar-desc lang-zh">從流浪動物救援到 TNR 政策倡議，推動台灣社會對動物生命的尊重與保護。</p>
+        <p class="pillar-desc lang-en">From stray animal rescue to TNR policy advocacy, promoting respect and protection for animal lives across Taiwan.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">02</div>
+        <div class="pillar-bar" style="background:var(--r4)"></div>
+        <div class="pillar-title lang-zh">青年倡議</div>
+        <div class="pillar-title lang-en">Youth Advocacy</div>
+        <p class="pillar-desc lang-zh">讓青少年的聲音進入政策討論，培養下一代公民參與社會議題的能力與勇氣。</p>
+        <p class="pillar-desc lang-en">Bringing youth voices into policy discussions and developing the next generation's capacity to engage with social issues.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-num">03</div>
+        <div class="pillar-bar" style="background:var(--r5)"></div>
+        <div class="pillar-title lang-zh">環境永續</div>
+        <div class="pillar-title lang-en">Environmental Sustainability</div>
+        <p class="pillar-desc lang-zh">透過研究、教育與實際行動，守護台灣的自然環境，為下一代留下更美好的島嶼。</p>
+        <p class="pillar-desc lang-en">Through research, education, and direct action, protecting Taiwan's natural environment for future generations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PROJECTS ════ -->
+<section class="projects-section">
+  <div class="projects-inner">
+    <div class="sec-head">
+      <div>
+        <div class="sec-tag lang-zh">近期專案</div>
+        <div class="sec-tag lang-en">Recent Projects</div>
+        <h2 class="sec-title">
+          <span class="lw"><span class="li lang-zh">我們正在做的事</span></span>
+          <span class="lw"><span class="li lang-en">What We're Building</span></span>
+        </h2>
+      </div>
+      <a href="projects.html" class="btn-stroke" style="opacity:0;transform:translateY(1.5rem)" id="btn-proj-more">
+        <span class="lang-zh">所有專案 →</span>
+        <span class="lang-en">All Projects →</span>
+      </a>
+    </div>
+
+    <div class="projects-grid">
+      <div class="proj-card">
+        <div class="proj-top">
+          <span class="proj-tag tag-animals lang-zh">動物</span>
+          <span class="proj-tag tag-animals lang-en">Animals</span>
+          <span class="proj-year">2026</span>
+        </div>
+        <div class="proj-title lang-zh">Stray Aid Map<br>全台流浪動物救援資源地圖</div>
+        <div class="proj-title lang-en">Stray Aid Map<br>Taiwan Stray Animal Rescue Map</div>
+        <p class="proj-desc lang-zh">整合全台收容所、動物醫院與餵食站，讓每一隻動物都被看見。</p>
+        <p class="proj-desc lang-en">Aggregating shelters, vet clinics, and feeding stations across Taiwan.</p>
+        <a href="projects/stray-aid-map.html" class="proj-link lang-zh">開啟地圖 →</a>
+        <a href="projects/stray-aid-map.html" class="proj-link lang-en">Open Map →</a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top">
+          <span class="proj-tag tag-advocacy lang-zh">倡議</span>
+          <span class="proj-tag tag-advocacy lang-en">Advocacy</span>
+          <span class="proj-year">2026</span>
+        </div>
+        <div class="proj-title lang-zh">流浪動物 TNR 政策倡議</div>
+        <div class="proj-title lang-en">Stray Animal TNR Advocacy</div>
+        <p class="proj-desc lang-zh">推廣人道捕捉、絕育、回置政策，改變台灣的流浪動物管理方式。</p>
+        <p class="proj-desc lang-en">Promoting trap-neuter-return policy to transform stray animal management in Taiwan.</p>
+        <a href="projects.html" class="proj-link lang-zh">了解更多 →</a>
+        <a href="projects.html" class="proj-link lang-en">Learn More →</a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top">
+          <span class="proj-tag tag-research lang-zh">研究</span>
+          <span class="proj-tag tag-research lang-en">Research</span>
+          <span class="proj-year">2025</span>
+        </div>
+        <div class="proj-title lang-zh">校園流浪貓族群調查</div>
+        <div class="proj-title lang-en">Campus Stray Cat Survey</div>
+        <p class="proj-desc lang-zh">北台灣15所高中校園流浪貓的數量、習性與現況完整調查報告。</p>
+        <p class="proj-desc lang-en">Comprehensive survey of stray cat populations across 15 high school campuses.</p>
+        <a href="projects.html" class="proj-link lang-zh">查看報告 →</a>
+        <a href="projects.html" class="proj-link lang-en">View Report →</a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-top">
+          <span class="proj-tag tag-education lang-zh">教育</span>
+          <span class="proj-tag tag-education lang-en">Education</span>
+          <span class="proj-year">2025</span>
+        </div>
+        <div class="proj-title lang-zh">青年動物福利教育工作坊</div>
+        <div class="proj-title lang-en">Youth Animal Welfare Workshops</div>
+        <p class="proj-desc lang-zh">巡迴全台高中舉辦動物福利工作坊，培養青年對生命的責任感。</p>
+        <p class="proj-desc lang-en">School tour workshops cultivating youth responsibility toward all living beings.</p>
+        <a href="projects.html" class="proj-link lang-zh">了解更多 →</a>
+        <a href="projects.html" class="proj-link lang-en">Learn More →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════ PARTNERS ════ -->
+<div class="partners-section" aria-hidden="true">
+  <p class="partners-label lang-zh">合作夥伴與支持機構</p>
+  <p class="partners-label lang-en">Partners &amp; Supporting Organizations</p>
+  <div class="partners-row">
+    <div class="partners-track">
+      <span class="partner-item">台灣動物保護協會</span>
+      <span class="partner-item">教育部青年發展署</span>
+      <span class="partner-item">農業部動物保護科</span>
+      <span class="partner-item">台大附設動物醫院</span>
+      <span class="partner-item">關懷生命協會</span>
+      <span class="partner-item">台灣之心愛護動物協會</span>
+      <span class="partner-item">台灣動物保護協會</span>
+      <span class="partner-item">教育部青年發展署</span>
+      <span class="partner-item">農業部動物保護科</span>
+      <span class="partner-item">台大附設動物醫院</span>
+      <span class="partner-item">關懷生命協會</span>
+      <span class="partner-item">台灣之心愛護動物協會</span>
+    </div>
+  </div>
+  <div class="partners-row" style="margin-top:.5rem">
+    <div class="partners-track partners-track--rev">
+      <span class="partner-item">Animal Welfare Alliance</span>
+      <span class="partner-item">Youth Development Fund</span>
+      <span class="partner-item">NTU Vet Hospital</span>
+      <span class="partner-item">Taiwan SPCA</span>
+      <span class="partner-item">TEARE Rescue</span>
+      <span class="partner-item">HOTAC Foundation</span>
+      <span class="partner-item">Animal Welfare Alliance</span>
+      <span class="partner-item">Youth Development Fund</span>
+      <span class="partner-item">NTU Vet Hospital</span>
+      <span class="partner-item">Taiwan SPCA</span>
+      <span class="partner-item">TEARE Rescue</span>
+      <span class="partner-item">HOTAC Foundation</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ JOIN CTA ════ -->
+<section class="join-section" id="join">
+  <div class="join-bg-word" aria-hidden="true">TTT</div>
+  <div class="join-inner">
+    <div class="join-eyebrow" id="join-ey">
+      <span class="lang-zh">加入我們的行列</span>
+      <span class="lang-en">Be Part of Something Bigger</span>
+    </div>
+    <h2 class="join-title">
+      <span class="lw"><span class="li lang-zh">準備好了嗎？</span></span>
+      <span class="lw"><span class="li lang-en">Ready to</span></span>
+      <span class="lw">
+        <span class="li lang-zh"><span class="rainbow-text">一起改變台灣。</span></span>
+        <span class="li lang-en"><span class="rainbow-text">Change Taiwan?</span></span>
+      </span>
+    </h2>
+    <p class="join-desc" id="join-desc">
+      <span class="lang-zh">不管你是想參與專案、貢獻技能，還是只是想認識一群認真改變世界的台灣青年——我們的門永遠敞開。</span>
+      <span class="lang-en">Whether you want to join a project, contribute your skills, or connect with Taiwanese youth making real change — our doors are always open.</span>
+    </p>
+    <div class="join-ctas" id="join-ctas">
+      <a href="team.html" class="join-btn-r lang-zh">申請加入 →</a>
+      <a href="team.html" class="join-btn-r lang-en">Apply Now →</a>
+      <a href="about.html" class="join-btn-o lang-zh">了解更多</a>
+      <a href="about.html" class="join-btn-o lang-en">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- ════ FOOTER ════ -->
+<footer class="footer">
+  <div class="footer-rainbow"></div>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">
+        <svg viewBox="0 0 120 130" fill="none" width="22" height="24">
+          <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+        Taiwan Teen Trust
+      </div>
+      <p class="footer-tagline lang-zh">青年驅動，信任為本。<br>台灣第一個青少年主導的社會創新組織。</p>
+      <p class="footer-tagline lang-en">Youth-driven. Trust-built.<br>Taiwan's first youth-led social innovation organization.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title lang-zh">組織</div>
+      <div class="footer-col-title lang-en">Organization</div>
+      <a href="about.html" data-zh="關於我們" data-en="About Us">關於我們</a>
+      <a href="team.html" data-zh="團隊成員" data-en="Team">團隊成員</a>
+      <a href="focus.html" data-zh="年度主題" data-en="Annual Focus">年度主題</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title lang-zh">內容</div>
+      <div class="footer-col-title lang-en">Content</div>
+      <a href="projects.html" data-zh="所有專案" data-en="Projects">所有專案</a>
+      <a href="projects/stray-aid-map.html" data-zh="流浪動物地圖" data-en="Stray Aid Map">流浪動物地圖</a>
+      <a href="blog.html" data-zh="部落格" data-en="Blog">部落格</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title lang-zh">聯繫</div>
+      <div class="footer-col-title lang-en">Connect</div>
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <a href="#" data-zh="聯絡我們" data-en="Contact">聯絡我們</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="lang-zh">© 2025 Taiwan Teen Trust. 保留所有權利。</span>
+    <span class="lang-en">© 2025 Taiwan Teen Trust. All rights reserved.</span>
+  </div>
+</footer>
+
+<!-- ════ SCRIPTS ════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+'use strict';
+gsap.registerPlugin(ScrollTrigger);
+
+/* ── Language system ── */
+const LANG_KEY = 'ttt-lang';
+let lang = localStorage.getItem(LANG_KEY) || 'zh';
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem(LANG_KEY, l);
+  document.documentElement.lang = l === 'zh' ? 'zh-TW' : 'en';
+  document.body.classList.toggle('lang-is-en', l === 'en');
+  document.querySelectorAll('.nav__lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === l);
+  });
+  document.querySelectorAll('[data-zh]').forEach(el => {
+    el.innerHTML = l === 'zh' ? el.dataset.zh : (el.dataset.en || el.dataset.zh);
+  });
+}
+document.querySelectorAll('.nav__lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+setLang(lang);
+
+/* ── Loader ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('out');
+    playHeroEntrance();
+  }, 600);
+});
+
+/* ── Navbar ── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+/* ── Hamburger ── */
+const ham = document.getElementById('hamburger');
+const drawer = document.getElementById('nav-drawer');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  drawer.classList.toggle('open');
+});
+drawer.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    ham.classList.remove('open');
+    drawer.classList.remove('open');
+  });
+});
+
+/* ═══════════════════════════════════════════════
+   HERO ENTRANCE (cargokite-style)
+   Lines slide up from clipped container
+═══════════════════════════════════════════════ */
+function playHeroEntrance() {
+  const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+  // Meta line fades in
+  tl.to('#hero-meta', { opacity: 1, duration: .7 }, 0)
+
+  // Title lines slide up — core cargokite animation
+    .to('#hero-title .li', {
+      y: '0%',
+      duration: 1.35,
+      stagger: .14
+    }, .2)
+
+  // Subtitle + CTA fade up
+    .to('#hero-desc', { opacity: 1, y: 0, duration: .9 }, .8)
+    .to('#hero-ctas', { opacity: 1, y: 0, duration: .9 }, .95)
+    .to('#hero-scroll', { opacity: 1, duration: .8 }, 1.2);
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLL LINE REVEALS
+═══════════════════════════════════════════════ */
+// Collect all .lw > .li that are NOT inside hero-title (already animated)
+document.querySelectorAll('.mission-title .li, .sec-title .li, .join-title .li, .mission-word.li').forEach(li => {
+  ScrollTrigger.create({
+    trigger: li.closest('.lw'),
+    start: 'top 88%',
+    onEnter: () => gsap.to(li, { y: '0%', duration: 1.1, ease: 'power4.out' })
+  });
+});
+
+/* ── Stats fade in ── */
+gsap.utils.toArray('.stat-item').forEach((el, i) => {
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', delay: i * .1 })
+  });
+});
+
+/* ── Mission body + cta ── */
+['#mission-body', '#mission-cta'].forEach((sel, i) => {
+  const el = document.querySelector(sel);
+  if (!el) return;
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'power3.out', delay: i * .15 })
+  });
+});
+
+/* ── Pillar cards ── */
+gsap.utils.toArray('.pillar-card').forEach((el, i) => {
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .75, ease: 'power3.out', delay: i * .1 })
+  });
+});
+
+/* ── Project cards ── */
+gsap.utils.toArray('.proj-card').forEach((el, i) => {
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', delay: i * .08 })
+  });
+});
+
+/* ── Button "more" links ── */
+['#btn-pillars-more', '#btn-proj-more'].forEach(sel => {
+  const el = document.querySelector(sel);
+  if (!el) return;
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out' })
+  });
+});
+
+/* ── Join section ── */
+['#join-ey', '#join-desc', '#join-ctas'].forEach((sel, i) => {
+  const el = document.querySelector(sel);
+  if (!el) return;
+  ScrollTrigger.create({
+    trigger: el, start: 'top 88%', once: true,
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'power3.out', delay: i * .15 })
+  });
+});
+
+/* ═══════════════════════════════════════════════
+   COUNTERS
+═══════════════════════════════════════════════ */
+document.querySelectorAll('.counter').forEach(el => {
+  const target = +el.dataset.target;
+  ScrollTrigger.create({
+    trigger: el, start: 'top 85%', once: true,
+    onEnter: () => {
+      const obj = { val: 0 };
+      gsap.to(obj, {
+        val: target, duration: 1.8, ease: 'power2.out',
+        onUpdate: () => {
+          el.textContent = target >= 1000
+            ? Math.round(obj.val).toLocaleString()
+            : Math.round(obj.val);
+        }
+      });
+    }
+  });
+});
+
+/* ═══════════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════════ */
+const dot  = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let mx = -100, my = -100, rx = -100, ry = -100;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function tickCursor() {
+  if (dot)  { dot.style.cssText  = `left:${mx-3}px;top:${my-3}px`; }
+  rx += (mx - rx) * .18; ry += (my - ry) * .18;
+  if (ring) { ring.style.cssText = `left:${rx-15}px;top:${ry-15}px`; }
+  requestAnimationFrame(tickCursor);
+})();
+
+document.querySelectorAll('a, button, .pillar-card, .proj-card').forEach(el => {
+  el.addEventListener('mouseenter', () => ring && ring.classList.add('big'));
+  el.addEventListener('mouseleave', () => ring && ring.classList.remove('big'));
+});
+</script>
+
+</body>
+</html>

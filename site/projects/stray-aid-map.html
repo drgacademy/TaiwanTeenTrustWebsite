@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>流浪動物救援地圖 — Taiwan Teen Trust</title>
+  <meta name="description" content="台灣流浪動物友善資源地圖：收容所、動物醫院、餵食點一站查詢。" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="../css/design-system.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+
+  <style>
+    /* ── Map Page Layout ── */
+    .map-page { display: flex; flex-direction: column; min-height: 100vh; padding-top: 72px; }
+
+    /* ── Hero strip ── */
+    .map-hero {
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: clamp(2rem, 5vw, 4rem) 0 0;
+    }
+    .map-hero__inner {
+      max-width: 88rem; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 3rem);
+    }
+    .map-hero__breadcrumb {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .8rem; letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,.35); margin-bottom: 1.5rem;
+    }
+    .map-hero__breadcrumb a { color: inherit; text-decoration: none; }
+    .map-hero__breadcrumb a:hover { color: var(--accent); }
+    .map-hero__breadcrumb span { color: rgba(255,255,255,.2); }
+    .map-hero__tag {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid rgba(46,202,212,.3);
+      border-radius: 2rem; padding: .3rem .9rem; margin-bottom: 1.25rem;
+    }
+    .map-hero__tag::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(.6); }
+    }
+    .map-hero__title {
+      font-size: clamp(2rem, 5vw, 4rem); font-weight: 900; line-height: 1.05;
+      letter-spacing: -.02em; color: var(--text); margin-bottom: .75rem;
+    }
+    .map-hero__desc {
+      font-size: clamp(.9rem, 1.5vw, 1.1rem); color: rgba(255,255,255,.5);
+      max-width: 52ch; line-height: 1.7; margin-bottom: 0;
+    }
+
+    /* ── Stat chips ── */
+    .map-stats {
+      display: flex; gap: 1.5rem; padding: 1.5rem 0;
+      border-top: 1px solid var(--border); margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .map-stat {
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .map-stat__dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .map-stat__dot--shelter { background: #2ECAD4; }
+    .map-stat__dot--vet     { background: #7fb285; }
+    .map-stat__dot--feed    { background: #c9a96e; }
+    .map-stat__dot--rescue  { background: #e07070; }
+    .map-stat__num {
+      font-size: 1.2rem; font-weight: 700; color: var(--text);
+    }
+    .map-stat__label {
+      font-size: .78rem; color: rgba(255,255,255,.4); letter-spacing: .04em;
+    }
+
+    /* ── Main app area ── */
+    .map-app {
+      flex: 1; display: grid;
+      grid-template-columns: 320px 1fr;
+      min-height: calc(100vh - 72px - 200px);
+    }
+    @media (max-width: 768px) {
+      .map-app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    }
+
+    /* ── Sidebar ── */
+    .map-sidebar {
+      background: #0f0f0f; border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
+      max-height: calc(100vh - 72px);
+      position: sticky; top: 72px;
+    }
+    @media (max-width: 768px) {
+      .map-sidebar { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
+    }
+    .sidebar-head {
+      padding: 1.25rem 1.25rem .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-search {
+      position: relative; margin-bottom: .75rem;
+    }
+    .sidebar-search input {
+      width: 100%; background: rgba(255,255,255,.05);
+      border: 1px solid var(--border); border-radius: .375rem;
+      padding: .6rem 2.5rem .6rem .9rem;
+      font-size: .85rem; color: var(--text); font-family: inherit;
+      transition: border-color .2s;
+    }
+    .sidebar-search input::placeholder { color: rgba(255,255,255,.25); }
+    .sidebar-search input:focus { outline: none; border-color: rgba(46,202,212,.5); }
+    .sidebar-search__icon {
+      position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,.25); pointer-events: none; font-size: .9rem;
+    }
+
+    /* Filter chips */
+    .filter-chips {
+      display: flex; gap: .4rem; flex-wrap: wrap;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: .35rem;
+      font-size: .72rem; font-weight: 600; letter-spacing: .05em;
+      padding: .3rem .7rem; border-radius: 2rem; cursor: pointer;
+      border: 1px solid transparent; transition: all .2s; user-select: none;
+    }
+    .chip__dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .chip--all   { border-color: rgba(255,255,255,.2); color: rgba(255,255,255,.6); }
+    .chip--shelter { border-color: rgba(46,202,212,.3); color: #2ECAD4; }
+    .chip--vet     { border-color: rgba(127,178,133,.3); color: #7fb285; }
+    .chip--feed    { border-color: rgba(201,169,110,.3); color: #c9a96e; }
+    .chip--rescue  { border-color: rgba(224,112,112,.3); color: #e07070; }
+    .chip.active { background: rgba(46,202,212,.12); border-color: var(--accent); color: var(--accent); }
+    .chip--shelter.active { background: rgba(46,202,212,.15); border-color: #2ECAD4; color: #2ECAD4; }
+    .chip--vet.active     { background: rgba(127,178,133,.15); border-color: #7fb285; color: #7fb285; }
+    .chip--feed.active    { background: rgba(201,169,110,.15); border-color: #c9a96e; color: #c9a96e; }
+    .chip--rescue.active  { background: rgba(224,112,112,.15); border-color: #e07070; color: #e07070; }
+
+    /* Results list */
+    .sidebar-results {
+      flex: 1; overflow-y: auto; padding: .75rem 1.25rem;
+    }
+    .sidebar-results::-webkit-scrollbar { width: 4px; }
+    .sidebar-results::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-results::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+
+    .results-count {
+      font-size: .72rem; color: rgba(255,255,255,.3); letter-spacing: .06em;
+      text-transform: uppercase; margin-bottom: .75rem;
+    }
+
+    .location-card {
+      background: rgba(255,255,255,.03); border: 1px solid var(--border);
+      border-radius: .5rem; padding: .9rem 1rem; margin-bottom: .5rem;
+      cursor: pointer; transition: all .2s;
+    }
+    .location-card:hover { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15); }
+    .location-card.active { border-color: var(--accent); background: rgba(46,202,212,.07); }
+    .location-card__header {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem;
+      margin-bottom: .4rem;
+    }
+    .location-card__name {
+      font-size: .88rem; font-weight: 600; color: var(--text); line-height: 1.3;
+    }
+    .location-card__badge {
+      font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      padding: .15rem .5rem; border-radius: 2rem; white-space: nowrap; flex-shrink: 0;
+    }
+    .badge--shelter { background: rgba(46,202,212,.15); color: #2ECAD4; }
+    .badge--vet     { background: rgba(127,178,133,.15); color: #7fb285; }
+    .badge--feed    { background: rgba(201,169,110,.15); color: #c9a96e; }
+    .badge--rescue  { background: rgba(224,112,112,.15); color: #e07070; }
+    .location-card__addr {
+      font-size: .76rem; color: rgba(255,255,255,.35); line-height: 1.5;
+    }
+    .location-card__meta {
+      display: flex; gap: 1rem; margin-top: .5rem;
+    }
+    .location-card__meta span {
+      font-size: .72rem; color: rgba(255,255,255,.3);
+      display: flex; align-items: center; gap: .25rem;
+    }
+    .no-results {
+      text-align: center; padding: 3rem 1rem;
+      color: rgba(255,255,255,.25); font-size: .85rem;
+    }
+
+    /* ── Map container ── */
+    .map-container { position: relative; background: #111; }
+    #map {
+      width: 100%; height: 100%; min-height: 70vh;
+    }
+
+    /* Leaflet dark override */
+    .leaflet-tile-pane { filter: brightness(.85) saturate(.7) hue-rotate(180deg) invert(1); }
+    .leaflet-container { background: #111; }
+    .leaflet-control-zoom a {
+      background: #1a1a1a !important; color: var(--text) !important;
+      border-color: rgba(255,255,255,.12) !important;
+    }
+    .leaflet-control-zoom a:hover { background: #2a2a2a !important; }
+    .leaflet-control-attribution { background: rgba(0,0,0,.6) !important; color: rgba(255,255,255,.3) !important; }
+    .leaflet-control-attribution a { color: rgba(255,255,255,.4) !important; }
+
+    /* Custom popup */
+    .leaflet-popup-content-wrapper {
+      background: #141414 !important; border: 1px solid rgba(255,255,255,.1) !important;
+      border-radius: .5rem !important; box-shadow: 0 8px 40px rgba(0,0,0,.6) !important;
+      padding: 0 !important;
+    }
+    .leaflet-popup-tip-container { display: none; }
+    .leaflet-popup-content { margin: 0 !important; width: 260px !important; }
+    .popup-inner {
+      padding: 1.1rem 1.25rem;
+    }
+    .popup-type {
+      font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: .6rem;
+    }
+    .popup-name {
+      font-size: .95rem; font-weight: 700; color: #f0f0f0; line-height: 1.3; margin-bottom: .75rem;
+    }
+    .popup-row {
+      display: flex; align-items: flex-start; gap: .5rem;
+      font-size: .78rem; color: rgba(255,255,255,.45); margin-bottom: .4rem; line-height: 1.5;
+    }
+    .popup-row svg { flex-shrink: 0; margin-top: 2px; }
+    .popup-actions {
+      border-top: 1px solid rgba(255,255,255,.07); padding: .75rem 1.25rem;
+      display: flex; gap: .5rem;
+    }
+    .popup-btn {
+      flex: 1; text-align: center; font-size: .72rem; font-weight: 600;
+      padding: .45rem .5rem; border-radius: .3rem; cursor: pointer;
+      text-decoration: none; transition: all .2s;
+    }
+    .popup-btn--primary {
+      background: var(--accent); color: #0a0a0a;
+    }
+    .popup-btn--primary:hover { filter: brightness(1.1); }
+    .popup-btn--outline {
+      border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.5);
+    }
+    .popup-btn--outline:hover { border-color: rgba(255,255,255,.35); color: var(--text); }
+
+    /* Map overlay controls */
+    .map-overlay-controls {
+      position: absolute; top: 1rem; right: 1rem; z-index: 1000;
+      display: flex; flex-direction: column; gap: .5rem;
+    }
+    .map-ctrl-btn {
+      background: rgba(20,20,20,.9); border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.6); font-size: .72rem; font-weight: 600;
+      padding: .45rem .8rem; border-radius: .375rem; cursor: pointer;
+      transition: all .2s; backdrop-filter: blur(8px); white-space: nowrap;
+    }
+    .map-ctrl-btn:hover { background: rgba(46,202,212,.15); border-color: var(--accent); color: var(--accent); }
+    .map-ctrl-btn.active { background: rgba(46,202,212,.2); border-color: var(--accent); color: var(--accent); }
+
+    /* ── Data note ── */
+    .map-footer-note {
+      background: rgba(255,255,255,.02); border-top: 1px solid var(--border);
+      padding: 1rem clamp(1rem, 5vw, 3rem); display: flex; align-items: center; gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .map-footer-note p {
+      font-size: .76rem; color: rgba(255,255,255,.3); margin: 0; flex: 1; min-width: 200px;
+    }
+    .map-footer-note a { color: var(--accent); text-decoration: none; }
+    .map-footer-note a:hover { text-decoration: underline; }
+    .contribute-btn {
+      font-size: .78rem; font-weight: 600; color: var(--accent);
+      border: 1px solid rgba(46,202,212,.3); border-radius: 2rem;
+      padding: .4rem 1rem; text-decoration: none; white-space: nowrap;
+      transition: all .2s;
+    }
+    .contribute-btn:hover { background: rgba(46,202,212,.1); }
+
+    /* Custom markers */
+    .custom-marker {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2.5px solid; font-size: .75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,.5);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════ PAGE LOADER ════════════════════ -->
+<div class="page-loader" id="page-loader">
+  <div class="loader__logo">
+    <svg viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="52">
+      <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+      <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+      <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="loader__bar"><div class="loader__fill"></div></div>
+</div>
+
+<!-- ════════════════════ CURSOR ════════════════════ -->
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- ════════════════════ NAVBAR ════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="navbar__inner">
+    <a href="../index.html" class="navbar__logo" aria-label="Taiwan Teen Trust">
+      <svg viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg" width="32" height="35">
+        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <span>Taiwan Teen Trust</span>
+    </a>
+    <div class="navbar__links">
+      <a href="../about.html"    data-zh="關於" data-en="About">關於</a>
+      <a href="../team.html"     data-zh="團隊" data-en="Team">團隊</a>
+      <a href="../projects.html" data-zh="專案" data-en="Projects">專案</a>
+      <a href="../blog.html"     data-zh="部落格" data-en="Blog">部落格</a>
+      <a href="../focus.html"    data-zh="年度主題" data-en="Focus">年度主題</a>
+    </div>
+    <div class="navbar__actions">
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="zh">中</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <a href="../index.html#join" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav-drawer" id="nav-drawer">
+    <a href="../about.html"    data-zh="關於我們" data-en="About">關於我們</a>
+    <a href="../team.html"     data-zh="團隊" data-en="Team">團隊</a>
+    <a href="../projects.html" data-zh="專案" data-en="Projects">專案</a>
+    <a href="../blog.html"     data-zh="部落格" data-en="Blog">部落格</a>
+    <a href="../focus.html"    data-zh="年度主題" data-en="Focus">年度主題</a>
+    <a href="../index.html#join" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  </div>
+</nav>
+
+<!-- ════════════════════ MAP PAGE ════════════════════ -->
+<div class="map-page">
+
+  <!-- Hero Strip -->
+  <section class="map-hero">
+    <div class="map-hero__inner">
+      <div class="map-hero__breadcrumb">
+        <a href="../index.html" data-zh="首頁" data-en="Home">首頁</a>
+        <span>/</span>
+        <a href="../projects.html" data-zh="專案" data-en="Projects">專案</a>
+        <span>/</span>
+        <span data-zh="流浪動物救援地圖" data-en="Stray Aid Map">流浪動物救援地圖</span>
+      </div>
+
+      <div class="map-hero__tag" data-zh="🐾 進行中專案" data-en="🐾 Active Project">🐾 進行中專案</div>
+
+      <h1 class="map-hero__title">
+        <span class="lang-zh">流浪動物<br><span style="color:var(--accent)">救援資源地圖</span></span>
+        <span class="lang-en" style="display:none">Stray Animal<br><span style="color:var(--accent)">Aid Resource Map</span></span>
+      </h1>
+      <p class="map-hero__desc"
+         data-zh="整合全台收容所、動物醫院、餵食點與救援站資訊，透過互動地圖讓每個人都能快速找到最近的幫助。"
+         data-en="Aggregating shelters, veterinary clinics, feeding stations, and rescue centers across Taiwan — so anyone can find help fast.">
+        整合全台收容所、動物醫院、餵食點與救援站資訊，透過互動地圖讓每個人都能快速找到最近的幫助。
+      </p>
+
+      <div class="map-stats" id="map-stats">
+        <div class="map-stat">
+          <div class="map-stat__dot map-stat__dot--shelter"></div>
+          <div>
+            <div class="map-stat__num" id="count-shelter">0</div>
+            <div class="map-stat__label" data-zh="收容所" data-en="Shelters">收容所</div>
+          </div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat__dot map-stat__dot--vet"></div>
+          <div>
+            <div class="map-stat__num" id="count-vet">0</div>
+            <div class="map-stat__label" data-zh="動物醫院" data-en="Vet Clinics">動物醫院</div>
+          </div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat__dot map-stat__dot--feed"></div>
+          <div>
+            <div class="map-stat__num" id="count-feed">0</div>
+            <div class="map-stat__label" data-zh="餵食點" data-en="Feeding Stations">餵食點</div>
+          </div>
+        </div>
+        <div class="map-stat">
+          <div class="map-stat__dot map-stat__dot--rescue"></div>
+          <div>
+            <div class="map-stat__num" id="count-rescue">0</div>
+            <div class="map-stat__label" data-zh="救援站" data-en="Rescue Centers">救援站</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map App -->
+  <div class="map-app">
+
+    <!-- Sidebar -->
+    <aside class="map-sidebar">
+      <div class="sidebar-head">
+        <div class="sidebar-search">
+          <input type="text" id="location-search" placeholder="搜尋地點名稱…" data-zh-placeholder="搜尋地點名稱…" data-en-placeholder="Search locations…" />
+          <span class="sidebar-search__icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </span>
+        </div>
+        <div class="filter-chips">
+          <button class="chip chip--all active" data-type="all" data-zh="全部" data-en="All">全部</button>
+          <button class="chip chip--shelter" data-type="shelter" data-zh="收容所" data-en="Shelter">收容所</button>
+          <button class="chip chip--vet" data-type="vet" data-zh="動物醫院" data-en="Vet">動物醫院</button>
+          <button class="chip chip--feed" data-type="feed" data-zh="餵食點" data-en="Feed">餵食點</button>
+          <button class="chip chip--rescue" data-type="rescue" data-zh="救援站" data-en="Rescue">救援站</button>
+        </div>
+      </div>
+      <div class="sidebar-results">
+        <div class="results-count" id="results-count">載入中…</div>
+        <div id="location-list"></div>
+      </div>
+    </aside>
+
+    <!-- Map -->
+    <div class="map-container">
+      <div id="map"></div>
+
+      <!-- Overlay controls -->
+      <div class="map-overlay-controls">
+        <button class="map-ctrl-btn" id="btn-cluster" data-zh="聚合顯示" data-en="Cluster">聚合顯示</button>
+        <button class="map-ctrl-btn" id="btn-locate" data-zh="我的位置" data-en="My Location">我的位置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data note -->
+  <div class="map-footer-note">
+    <p data-zh="資料為示範用途，實際資訊請以各機構官方公告為準。如您知道任何資源點，歡迎<a href='#'>提交資料</a>協助完善地圖。"
+       data-en="Data shown is for demonstration. Please verify with each organization. Know a resource? <a href='#'>Submit a location</a> to help us grow the map.">
+      資料為示範用途，實際資訊請以各機構官方公告為準。如您知道任何資源點，歡迎<a href="#">提交資料</a>協助完善地圖。
+    </p>
+    <a href="#" class="contribute-btn" data-zh="➕ 新增資源點" data-en="➕ Add Location">➕ 新增資源點</a>
+  </div>
+
+</div><!-- end .map-page -->
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <svg viewBox="0 0 120 130" fill="none" width="36" height="39" style="margin-bottom:.75rem">
+          <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+          <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+          <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+        </svg>
+        <div class="footer__brand-name">Taiwan Teen Trust</div>
+        <p data-zh="青年驅動，信任為本。" data-en="Youth-driven. Trust-built.">青年驅動，信任為本。</p>
+      </div>
+      <div>
+        <div class="footer__heading" data-zh="組織" data-en="Organization">組織</div>
+        <a href="../about.html"    data-zh="關於我們" data-en="About">關於我們</a>
+        <a href="../team.html"     data-zh="團隊" data-en="Team">團隊</a>
+        <a href="../focus.html"    data-zh="年度主題" data-en="Annual Focus">年度主題</a>
+      </div>
+      <div>
+        <div class="footer__heading" data-zh="專案" data-en="Projects">專案</div>
+        <a href="../projects.html"       data-zh="所有專案" data-en="All Projects">所有專案</a>
+        <a href="stray-aid-map.html"     data-zh="流浪動物地圖" data-en="Stray Aid Map">流浪動物地圖</a>
+        <a href="../blog.html"           data-zh="部落格" data-en="Blog">部落格</a>
+      </div>
+      <div>
+        <div class="footer__heading" data-zh="聯繫" data-en="Connect">聯繫</div>
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+        <a href="#" data-zh="聯絡我們" data-en="Contact">聯絡我們</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span data-zh="© 2025 Taiwan Teen Trust. 保留所有權利。" data-en="© 2025 Taiwan Teen Trust. All rights reserved.">© 2025 Taiwan Teen Trust. 保留所有權利。</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ════════════════════ SCRIPTS ════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../js/app.js"></script>
+
+<script>
+/* ════════════════════ MAP DATA (static placeholder) ════════════════════ */
+const LOCATIONS = [
+  /* ── Shelters ── */
+  {
+    id: 1, type: 'shelter',
+    name: { zh: '臺北市動物之家', en: 'Taipei Animal Shelter' },
+    addr: { zh: '台北市北投區立農街二段350號', en: '350 Linong St. Sec.2, Beitou, Taipei' },
+    phone: '02-2858-3700',
+    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
+    lat: 25.1306, lng: 121.4984,
+    tags: { zh: '公立收容所', en: 'Public Shelter' },
+    url: '#'
+  },
+  {
+    id: 2, type: 'shelter',
+    name: { zh: '新北市動物之家（新莊）', en: 'New Taipei Animal Shelter (Xinzhuang)' },
+    addr: { zh: '新北市新莊區化成路321巷8號', en: '8 Lane 321 Huacheng Rd., Xinzhuang, New Taipei' },
+    phone: '02-2991-3062',
+    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
+    lat: 25.0353, lng: 121.4397,
+    tags: { zh: '公立收容所', en: 'Public Shelter' },
+    url: '#'
+  },
+  {
+    id: 3, type: 'shelter',
+    name: { zh: '台中市動物之家（北屯）', en: 'Taichung Animal Shelter (Beitun)' },
+    addr: { zh: '台中市北屯區東山路一段201號', en: '201 Dongshan Rd. Sec.1, Beitun, Taichung' },
+    phone: '04-2239-0079',
+    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
+    lat: 24.1830, lng: 120.7025,
+    tags: { zh: '公立收容所', en: 'Public Shelter' },
+    url: '#'
+  },
+  {
+    id: 4, type: 'shelter',
+    name: { zh: '台南市動物之家（楠西）', en: 'Tainan Animal Shelter (Nanxi)' },
+    addr: { zh: '台南市楠西區東勢里6鄰64號', en: '64 Dongshi Village, Nanxi, Tainan' },
+    phone: '06-575-2367',
+    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
+    lat: 23.1968, lng: 120.5058,
+    tags: { zh: '公立收容所', en: 'Public Shelter' },
+    url: '#'
+  },
+  {
+    id: 5, type: 'shelter',
+    name: { zh: '高雄市動物之家（燕巢）', en: 'Kaohsiung Animal Shelter (Yanchao)' },
+    addr: { zh: '高雄市燕巢區角宿里深水路242號', en: '242 Shenshui Rd., Yanchao, Kaohsiung' },
+    phone: '07-616-1161',
+    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
+    lat: 22.7856, lng: 120.3648,
+    tags: { zh: '公立收容所', en: 'Public Shelter' },
+    url: '#'
+  },
+
+  /* ── Vet Clinics ── */
+  {
+    id: 6, type: 'vet',
+    name: { zh: '台大附設動物醫院', en: 'NTU Veterinary Hospital' },
+    addr: { zh: '台北市大安區基隆路三段153號', en: '153 Keelung Rd. Sec.3, Da\'an, Taipei' },
+    phone: '02-2739-6828',
+    hours: { zh: '週一–週五 08:30–17:00', en: 'Mon–Fri 08:30–17:00' },
+    lat: 25.0139, lng: 121.5454,
+    tags: { zh: '教學醫院', en: 'Teaching Hospital' },
+    url: '#'
+  },
+  {
+    id: 7, type: 'vet',
+    name: { zh: '亞馬森動物醫院', en: 'Amazon Animal Hospital' },
+    addr: { zh: '台北市信義區忠孝東路五段286號', en: '286 Zhongxiao E. Rd. Sec.5, Xinyi, Taipei' },
+    phone: '02-2725-0665',
+    hours: { zh: '每日 09:00–21:00', en: 'Daily 09:00–21:00' },
+    lat: 25.0397, lng: 121.5672,
+    tags: { zh: '私立診所', en: 'Private Clinic' },
+    url: '#'
+  },
+  {
+    id: 8, type: 'vet',
+    name: { zh: '中興大學獸醫教學醫院', en: 'NCHU Veterinary Teaching Hospital' },
+    addr: { zh: '台中市南區興大路145號', en: '145 Xingda Rd., South Dist., Taichung' },
+    phone: '04-2286-0271',
+    hours: { zh: '週一–週五 08:00–17:00', en: 'Mon–Fri 08:00–17:00' },
+    lat: 24.1271, lng: 120.6823,
+    tags: { zh: '教學醫院', en: 'Teaching Hospital' },
+    url: '#'
+  },
+  {
+    id: 9, type: 'vet',
+    name: { zh: '愛動物動物醫院（高雄）', en: 'Love Animal Vet Hospital (Kaohsiung)' },
+    addr: { zh: '高雄市三民區十全二路101號', en: '101 Shiquan 2nd Rd., Sanmin, Kaohsiung' },
+    phone: '07-311-2198',
+    hours: { zh: '每日 08:30–20:00', en: 'Daily 08:30–20:00' },
+    lat: 22.6387, lng: 120.3081,
+    tags: { zh: '私立診所', en: 'Private Clinic' },
+    url: '#'
+  },
+
+  /* ── Feeding Stations ── */
+  {
+    id: 10, type: 'feed',
+    name: { zh: '大安森林公園餵食點', en: 'Da\'an Forest Park Feeding Station' },
+    addr: { zh: '台北市大安區新生南路二段與和平東路口', en: 'Xinsheng S. Rd. Sec.2 & Heping E. Rd., Da\'an, Taipei' },
+    phone: null,
+    hours: { zh: '每日 07:00、18:00', en: 'Daily 07:00 & 18:00' },
+    lat: 25.0299, lng: 121.5342,
+    tags: { zh: 'TNR 管理', en: 'TNR Managed' },
+    url: '#'
+  },
+  {
+    id: 11, type: 'feed',
+    name: { zh: '中正紀念堂周邊餵食點', en: 'CKS Memorial Hall Feeding Station' },
+    addr: { zh: '台北市中正區中山南路21號周邊', en: 'Near 21 Zhongshan S. Rd., Zhongzheng, Taipei' },
+    phone: null,
+    hours: { zh: '每日 07:30、17:30', en: 'Daily 07:30 & 17:30' },
+    lat: 25.0347, lng: 121.5201,
+    tags: { zh: 'TNR 管理', en: 'TNR Managed' },
+    url: '#'
+  },
+  {
+    id: 12, type: 'feed',
+    name: { zh: '台中公園餵食點', en: 'Taichung Park Feeding Station' },
+    addr: { zh: '台中市中區公園路37號周邊', en: 'Near 37 Gongyuan Rd., Central Dist., Taichung' },
+    phone: null,
+    hours: { zh: '每日 06:30、17:00', en: 'Daily 06:30 & 17:00' },
+    lat: 24.1489, lng: 120.6802,
+    tags: { zh: '志工管理', en: 'Volunteer Managed' },
+    url: '#'
+  },
+  {
+    id: 13, type: 'feed',
+    name: { zh: '高雄駁二特區餵食點', en: 'Pier-2 Art Center Feeding Station' },
+    addr: { zh: '高雄市鹽埕區大勇路1號周邊', en: 'Near 1 Dayong Rd., Yancheng, Kaohsiung' },
+    phone: null,
+    hours: { zh: '每日 07:00、18:30', en: 'Daily 07:00 & 18:30' },
+    lat: 22.6239, lng: 120.2796,
+    tags: { zh: 'TNR 管理', en: 'TNR Managed' },
+    url: '#'
+  },
+
+  /* ── Rescue Centers ── */
+  {
+    id: 14, type: 'rescue',
+    name: { zh: '台灣動物緊急救援小組（TEARE）', en: 'Taiwan Emergency Animal Rescue (TEARE)' },
+    addr: { zh: '台北市中山區民權東路三段106巷', en: 'Lane 106 Minquan E. Rd. Sec.3, Zhongshan, Taipei' },
+    phone: '02-2599-1083',
+    hours: { zh: '週一–週五 09:00–18:00（緊急24小時）', en: 'Mon–Fri 09:00–18:00 (Emergency 24hr)' },
+    lat: 25.0618, lng: 121.5378,
+    tags: { zh: '緊急救援', en: 'Emergency Rescue' },
+    url: '#'
+  },
+  {
+    id: 15, type: 'rescue',
+    name: { zh: '台灣之心愛護動物協會（HOTAC）', en: 'Heart of Taiwan Animal Care (HOTAC)' },
+    addr: { zh: '台中市南屯區向心路568號', en: '568 Xiangxin Rd., Nantun, Taichung' },
+    phone: '04-2258-0878',
+    hours: { zh: '週一–週六 09:00–17:00', en: 'Mon–Sat 09:00–17:00' },
+    lat: 24.1187, lng: 120.6498,
+    tags: { zh: '民間協會', en: 'NGO' },
+    url: '#'
+  },
+  {
+    id: 16, type: 'rescue',
+    name: { zh: '關懷生命協會（ALA）', en: 'Animal Life Association (ALA)' },
+    addr: { zh: '台北市大同區重慶北路三段87巷26弄4號', en: '4 Alley 26 Lane 87 Chongqing N. Rd. Sec.3, Datong, Taipei' },
+    phone: '02-2598-7159',
+    hours: { zh: '週一–週五 09:30–17:30', en: 'Mon–Fri 09:30–17:30' },
+    lat: 25.0738, lng: 121.5132,
+    tags: { zh: '動物保護', en: 'Animal Protection' },
+    url: '#'
+  }
+];
+
+/* ════════════════════ MAP CONFIG ════════════════════ */
+const TYPE_CONFIG = {
+  shelter: { color: '#2ECAD4', label: { zh: '收容所', en: 'Shelter'  }, icon: '🏠' },
+  vet:     { color: '#7fb285', label: { zh: '動物醫院', en: 'Vet'    }, icon: '🏥' },
+  feed:    { color: '#c9a96e', label: { zh: '餵食點',  en: 'Feeding' }, icon: '🍽️' },
+  rescue:  { color: '#e07070', label: { zh: '救援站',  en: 'Rescue'  }, icon: '🚑' }
+};
+
+/* ════════════════════ MAP INIT ════════════════════ */
+const map = L.map('map', {
+  center: [23.8, 121.0],
+  zoom: 7,
+  zoomControl: true,
+  attributionControl: true
+});
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19
+}).addTo(map);
+
+/* ════════════════════ STATE ════════════════════ */
+let activeType = 'all';
+let searchQuery = '';
+let markers = {};
+let activeCardId = null;
+
+/* ════════════════════ MARKER FACTORY ════════════════════ */
+function makeIcon(type) {
+  const cfg = TYPE_CONFIG[type];
+  return L.divIcon({
+    className: '',
+    html: `<div class="custom-marker" style="background:rgba(10,10,10,.85);border-color:${cfg.color};color:${cfg.color};font-size:14px">${cfg.icon}</div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18]
+  });
+}
+
+/* ════════════════════ POPUP FACTORY ════════════════════ */
+function makePopupHTML(loc, lang) {
+  const cfg = TYPE_CONFIG[loc.type];
+  const name = loc.name[lang] || loc.name.zh;
+  const addr = loc.addr[lang] || loc.addr.zh;
+  const hours = loc.hours[lang] || loc.hours.zh;
+  const tag = cfg.label[lang] || cfg.label.zh;
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name.zh)}`;
+
+  return `
+    <div class="popup-inner">
+      <div class="popup-type" style="color:${cfg.color}">${cfg.icon} ${tag}</div>
+      <div class="popup-name">${name}</div>
+      <div class="popup-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${cfg.color}" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>${addr}</span>
+      </div>
+      <div class="popup-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${cfg.color}" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span>${hours}</span>
+      </div>
+      ${loc.phone ? `
+      <div class="popup-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${cfg.color}" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>${loc.phone}</span>
+      </div>` : ''}
+    </div>
+    <div class="popup-actions">
+      <a href="${mapUrl}" target="_blank" class="popup-btn popup-btn--primary" data-zh="導航前往" data-en="Get Directions">導航前往</a>
+      <a href="${loc.url}" class="popup-btn popup-btn--outline" data-zh="更多資訊" data-en="More Info">更多資訊</a>
+    </div>
+  `;
+}
+
+/* ════════════════════ MARKER MANAGEMENT ════════════════════ */
+function getFilteredLocations() {
+  return LOCATIONS.filter(loc => {
+    const typeMatch = activeType === 'all' || loc.type === activeType;
+    const q = searchQuery.toLowerCase();
+    const nameMatch = !q ||
+      loc.name.zh.toLowerCase().includes(q) ||
+      loc.name.en.toLowerCase().includes(q) ||
+      loc.addr.zh.toLowerCase().includes(q);
+    return typeMatch && nameMatch;
+  });
+}
+
+function renderMarkers() {
+  const lang = currentLang || 'zh';
+  Object.values(markers).forEach(m => map.removeLayer(m));
+  markers = {};
+
+  const filtered = getFilteredLocations();
+  filtered.forEach(loc => {
+    const m = L.marker([loc.lat, loc.lng], { icon: makeIcon(loc.type) })
+      .addTo(map)
+      .bindPopup(makePopupHTML(loc, lang), {
+        closeButton: false,
+        maxWidth: 280,
+        className: 'ttt-popup'
+      });
+
+    m.on('click', () => {
+      activateCard(loc.id);
+      scrollToCard(loc.id);
+    });
+
+    markers[loc.id] = m;
+  });
+}
+
+/* ════════════════════ SIDEBAR LIST ════════════════════ */
+function renderList() {
+  const lang = currentLang || 'zh';
+  const filtered = getFilteredLocations();
+  const list = document.getElementById('location-list');
+  const countEl = document.getElementById('results-count');
+
+  const countText = lang === 'zh'
+    ? `顯示 ${filtered.length} / ${LOCATIONS.length} 個地點`
+    : `Showing ${filtered.length} of ${LOCATIONS.length} locations`;
+  countEl.textContent = countText;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="no-results">${lang === 'zh' ? '找不到符合條件的地點' : 'No locations found'}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(loc => {
+    const cfg = TYPE_CONFIG[loc.type];
+    const name = loc.name[lang] || loc.name.zh;
+    const addr = loc.addr[lang] || loc.addr.zh;
+    const hours = loc.hours[lang] || loc.hours.zh;
+    const badgeLabel = cfg.label[lang] || cfg.label.zh;
+    const isActive = loc.id === activeCardId;
+
+    return `
+      <div class="location-card${isActive ? ' active' : ''}" data-id="${loc.id}" onclick="onCardClick(${loc.id})">
+        <div class="location-card__header">
+          <div class="location-card__name">${name}</div>
+          <span class="location-card__badge badge--${loc.type}">${badgeLabel}</span>
+        </div>
+        <div class="location-card__addr">${addr}</div>
+        <div class="location-card__meta">
+          <span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            ${hours}
+          </span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function onCardClick(id) {
+  activateCard(id);
+  const loc = LOCATIONS.find(l => l.id === id);
+  if (loc && markers[id]) {
+    map.flyTo([loc.lat, loc.lng], 14, { duration: 1.2 });
+    setTimeout(() => markers[id].openPopup(), 1300);
+  }
+}
+
+function activateCard(id) {
+  activeCardId = id;
+  document.querySelectorAll('.location-card').forEach(el => {
+    el.classList.toggle('active', +el.dataset.id === id);
+  });
+}
+
+function scrollToCard(id) {
+  const card = document.querySelector(`.location-card[data-id="${id}"]`);
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ════════════════════ STAT COUNTERS ════════════════════ */
+function updateStats() {
+  const counts = { shelter: 0, vet: 0, feed: 0, rescue: 0 };
+  LOCATIONS.forEach(l => counts[l.type]++);
+  document.getElementById('count-shelter').textContent = counts.shelter;
+  document.getElementById('count-vet').textContent     = counts.vet;
+  document.getElementById('count-feed').textContent    = counts.feed;
+  document.getElementById('count-rescue').textContent  = counts.rescue;
+}
+
+/* ════════════════════ FILTER CONTROLS ════════════════════ */
+document.querySelectorAll('.chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeType = btn.dataset.type;
+    document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMarkers();
+    renderList();
+  });
+});
+
+document.getElementById('location-search').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  renderMarkers();
+  renderList();
+});
+
+/* ════════════════════ MAP OVERLAY CONTROLS ════════════════════ */
+let clusterEnabled = false;
+document.getElementById('btn-cluster').addEventListener('click', function() {
+  clusterEnabled = !clusterEnabled;
+  this.classList.toggle('active', clusterEnabled);
+});
+
+document.getElementById('btn-locate').addEventListener('click', () => {
+  if (!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(pos => {
+    const { latitude: lat, longitude: lng } = pos.coords;
+    map.flyTo([lat, lng], 13, { duration: 1.2 });
+    L.circle([lat, lng], {
+      radius: 500,
+      color: '#2ECAD4',
+      fillColor: 'rgba(46,202,212,.1)',
+      fillOpacity: 1,
+      weight: 1.5
+    }).addTo(map);
+  });
+});
+
+/* ════════════════════ LANGUAGE HOOK ════════════════════ */
+/* Re-render map popups and list when lang changes */
+const _origSetLang = window.setLang || (() => {});
+document.addEventListener('langchange', () => {
+  renderMarkers();
+  renderList();
+});
+
+/* Patch lang buttons to also re-render map content */
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setTimeout(() => { renderMarkers(); renderList(); }, 50);
+  });
+});
+
+/* ════════════════════ INIT ════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  updateStats();
+  renderMarkers();
+  renderList();
+
+  /* Sync search placeholder with lang */
+  const searchInput = document.getElementById('location-search');
+  function updateSearchPlaceholder() {
+    const lang = currentLang || 'zh';
+    searchInput.placeholder = lang === 'zh' ? '搜尋地點名稱…' : 'Search locations…';
+  }
+  updateSearchPlaceholder();
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => setTimeout(updateSearchPlaceholder, 60));
+  });
+});
+</script>
+
+</body>
+</html>

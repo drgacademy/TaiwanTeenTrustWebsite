@@ -1,0 +1,196 @@
+/* ============================================================
+   Taiwan Teen Trust — Design System
+   Style: cargokite-inspired dark editorial
+   Accent: TTT Cyan #2ECAD4
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+/* ─── CSS Variables ─── */
+:root {
+  /* Colors */
+  --bg:           #0a0a0a;
+  --bg-2:         #111111;
+  --bg-3:         #1a1a1a;
+  --bg-4:         #222222;
+  --text:         #f0f0f0;
+  --text-2:       #a0a0a0;
+  --text-3:       #606060;
+  --accent:       #2ECAD4;
+  --accent-dim:   rgba(46, 202, 212, 0.12);
+  --accent-hover: #1ab5be;
+  --white:        #ffffff;
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-2:     rgba(255, 255, 255, 0.14);
+
+  /* Typography — viewport-relative like cargokite */
+  --h1-fs:   clamp(4rem,   8.5vw, 12rem);
+  --h1-lh:   1.05;
+  --h2-fs:   clamp(3rem,   6vw,   9rem);
+  --h2-lh:   1.1;
+  --h3-fs:   clamp(2.4rem, 4.5vw, 7rem);
+  --h3-lh:   1.15;
+  --h4-fs:   clamp(2rem,   3.5vw, 5.5rem);
+  --h4-lh:   1.2;
+  --h5-fs:   clamp(1.6rem, 2.5vw, 3.6rem);
+  --h5-lh:   1.25;
+  --label-fs: clamp(0.75rem, 0.9vw, 1rem);
+  --body-fs:  clamp(0.95rem, 1.1vw, 1.15rem);
+  --body-lg:  clamp(1.05rem, 1.3vw, 1.35rem);
+
+  /* Spacing */
+  --section-py:  clamp(5rem, 10vw, 12rem);
+  --container:   88rem;
+  --container-lg: 110rem;
+  --gutter:      clamp(1.5rem, 4vw, 5rem);
+
+  /* Motion */
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:   0.25s;
+  --duration-base:   0.5s;
+  --duration-slow:   0.9s;
+
+  /* Radius */
+  --radius-sm:  4px;
+  --radius-md:  10px;
+  --radius-lg:  20px;
+  --radius-xl:  32px;
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: none;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* zh text uses Noto Sans TC */
+:lang(zh), .zh-text {
+  font-family: 'Noto Sans TC', 'Inter', sans-serif;
+}
+
+/* ─── Typography ─── */
+h1, .h1 { font-size: var(--h1-fs); line-height: var(--h1-lh); font-weight: 800; letter-spacing: -0.02em; }
+h2, .h2 { font-size: var(--h2-fs); line-height: var(--h2-lh); font-weight: 800; letter-spacing: -0.02em; }
+h3, .h3 { font-size: var(--h3-fs); line-height: var(--h3-lh); font-weight: 700; letter-spacing: -0.015em; }
+h4, .h4 { font-size: var(--h4-fs); line-height: var(--h4-lh); font-weight: 700; letter-spacing: -0.01em; }
+h5, .h5 { font-size: var(--h5-fs); line-height: var(--h5-lh); font-weight: 600; }
+
+p { line-height: 1.7; }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+ul, ol { list-style: none; }
+
+/* ─── Layout Utilities ─── */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container--lg {
+  max-width: var(--container-lg);
+}
+
+.section {
+  padding-block: var(--section-py);
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+
+/* ─── Text Utilities ─── */
+.text-accent  { color: var(--accent); }
+.text-muted   { color: var(--text-2); }
+.text-dim     { color: var(--text-3); }
+.text-center  { text-align: center; }
+.text-upper   { text-transform: uppercase; letter-spacing: 0.12em; }
+.text-balance { text-wrap: balance; }
+
+/* ─── Label / Eyebrow ─── */
+.label {
+  font-size: var(--label-fs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.label::before {
+  content: '';
+  display: block;
+  width: 1.5em;
+  height: 1.5px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ─── Divider ─── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── Scroll Animation Base States ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(3rem);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-3rem);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(3rem);
+}
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+/* ─── Noise Texture Overlay ─── */
+.noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .hide-mobile { display: none !important; }
+}
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .hide-tablet { display: none !important; }
+}

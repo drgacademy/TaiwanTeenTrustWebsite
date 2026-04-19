@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>台灣流浪動物問題的真相 — Taiwan Teen Trust</title>
+  <meta name="description" content="每年超過10萬隻流浪動物，我們深入調查台灣流浪動物議題的根本原因。" />
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/design-system.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    /* ── Post Hero ── */
+    .post-hero {
+      padding-top: 9rem;
+      padding-bottom: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .post-hero__meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .post-hero__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text-3);
+      transition: color var(--duration-fast);
+    }
+    .post-hero__back:hover { color: var(--accent); }
+    .post-hero__sep { width: 1px; height: 14px; background: var(--border-2); }
+    .post-hero__title {
+      font-size: clamp(2.2rem, 5vw, 6.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 2rem;
+      max-width: 18ch;
+    }
+    .post-hero__info {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding-block: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .post-hero__author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .post-hero__divider { width: 1px; height: 32px; background: var(--border-2); }
+    .post-hero__stat { font-size: 0.8rem; color: var(--text-3); }
+    .post-hero__stat strong { color: var(--text-2); display: block; margin-bottom: 0.1rem; font-weight: 600; }
+
+    /* ── Cover image ── */
+    .post-cover {
+      width: 100%;
+      aspect-ratio: 21/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8rem;
+      background: linear-gradient(135deg, #0d1a0d, #001a1a);
+      position: relative;
+      overflow: hidden;
+    }
+    .post-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 70% at 50% 50%, rgba(46,202,212,0.06), transparent 70%);
+    }
+
+    /* ── Article body ── */
+    .post-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 5rem;
+      padding-top: 5rem;
+    }
+    .post-content {
+      max-width: 70ch;
+    }
+    .post-content h2 {
+      font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-top: 3rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.2;
+    }
+    .post-content h3 {
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 700;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .post-content p {
+      font-size: clamp(1rem, 1.1vw, 1.1rem);
+      color: var(--text-2);
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
+    }
+    .post-content strong { color: var(--text); font-weight: 600; }
+    .post-content em { color: var(--accent); font-style: normal; font-weight: 600; }
+    .post-content ul, .post-content ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .post-content li {
+      font-size: clamp(1rem, 1.1vw, 1.1rem);
+      color: var(--text-2);
+      line-height: 1.85;
+      margin-bottom: 0.5rem;
+    }
+    .post-content ul li { list-style: disc; }
+    .post-content ol li { list-style: decimal; }
+    .post-content blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 1.25rem 1.75rem;
+      margin: 2.5rem 0;
+      background: var(--accent-dim);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    }
+    .post-content blockquote p {
+      font-size: clamp(1.1rem, 1.3vw, 1.25rem);
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 0;
+      line-height: 1.65;
+    }
+
+    /* ── Callout box ── */
+    .callout {
+      background: var(--bg-2);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-md);
+      padding: 1.75rem;
+      margin: 2.5rem 0;
+    }
+    .callout__title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .callout p {
+      font-size: 0.9rem !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* ── Data highlight ── */
+    .data-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin: 2.5rem 0;
+    }
+    .data-cell {
+      background: var(--bg-2);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .data-cell__num {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .data-cell__label {
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+
+    /* ── Sidebar ── */
+    .post-sidebar {
+      position: sticky;
+      top: 7rem;
+      height: fit-content;
+    }
+    .sidebar-section {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-section:last-child { border-bottom: none; }
+    .sidebar-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-3);
+      margin-bottom: 1.25rem;
+    }
+    .toc-item {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-2);
+      padding: 0.4rem 0;
+      border-left: 2px solid transparent;
+      padding-left: 0.75rem;
+      transition: all var(--duration-fast);
+    }
+    .toc-item:hover, .toc-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+    .related-post {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .related-post:last-child { border-bottom: none; }
+    .related-post__thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .related-post__title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text);
+      transition: color var(--duration-fast);
+    }
+    .related-post:hover .related-post__title { color: var(--accent); }
+    .related-post__date { font-size: 0.72rem; color: var(--text-3); margin-top: 0.25rem; }
+
+    /* ── Tags ── */
+    .post-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Author block ── */
+    .author-block {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 4rem;
+      align-items: flex-start;
+    }
+    .author-block__avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--bg-3);
+      border: 2px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+    .author-block__name { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .author-block__role { font-size: 0.8rem; color: var(--accent); font-weight: 500; margin-bottom: 0.5rem; }
+    .author-block__bio { font-size: 0.85rem; color: var(--text-2); line-height: 1.7; }
+
+    /* ── Nav between posts ── */
+    .post-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-top: 5rem;
+    }
+    .post-nav__item {
+      background: var(--bg);
+      padding: 2rem var(--gutter);
+      transition: background var(--duration-fast);
+    }
+    .post-nav__item:hover { background: var(--bg-2); }
+    .post-nav__dir {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-3);
+      margin-bottom: 0.5rem;
+    }
+    .post-nav__title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+    }
+    .post-nav__item--next { text-align: right; }
+
+    @media (max-width: 1024px) {
+      .post-layout { grid-template-columns: 1fr; }
+      .post-sidebar { position: static; }
+      .data-row { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .post-cover { aspect-ratio: 16/9; font-size: 4rem; }
+      .data-row { grid-template-columns: 1fr; }
+      .post-nav { grid-template-columns: 1fr; }
+      .author-block { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-loader" id="loader">
+  <div class="page-loader__inner">
+    <img src="../assets/logo.svg" alt="TTT" class="page-loader__logo" />
+    <div class="page-loader__bar"><div class="page-loader__bar-fill"></div></div>
+  </div>
+</div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar__logo">
+    <img src="../assets/logo.svg" alt="TTT" width="36" height="36" />
+    <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+  </a>
+  <ul class="navbar__nav">
+    <li><a href="../about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+    <li><a href="../team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+    <li><a href="../projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a></li>
+    <li><a href="../blog.html"     class="navbar__link active" data-zh="部落格" data-en="Blog">部落格</a></li>
+    <li><a href="../focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+  </ul>
+  <div class="navbar__actions">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="../join.html" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  </div>
+  <button class="navbar__hamburger" aria-label="選單"><span></span><span></span><span></span></button>
+</nav>
+<div class="navbar__mobile">
+  <a href="../index.html"    class="navbar__link" data-zh="首頁"     data-en="Home">首頁</a>
+  <a href="../about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a>
+  <a href="../team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a>
+  <a href="../projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a>
+  <a href="../blog.html"     class="navbar__link" data-zh="部落格"   data-en="Blog">部落格</a>
+  <a href="../focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+  <a href="../join.html"     class="navbar__link" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  <div class="lang-toggle" style="margin-top:1rem;">
+    <button class="lang-btn" data-lang="zh">中</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- POST HERO -->
+<section class="post-hero">
+  <div class="container">
+    <div class="post-hero__meta reveal">
+      <a href="../blog.html" class="post-hero__back">← <span data-zh="部落格" data-en="Blog">部落格</span></a>
+      <div class="post-hero__sep"></div>
+      <span class="post-tag" data-zh="報告" data-en="Report">報告</span>
+      <span class="post-date">2026.04.10</span>
+    </div>
+    <h1 class="post-hero__title reveal" data-zh="台灣流浪動物問題的真相：數字背後的故事" data-en="The Truth About Taiwan's Stray Animal Problem: The Story Behind the Numbers">
+      台灣流浪動物問題的真相：數字背後的故事
+    </h1>
+    <div class="post-hero__info reveal">
+      <div class="post-hero__author">
+        <div class="author-avatar" style="width:40px;height:40px;font-size:1.1rem;border:1px solid var(--border-2);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--bg-3);">🔬</div>
+        <div>
+          <div style="font-size:0.875rem;font-weight:600;" data-zh="林奕廷" data-en="Yi-Ting Lin">林奕廷</div>
+          <div style="font-size:0.72rem;color:var(--text-3);" data-zh="研究總監" data-en="Research Director">研究總監</div>
+        </div>
+      </div>
+      <div class="post-hero__divider"></div>
+      <div class="post-hero__stat">
+        <strong data-zh="閱讀時間" data-en="Read Time">閱讀時間</strong>
+        8 <span data-zh="分鐘" data-en="min">分鐘</span>
+      </div>
+      <div class="post-hero__divider hide-mobile"></div>
+      <div class="post-hero__stat hide-mobile">
+        <strong data-zh="發布日期" data-en="Published">發布日期</strong>
+        2026 年 4 月 10 日
+      </div>
+      <div class="post-hero__divider hide-mobile"></div>
+      <div class="post-hero__stat hide-mobile">
+        <strong data-zh="主題" data-en="Topic">主題</strong>
+        <span data-zh="流浪動物、資料研究" data-en="Stray Animals, Data Research">流浪動物、資料研究</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COVER -->
+<div class="post-cover reveal-scale">🐾</div>
+
+<!-- ARTICLE -->
+<section class="section">
+  <div class="container">
+    <div class="post-layout">
+
+      <!-- MAIN CONTENT -->
+      <article class="post-content">
+
+        <p>台灣是一個對動物有高度關愛的社會——我們有「愛護動物」的法律，有數不清的動物保護團體，有無數願意每天清晨出門餵食流浪貓的市民。<strong>然而，每年仍有超過10萬隻動物流落街頭，數萬隻在收容所中等待一個未知的命運。</strong></p>
+        <p>這是一個關於數字的故事，但更是一個關於系統失靈的故事。</p>
+
+        <!-- Data highlight -->
+        <div class="data-row">
+          <div class="data-cell">
+            <span class="data-cell__num">100K+</span>
+            <span class="data-cell__label" data-zh="每年新增流浪動物" data-en="New Strays Per Year">每年新增流浪動物</span>
+          </div>
+          <div class="data-cell">
+            <span class="data-cell__num">~60%</span>
+            <span class="data-cell__label" data-zh="公立收容所超載率" data-en="Public Shelter Overcapacity">公立收容所超載率</span>
+          </div>
+          <div class="data-cell">
+            <span class="data-cell__num">31%</span>
+            <span class="data-cell__label" data-zh="進收容所後安樂死率" data-en="Euthanasia Rate in Shelters">進收容所後安樂死率</span>
+          </div>
+        </div>
+
+        <h2 data-zh="問題從哪裡來？" data-en="Where Does the Problem Come From?">問題從哪裡來？</h2>
+        <p>要理解台灣的流浪動物問題，必須先理解它的成因。根據農業部動物保護資訊，流浪動物主要來自三個來源：</p>
+        <ul>
+          <li data-zh="棄養：飼主因各種原因（搬家、過敏、動物年老）而棄養寵物" data-en="Abandonment: Owners who abandon pets for various reasons (moving, allergies, aging animals)">棄養：飼主因各種原因（搬家、過敏、動物年老）而棄養寵物</li>
+          <li data-zh="繁殖失控：未結紮的流浪動物持續繁殖，幼崽往往無處收容" data-en="Uncontrolled breeding: Unsterilized strays continuously reproduce, with offspring often having nowhere to go">繁殖失控：未結紮的流浪動物持續繁殖，幼崽往往無處收容</li>
+          <li data-zh="走失：寵物走失後未能尋回，最終成為街頭動物" data-en="Lost pets: Pets that become lost and are never reclaimed, eventually becoming street animals">走失：寵物走失後未能尋回，最終成為街頭動物</li>
+        </ul>
+
+        <blockquote>
+          <p data-zh="「問題不在於台灣人不愛動物，而在於愛的方式與系統設計之間存在巨大的落差。」" data-en="'The problem isn't that Taiwanese people don't love animals — it's the massive gap between how they express that love and how the system is designed.'">
+            「問題不在於台灣人不愛動物，而在於愛的方式與系統設計之間存在巨大的落差。」
+          </p>
+        </blockquote>
+
+        <h2 data-zh="收容系統的困境" data-en="The Shelter System's Predicament">收容系統的困境</h2>
+        <p>台灣目前共有 <em>77</em> 座公立動物收容所，分布在全台各縣市。然而，這些收容所的設計容量早已不敷使用。我們對30座主要收容所進行的實地訪查顯示，近60%的收容所長期處於超載狀態。</p>
+        <p>超載帶來的直接後果是空間不足、疾病傳播速度加快、工作人員照護品質下降，最終導致安樂死率上升。這是一個惡性循環：收容所超載 → 照護品質下降 → 動物健康惡化 → 更多安樂死 → 社會批評 → 資源更難取得 → 超載加劇。</p>
+
+        <div class="callout">
+          <div class="callout__title" data-zh="TTT 研究發現" data-en="TTT Research Finding">TTT 研究發現</div>
+          <p data-zh="在我們訪查的30座收容所中，只有3座擁有完整的線上資料庫，讓民眾能查詢收容動物資訊。資訊的不透明，是阻礙認養的最大障礙之一。" data-en="Of the 30 shelters we visited, only 3 had a complete online database allowing the public to search for animals available for adoption. Information opacity is one of the biggest barriers to adoption.">
+            在我們訪查的30座收容所中，只有3座擁有完整的線上資料庫，讓民眾能查詢收容動物資訊。資訊的不透明，是阻礙認養的最大障礙之一。
+          </p>
+        </div>
+
+        <h2 data-zh="資訊破碎化：被忽視的核心問題" data-en="Fragmented Information: The Overlooked Core Problem">資訊破碎化：被忽視的核心問題</h2>
+        <p>在研究過程中，我們發現一個被廣泛忽視的核心問題：<strong>資訊的嚴重破碎化。</strong></p>
+        <p>一位想要認養流浪動物的市民，必須同時查詢：官方收容所網站（各縣市各有不同）、民間救援組織的 Facebook 社團（超過200個）、LINE 群組、PTT 貼文……資訊散落在不同平台，格式不一、更新頻率不同、資料品質參差不齊。</p>
+        <p>同樣的問題也存在於想要幫助流浪動物的志工：附近的餵食站在哪？最近的動物醫院有哪些？哪裡可以借到捕貓籠？這些問題，沒有一個地方可以找到完整的答案。</p>
+
+        <h2 data-zh="Stray Aid Map：我們的回應" data-en="Stray Aid Map: Our Response">Stray Aid Map：我們的回應</h2>
+        <p>正是基於這個發現，TTT 2026年度主題選定了「流浪動物救援行動」，並以打造 <em>Stray Aid Map</em> 作為核心專案。</p>
+        <p>Stray Aid Map 的目標很簡單：<strong>把所有分散的資訊，整合進一張地圖。</strong></p>
+        <ul>
+          <li data-zh="收容所：地址、容量、目前收容數量、開放認養時間" data-en="Shelters: address, capacity, current animal count, adoption hours">收容所：地址、容量、目前收容數量、開放認養時間</li>
+          <li data-zh="友善動物醫院：接受流浪動物、提供低價結紮服務" data-en="Animal-friendly clinics: accepting strays, offering low-cost sterilization">友善動物醫院：接受流浪動物、提供低價結紮服務</li>
+          <li data-zh="餵食站：位置、負責志工聯絡方式" data-en="Feeding stations: location, responsible volunteer contact">餵食站：位置、負責志工聯絡方式</li>
+        </ul>
+        <p>平台採用開放資料原則，任何人都可以提交資料、任何組織都可以使用 API 取用資料。我們相信，解決流浪動物問題需要整個社會的參與，而不只是少數組織的努力。</p>
+
+        <blockquote>
+          <p data-zh="「不是每個人都有能力認養動物，但每個人都可以成為資訊流通的一部分。」" data-en="'Not everyone can adopt an animal, but everyone can be part of making information flow.'">
+            「不是每個人都有能力認養動物，但每個人都可以成為資訊流通的一部分。」
+          </p>
+        </blockquote>
+
+        <h2 data-zh="接下來怎麼辦？" data-en="What's Next?">接下來怎麼辦？</h2>
+        <p>Stray Aid Map 目前正在進行第一階段的資料收集，預計於2026年7月正式上線。我們需要來自全台各地的志工幫助我們建立最完整的收容所、動物醫院與餵食站資料庫。</p>
+        <p>如果你也關心台灣的流浪動物問題，現在就可以加入我們：</p>
+
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;">
+          <a href="../projects/stray-aid-map.html" class="btn btn--primary btn--lg" data-zh="查看 Stray Aid Map" data-en="View Stray Aid Map">查看 Stray Aid Map</a>
+          <a href="../join.html" class="btn btn--outline btn--lg" data-zh="加入 TTT" data-en="Join TTT">加入 TTT</a>
+        </div>
+
+        <!-- Tags -->
+        <div class="post-tags">
+          <span class="badge" data-zh="流浪動物" data-en="Stray Animals">流浪動物</span>
+          <span class="badge" data-zh="資料研究" data-en="Data Research">資料研究</span>
+          <span class="badge">Stray Aid Map</span>
+          <span class="badge" data-zh="2026 主題" data-en="2026 Focus">2026 主題</span>
+          <span class="badge" data-zh="台灣" data-en="Taiwan">台灣</span>
+        </div>
+
+        <!-- Author block -->
+        <div class="author-block">
+          <div class="author-block__avatar">🔬</div>
+          <div>
+            <div class="author-block__name" data-zh="林奕廷" data-en="Yi-Ting Lin">林奕廷</div>
+            <div class="author-block__role" data-zh="研究總監 — Taiwan Teen Trust" data-en="Research Director — Taiwan Teen Trust">研究總監 — Taiwan Teen Trust</div>
+            <div class="author-block__bio" data-zh="專注於台灣社會議題的資料研究與政策分析。在 TTT 負責年度主題的前期調研工作，相信好的資料是好的行動的基礎。" data-en="Focused on data research and policy analysis of Taiwan's social issues. At TTT, leads the preliminary research for annual focus themes, believing good data is the foundation of good action.">
+              專注於台灣社會議題的資料研究與政策分析。在 TTT 負責年度主題的前期調研工作，相信好的資料是好的行動的基礎。
+            </div>
+          </div>
+        </div>
+
+      </article>
+
+      <!-- SIDEBAR -->
+      <aside class="post-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-zh="文章目錄" data-en="Contents">文章目錄</div>
+          <a href="#" class="toc-item active" data-zh="問題從哪裡來？" data-en="Where Does the Problem Come From?">問題從哪裡來？</a>
+          <a href="#" class="toc-item" data-zh="收容系統的困境" data-en="The Shelter System's Predicament">收容系統的困境</a>
+          <a href="#" class="toc-item" data-zh="資訊破碎化" data-en="Fragmented Information">資訊破碎化</a>
+          <a href="#" class="toc-item">Stray Aid Map</a>
+          <a href="#" class="toc-item" data-zh="接下來怎麼辦？" data-en="What's Next?">接下來怎麼辦？</a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-zh="相關文章" data-en="Related Posts">相關文章</div>
+          <a href="stray-aid-map-behind.html" class="related-post">
+            <div class="related-post__thumb">🗺️</div>
+            <div>
+              <div class="related-post__title" data-zh="Stray Aid Map 背後的故事" data-en="Behind Stray Aid Map">Stray Aid Map 背後的故事</div>
+              <div class="related-post__date">2026.03.15</div>
+            </div>
+          </a>
+          <a href="tnr-program.html" class="related-post">
+            <div class="related-post__thumb">🐈</div>
+            <div>
+              <div class="related-post__title" data-zh="TNR 計畫：現況與挑戰" data-en="TNR Programs: Status & Challenges">TNR 計畫：現況與挑戰</div>
+              <div class="related-post__date">2026.02.14</div>
+            </div>
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-title" data-zh="關於此專案" data-en="About This Project">關於此專案</div>
+          <p style="font-size:0.82rem;color:var(--text-2);line-height:1.65;margin-bottom:1rem;" data-zh="Stray Aid Map 是 TTT 2026年度主題的核心專案，整合全台流浪動物救援資訊。" data-en="Stray Aid Map is the core project of TTT's 2026 annual focus, integrating Taiwan-wide stray animal rescue information.">
+            Stray Aid Map 是 TTT 2026年度主題的核心專案，整合全台流浪動物救援資訊。
+          </p>
+          <a href="../projects/stray-aid-map.html" class="btn btn--primary" style="width:100%;justify-content:center;" data-zh="查看地圖" data-en="View Map">查看地圖</a>
+        </div>
+      </aside>
+
+    </div><!-- end post-layout -->
+  </div>
+</section>
+
+<!-- POST NAVIGATION -->
+<div class="post-nav">
+  <a href="tnr-program.html" class="post-nav__item">
+    <div class="post-nav__dir" data-zh="← 上一篇" data-en="← Previous">← 上一篇</div>
+    <div class="post-nav__title" data-zh="TNR 結紮回置計畫：台灣推廣現況與挑戰" data-en="TNR Programs in Taiwan: Current Status and Challenges">TNR 結紮回置計畫：台灣推廣現況與挑戰</div>
+  </a>
+  <a href="stray-aid-map-behind.html" class="post-nav__item post-nav__item--next">
+    <div class="post-nav__dir" data-zh="下一篇 →" data-en="Next →">下一篇 →</div>
+    <div class="post-nav__title" data-zh="Stray Aid Map 背後的故事：從想法到現實的 60 天" data-en="Behind Stray Aid Map: 60 Days from Idea to Reality">Stray Aid Map 背後的故事：從想法到現實的 60 天</div>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="../index.html" class="navbar__logo" style="display:inline-flex;">
+          <img src="../assets/logo.svg" alt="TTT" width="32" height="32" />
+          <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+        </a>
+        <p class="footer__desc" data-zh="學生主導的台灣公益組織。" data-en="A student-led Taiwanese nonprofit.">學生主導的台灣公益組織。</p>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="頁面" data-en="Pages">頁面</div>
+        <ul class="footer__links">
+          <li><a href="../about.html"    class="footer__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+          <li><a href="../team.html"     class="footer__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+          <li><a href="../projects.html" class="footer__link" data-zh="專案"     data-en="Projects">專案</a></li>
+          <li><a href="../focus.html"    class="footer__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="資源" data-en="Resources">資源</div>
+        <ul class="footer__links">
+          <li><a href="../blog.html"    class="footer__link" data-zh="部落格" data-en="Blog">部落格</a></li>
+          <li><a href="../join.html"    class="footer__link" data-zh="加入我們" data-en="Join Us">加入我們</a></li>
+          <li><a href="../contact.html" class="footer__link" data-zh="聯絡" data-en="Contact">聯絡</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="社群" data-en="Social">社群</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Instagram</a></li>
+          <li><a href="#" class="footer__link">Facebook</a></li>
+          <li><a href="#" class="footer__link">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span class="footer__copy">© 2026 Taiwan Teen Trust.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

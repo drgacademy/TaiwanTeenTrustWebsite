@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>年度主題 — Taiwan Teen Trust</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    .focus-hero {
+      padding-top: 10rem;
+      padding-bottom: 5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .focus-hero__title {
+      font-size: clamp(3.5rem, 7vw, 10rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .focus-hero__desc {
+      font-size: clamp(1rem, 1.2vw, 1.15rem);
+      color: var(--text-2);
+      max-width: 52ch;
+    }
+
+    /* Focus year blocks */
+    .focus-year-block {
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .focus-year-block.current {
+      background: linear-gradient(180deg, rgba(46,202,212,0.03) 0%, transparent 100%);
+    }
+    .focus-year-inner {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 0;
+      min-height: 560px;
+    }
+    .focus-year-left {
+      border-right: 1px solid var(--border);
+      padding: 4rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    .focus-year-left__bg-num {
+      position: absolute;
+      bottom: -1rem;
+      left: -0.5rem;
+      font-size: 10rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      color: rgba(255,255,255,0.03);
+      user-select: none;
+      pointer-events: none;
+    }
+    .focus-year-left__year {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+    .focus-year-left__issue {
+      font-size: clamp(2rem, 3.5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+    .focus-year-left__icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .focus-year-right {
+      padding: 4rem;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 3rem;
+    }
+    .focus-year-right__content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+    .focus-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .focus-section-text {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      line-height: 1.8;
+    }
+    .focus-year-stats {
+      display: flex;
+      gap: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .focus-stat__num {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      display: block;
+    }
+    .focus-stat__label {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .focus-year-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* Color themes */
+    .focus-year-block[data-theme="cyan"] .focus-year-left__issue { color: var(--accent); }
+    .focus-year-block[data-theme="green"] .focus-year-left__issue { color: #7fb285; }
+    .focus-year-block[data-theme="blue"]  .focus-year-left__issue { color: #5b8fb9; }
+
+    .focus-year-block[data-theme="cyan"]  .focus-section-title { color: var(--accent); }
+    .focus-year-block[data-theme="green"] .focus-section-title { color: #7fb285; }
+    .focus-year-block[data-theme="blue"]  .focus-section-title { color: #5b8fb9; }
+
+    .focus-year-block[data-theme="cyan"]  .btn--primary { background: var(--accent); }
+    .focus-year-block[data-theme="green"] .btn--primary { background: #7fb285; }
+    .focus-year-block[data-theme="blue"]  .btn--primary { background: #5b8fb9; }
+
+    /* Current indicator */
+    .current-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .current-dot::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 2s ease infinite;
+    }
+
+    @media (max-width: 1024px) {
+      .focus-year-inner { grid-template-columns: 1fr; }
+      .focus-year-left { border-right: none; border-bottom: 1px solid var(--border); }
+      .focus-year-right__content { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+    @media (max-width: 600px) {
+      .focus-year-left { padding: 2.5rem 1.5rem; }
+      .focus-year-right { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-loader" id="loader">
+  <div class="page-loader__inner">
+    <img src="assets/logo.svg" alt="TTT" class="page-loader__logo" />
+    <div class="page-loader__bar"><div class="page-loader__bar-fill"></div></div>
+  </div>
+</div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar__logo">
+    <img src="assets/logo.svg" alt="TTT" width="36" height="36" />
+    <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+  </a>
+  <ul class="navbar__nav">
+    <li><a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+    <li><a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+    <li><a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a></li>
+    <li><a href="blog.html"     class="navbar__link" data-zh="部落格"   data-en="Blog">部落格</a></li>
+    <li><a href="focus.html"    class="navbar__link active" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+  </ul>
+  <div class="navbar__actions">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="join.html" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  </div>
+  <button class="navbar__hamburger" aria-label="選單"><span></span><span></span><span></span></button>
+</nav>
+<div class="navbar__mobile">
+  <a href="index.html"    class="navbar__link" data-zh="首頁"     data-en="Home">首頁</a>
+  <a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a>
+  <a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a>
+  <a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a>
+  <a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+  <a href="join.html"     class="navbar__link" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  <div class="lang-toggle" style="margin-top:1rem;">
+    <button class="lang-btn" data-lang="zh">中</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="focus-hero">
+  <div class="container">
+    <div class="label reveal" data-zh="年度主題" data-en="Annual Focus">年度主題</div>
+    <h1 class="focus-hero__title reveal" style="margin-top:1rem;">
+      <span class="lang-zh">每年，<br>一個<em style="color:var(--accent);font-style:normal;">改變</em>。</span>
+      <span class="lang-en" style="display:none;">Every year,<br>one <em style="color:var(--accent);font-style:normal;">change.</em></span>
+    </h1>
+    <p class="focus-hero__desc reveal" data-zh="TTT 每年設定一個年度主題，集結全組織的力量，針對台灣最迫切的社會議題，發起具體、可見、有影響力的行動方案。" data-en="TTT sets one annual focus theme each year, uniting the entire organization to launch concrete, visible, and impactful initiatives addressing Taiwan's most pressing social issues.">
+      TTT 每年設定一個年度主題，集結全組織的力量，針對台灣最迫切的社會議題，發起具體、可見、有影響力的行動方案。
+    </p>
+  </div>
+</section>
+
+<!-- ═══ 2026 — CURRENT ═══ -->
+<div class="focus-year-block current" data-theme="cyan">
+  <div class="container" style="padding:0; max-width:100%;">
+    <div class="focus-year-inner" style="max-width:var(--container-lg);margin:0 auto;">
+      <div class="focus-year-left reveal-left">
+        <div>
+          <div class="current-dot" data-zh="當前主題" data-en="Current Focus">當前主題</div>
+          <div class="focus-year-left__year">2026</div>
+        </div>
+        <div>
+          <div class="focus-year-left__icon">🐾</div>
+          <div class="focus-year-left__issue lang-zh">流浪動物<br>救援行動</div>
+          <div class="focus-year-left__issue lang-en" style="display:none;">Stray Animal<br>Rescue Initiative</div>
+        </div>
+        <div class="focus-year-left__bg-num">2026</div>
+      </div>
+      <div class="focus-year-right reveal-right">
+        <div class="focus-year-right__content">
+          <div>
+            <div class="focus-section-title" data-zh="為什麼是這個議題？" data-en="Why This Issue?">為什麼是這個議題？</div>
+            <p class="focus-section-text" data-zh="台灣每年有超過10萬隻流浪動物，公立收容所普遍超載，安樂死率依然偏高。許多愛心人士想幫助卻不知道資源在哪裡。問題不是愛心不夠，而是資訊太分散。" data-en="Taiwan has over 100,000 stray animals each year. Public shelters are overcrowded and euthanasia rates remain high. Many compassionate people want to help but don't know where to find resources. The problem isn't a lack of compassion — it's fragmented information.">
+              台灣每年有超過10萬隻流浪動物，公立收容所普遍超載，安樂死率依然偏高。許多愛心人士想幫助卻不知道資源在哪裡。問題不是愛心不夠，而是資訊太分散。
+            </p>
+          </div>
+          <div>
+            <div class="focus-section-title" data-zh="我們的回應" data-en="Our Response">我們的回應</div>
+            <p class="focus-section-text" data-zh="推出「Stray Aid Map」——全台第一個由青年主導的流浪動物救援資訊平台。整合收容所、動物醫院與餵食站的即時數據，讓每一隻動物都被看見、每一位愛心人士都找得到正確資源。" data-en="Launching 'Stray Aid Map' — Taiwan's first youth-led stray animal rescue information platform. Integrating real-time data from shelters, veterinary clinics, and feeding stations so every animal is seen and every caring person finds the right resources.">
+              推出「Stray Aid Map」——全台第一個由青年主導的流浪動物救援資訊平台。整合收容所、動物醫院與餵食站的即時數據，讓每一隻動物都被看見、每一位愛心人士都找得到正確資源。
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="focus-year-stats" style="margin-bottom:2rem;">
+            <div>
+              <span class="focus-stat__num">100K+</span>
+              <span class="focus-stat__label" data-zh="年度流浪動物數" data-en="Stray Animals/Year">年度流浪動物數</span>
+            </div>
+            <div>
+              <span class="focus-stat__num">3</span>
+              <span class="focus-stat__label" data-zh="平台資料類型" data-en="Data Types">平台資料類型</span>
+            </div>
+            <div>
+              <span class="focus-stat__num">進行中</span>
+              <span class="focus-stat__label" data-zh="狀態" data-en="Status">狀態</span>
+            </div>
+          </div>
+          <div class="focus-year-cta">
+            <a href="projects/stray-aid-map.html" class="btn btn--primary" data-zh="查看 Stray Aid Map" data-en="View Stray Aid Map">查看 Stray Aid Map</a>
+            <a href="projects.html" class="btn btn--outline" data-zh="相關專案" data-en="Related Projects">相關專案</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2025 ═══ -->
+<div class="focus-year-block" data-theme="green">
+  <div class="container" style="padding:0;max-width:100%;">
+    <div class="focus-year-inner" style="max-width:var(--container-lg);margin:0 auto;">
+      <div class="focus-year-left reveal-left">
+        <div>
+          <span class="badge" style="background:rgba(127,178,133,0.1);color:#7fb285;border-color:rgba(127,178,133,0.3);margin-bottom:0.75rem;" data-zh="已完成" data-en="Completed">已完成</span>
+          <div class="focus-year-left__year">2025</div>
+        </div>
+        <div>
+          <div class="focus-year-left__icon">🌿</div>
+          <div class="focus-year-left__issue lang-zh">環境<br>永續行動</div>
+          <div class="focus-year-left__issue lang-en" style="display:none;">Environmental<br>Sustainability</div>
+        </div>
+        <div class="focus-year-left__bg-num">2025</div>
+      </div>
+      <div class="focus-year-right reveal-right">
+        <div class="focus-year-right__content">
+          <div>
+            <div class="focus-section-title" data-zh="為什麼是這個議題？" data-en="Why This Issue?">為什麼是這個議題？</div>
+            <p class="focus-section-text" data-zh="台灣碳排放量持續上升，年輕世代將承擔氣候變遷最嚴重的後果。校園是最直接的介入點——超過100萬名學生每天在校園製造的碳足跡，是我們能立刻改變的事。" data-en="Taiwan's carbon emissions continue to rise, and younger generations will bear the worst consequences of climate change. School campuses are the most direct point of intervention — over 1 million students creating carbon footprints on campus every day is something we can start changing now.">
+              台灣碳排放量持續上升，年輕世代將承擔氣候變遷最嚴重的後果。校園是最直接的介入點——超過100萬名學生每天在校園製造的碳足跡，是我們能立刻改變的事。
+            </p>
+          </div>
+          <div>
+            <div class="focus-section-title" data-zh="我們的成果" data-en="Our Impact">我們的成果</div>
+            <p class="focus-section-text" data-zh="與12所高中合作完成校園碳盤查，建立學生環保委員會，舉辦大型公益展覽，發布台灣青年氣候調查報告，累計觸及超過5萬人。" data-en="Partnered with 12 high schools for carbon audits, established student environmental committees, held a major public exhibition, published Taiwan Youth Climate Survey, reaching over 50,000 people.">
+              與12所高中合作完成校園碳盤查，建立學生環保委員會，舉辦大型公益展覽，發布台灣青年氣候調查報告，累計觸及超過5萬人。
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="focus-year-stats" style="margin-bottom:2rem;">
+            <div>
+              <span class="focus-stat__num">12</span>
+              <span class="focus-stat__label" data-zh="合作學校" data-en="Partner Schools">合作學校</span>
+            </div>
+            <div>
+              <span class="focus-stat__num">50K+</span>
+              <span class="focus-stat__label" data-zh="觸及人數" data-en="People Reached">觸及人數</span>
+            </div>
+            <div>
+              <span class="focus-stat__num">3,000+</span>
+              <span class="focus-stat__label" data-zh="展覽參觀人次" data-en="Exhibition Visitors">展覽參觀人次</span>
+            </div>
+          </div>
+          <div class="focus-year-cta">
+            <a href="projects.html?year=2025" class="btn btn--outline" data-zh="查看 2025 專案" data-en="View 2025 Projects">查看 2025 專案</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 2024 ═══ -->
+<div class="focus-year-block" data-theme="blue">
+  <div class="container" style="padding:0;max-width:100%;">
+    <div class="focus-year-inner" style="max-width:var(--container-lg);margin:0 auto;">
+      <div class="focus-year-left reveal-left">
+        <div>
+          <span class="badge" style="background:rgba(91,143,185,0.1);color:#5b8fb9;border-color:rgba(91,143,185,0.3);margin-bottom:0.75rem;" data-zh="已完成" data-en="Completed">已完成</span>
+          <div class="focus-year-left__year">2024</div>
+        </div>
+        <div>
+          <div class="focus-year-left__icon">🤝</div>
+          <div class="focus-year-left__issue lang-zh">高齡社會<br>關懷行動</div>
+          <div class="focus-year-left__issue lang-en" style="display:none;">Aging Society<br>Care Initiative</div>
+        </div>
+        <div class="focus-year-left__bg-num">2024</div>
+      </div>
+      <div class="focus-year-right reveal-right">
+        <div class="focus-year-right__content">
+          <div>
+            <div class="focus-section-title" data-zh="為什麼是這個議題？" data-en="Why This Issue?">為什麼是這個議題？</div>
+            <p class="focus-section-text" data-zh="台灣老齡化速度位居全球前列，獨居長者人數逐年攀升。許多長者在缺乏陪伴的情況下，身心健康迅速惡化。青年與長者之間的連結，是一種雙向的療癒。" data-en="Taiwan is one of the world's fastest-aging societies, with the number of isolated elderly rising annually. Many elderly deteriorate physically and mentally without companionship. The connection between youth and elders is a two-way healing.">
+              台灣老齡化速度位居全球前列，獨居長者人數逐年攀升。許多長者在缺乏陪伴的情況下，身心健康迅速惡化。青年與長者之間的連結，是一種雙向的療癒。
+            </p>
+          </div>
+          <div>
+            <div class="focus-section-title" data-zh="我們的成果" data-en="Our Impact">我們的成果</div>
+            <p class="focus-section-text" data-zh="完成首屆「青銀交流計畫」，媒合150名青年志工與台北市獨居長者，累計志願服務時數超過2,000小時，並建立可複製的志工培訓框架。" data-en="Completed the inaugural 'Youth-Elder Exchange Program,' matching 150 youth volunteers with isolated elderly in Taipei, logging over 2,000 volunteer hours and establishing a replicable volunteer training framework.">
+              完成首屆「青銀交流計畫」，媒合150名青年志工與台北市獨居長者，累計志願服務時數超過2,000小時，並建立可複製的志工培訓框架。
+            </p>
+          </div>
+        </div>
+        <div>
+          <div class="focus-year-stats" style="margin-bottom:2rem;">
+            <div>
+              <span class="focus-stat__num">150</span>
+              <span class="focus-stat__label" data-zh="青年志工" data-en="Youth Volunteers">青年志工</span>
+            </div>
+            <div>
+              <span class="focus-stat__num">2,000+</span>
+              <span class="focus-stat__label" data-zh="志願服務時數" data-en="Volunteer Hours">志願服務時數</span>
+            </div>
+            <div>
+              <span class="focus-stat__num">TTT 元年</span>
+              <span class="focus-stat__label" data-zh="組織歷程" data-en="Org. Milestone">組織歷程</span>
+            </div>
+          </div>
+          <div class="focus-year-cta">
+            <a href="projects.html?year=2024" class="btn btn--outline" data-zh="查看 2024 專案" data-en="View 2024 Projects">查看 2024 專案</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW WE CHOOSE -->
+<section class="section" style="background:var(--bg-2);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header--center">
+      <div class="label reveal" style="justify-content:center;" data-zh="選題方式" data-en="How We Choose">選題方式</div>
+      <h2 class="reveal" style="margin-top:1rem;" data-zh="如何決定年度主題？" data-en="How Do We Decide the Annual Focus?">如何決定年度主題？</h2>
+    </div>
+    <div class="grid-3 stagger-parent" style="margin-top:3rem;">
+      <div class="stagger-child" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1.25rem;">📊</div>
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;" data-zh="資料研究" data-en="Data Research">資料研究</h3>
+        <p style="font-size:0.875rem;color:var(--text-2);line-height:1.7;" data-zh="研究部門蒐集台灣最迫切的社會議題資料，進行深度分析與優先排序。" data-en="The Research Department collects data on Taiwan's most urgent social issues, conducting in-depth analysis and prioritization.">
+          研究部門蒐集台灣最迫切的社會議題資料，進行深度分析與優先排序。
+        </p>
+      </div>
+      <div class="stagger-child" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1.25rem;">🗳️</div>
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;" data-zh="全員投票" data-en="Full Team Vote">全員投票</h3>
+        <p style="font-size:0.875rem;color:var(--text-2);line-height:1.7;" data-zh="所有成員都有投票權，透過民主程序決定下一年度的主題方向。" data-en="All members have the right to vote, determining the next year's focus direction through democratic process.">
+          所有成員都有投票權，透過民主程序決定下一年度的主題方向。
+        </p>
+      </div>
+      <div class="stagger-child" style="text-align:center;padding:2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1.25rem;">🎯</div>
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.75rem;" data-zh="可行性評估" data-en="Feasibility Assessment">可行性評估</h3>
+        <p style="font-size:0.875rem;color:var(--text-2);line-height:1.7;" data-zh="確保選定的議題是青年組織有能力實際介入並帶來影響的，避免好高騖遠。" data-en="Ensuring the selected issue is one that a youth organization can realistically intervene in and create impact — avoiding overreach.">
+          確保選定的議題是青年組織有能力實際介入並帶來影響的，避免好高騖遠。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="index.html" class="navbar__logo" style="display:inline-flex;">
+          <img src="assets/logo.svg" alt="TTT" width="32" height="32" />
+          <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+        </a>
+        <p class="footer__desc" data-zh="學生主導的台灣公益組織。" data-en="A student-led Taiwanese nonprofit.">學生主導的台灣公益組織。</p>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="頁面" data-en="Pages">頁面</div>
+        <ul class="footer__links">
+          <li><a href="about.html"    class="footer__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+          <li><a href="team.html"     class="footer__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+          <li><a href="projects.html" class="footer__link" data-zh="專案"     data-en="Projects">專案</a></li>
+          <li><a href="focus.html"    class="footer__link" data-zh="年度主題" data-en="Annual Focus">年度主題</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="資源" data-en="Resources">資源</div>
+        <ul class="footer__links">
+          <li><a href="blog.html"    class="footer__link" data-zh="部落格" data-en="Blog">部落格</a></li>
+          <li><a href="join.html"    class="footer__link" data-zh="加入我們" data-en="Join Us">加入我們</a></li>
+          <li><a href="contact.html" class="footer__link" data-zh="聯絡" data-en="Contact">聯絡</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="社群" data-en="Social">社群</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Instagram</a></li>
+          <li><a href="#" class="footer__link">Facebook</a></li>
+          <li><a href="#" class="footer__link">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span class="footer__copy">© 2026 Taiwan Teen Trust.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

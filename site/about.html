@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>關於我們 — Taiwan Teen Trust</title>
+  <meta name="description" content="Taiwan Teen Trust 是台灣學生主導的社會影響力組織，成立於2024年，致力於環境、社區與藝術文化的公益行動。" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    /* ── Page Hero ── */
+    .about-hero {
+      padding-top: 10rem;
+      padding-bottom: 6rem;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-hero__bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 80% 50%, rgba(46,202,212,0.06), transparent 70%);
+      pointer-events: none;
+    }
+    .about-hero__label { margin-bottom: 2rem; }
+    .about-hero__title {
+      font-size: clamp(3.5rem, 7vw, 10rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 3rem;
+      max-width: 14ch;
+    }
+    .about-hero__title em { font-style: normal; color: var(--accent); }
+    .about-hero__intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding-top: 4rem;
+      border-top: 1px solid var(--border);
+    }
+    .about-hero__intro p {
+      font-size: clamp(1rem, 1.2vw, 1.2rem);
+      color: var(--text-2);
+      line-height: 1.8;
+    }
+
+    /* ── Mission Statement ── */
+    .mission {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .mission__quote {
+      font-size: clamp(2rem, 4vw, 5.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      max-width: 22ch;
+      position: relative;
+      padding-left: 2rem;
+    }
+    .mission__quote::before {
+      content: '"';
+      position: absolute;
+      left: 0;
+      top: -0.2em;
+      font-size: 1.5em;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .mission__meta {
+      margin-top: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .mission__meta-line { width: 3rem; height: 1.5px; background: var(--accent); }
+    .mission__meta-text { font-size: 0.85rem; color: var(--text-2); font-weight: 500; }
+
+    /* ── Values Grid ── */
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 4rem;
+    }
+    .value-item {
+      background: var(--bg);
+      padding: 3rem;
+      transition: background var(--duration-fast);
+    }
+    .value-item:hover { background: var(--bg-2); }
+    .value-item__num {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .value-item__title {
+      font-size: clamp(1.3rem, 2vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .value-item__desc {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* ── Timeline ── */
+    .timeline { position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 10rem 1fr;
+      gap: 3rem;
+      padding: 3rem 0 3rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -4px;
+      top: 3.75rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .timeline-item__year {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      padding-top: 0.25rem;
+    }
+    .timeline-item__title {
+      font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    .timeline-item__desc {
+      font-size: 0.9rem;
+      color: var(--text-2);
+      line-height: 1.75;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .stats-row__item {
+      background: var(--bg-2);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .about-hero__intro { grid-template-columns: 1fr; gap: 2rem; }
+      .values-grid { grid-template-columns: 1fr; }
+      .timeline-item { grid-template-columns: 6rem 1fr; gap: 1.5rem; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<div class="page-loader" id="loader">
+  <div class="page-loader__inner">
+    <img src="assets/logo.svg" alt="TTT" class="page-loader__logo" />
+    <div class="page-loader__bar"><div class="page-loader__bar-fill"></div></div>
+  </div>
+</div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar__logo">
+    <img src="assets/logo.svg" alt="TTT" width="36" height="36" />
+    <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+  </a>
+  <ul class="navbar__nav">
+    <li><a href="about.html"    class="navbar__link active" data-zh="關於我們" data-en="About">關於我們</a></li>
+    <li><a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+    <li><a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a></li>
+    <li><a href="blog.html"     class="navbar__link" data-zh="部落格"   data-en="Blog">部落格</a></li>
+    <li><a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+  </ul>
+  <div class="navbar__actions">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="join.html" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  </div>
+  <button class="navbar__hamburger" aria-label="選單"><span></span><span></span><span></span></button>
+</nav>
+<div class="navbar__mobile">
+  <a href="index.html"    class="navbar__link" data-zh="首頁"     data-en="Home">首頁</a>
+  <a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a>
+  <a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a>
+  <a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a>
+  <a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+  <a href="join.html"     class="navbar__link" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  <div class="lang-toggle" style="margin-top:1rem;">
+    <button class="lang-btn" data-lang="zh">中</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="about-hero__bg"></div>
+  <div class="container">
+    <div class="label about-hero__label reveal" data-zh="關於我們" data-en="About Us">關於我們</div>
+    <h1 class="about-hero__title">
+      <span class="lang-zh reveal">我們是<br>改變<em>台灣</em><br>的青年。</span>
+      <span class="lang-en reveal" style="display:none;">We are<br>the youth<br>changing <em>Taiwan.</em></span>
+    </h1>
+    <div class="about-hero__intro">
+      <p class="reveal" data-zh="Taiwan Teen Trust（TTT）成立於2024年，由一群對社會充滿熱情的台灣高中生與大學生共同創立。我們相信青年的力量不應該被低估——每一個行動，不論大小，都能為這片土地帶來真實的改變。" data-en="Taiwan Teen Trust (TTT) was founded in 2024 by a group of passionate Taiwanese high school and university students. We believe youth power should never be underestimated — every action, big or small, can bring real change to this land.">
+        Taiwan Teen Trust（TTT）成立於2024年，由一群對社會充滿熱情的台灣高中生與大學生共同創立。我們相信青年的力量不應該被低估——每一個行動，不論大小，都能為這片土地帶來真實的改變。
+      </p>
+      <p class="reveal" data-zh="透過每年設定的年度主題，我們集結來自設計、影片、研究、行銷、財務等多元專業的成員，針對台灣最迫切的社會議題，發起具體、可見、有影響力的行動方案。" data-en="Through our annual focus theme, we unite members from diverse backgrounds — design, film, research, marketing, finance — to launch concrete, visible, and impactful initiatives addressing Taiwan's most pressing social issues.">
+        透過每年設定的年度主題，我們集結來自設計、影片、研究、行銷、財務等多元專業的成員，針對台灣最迫切的社會議題，發起具體、可見、有影響力的行動方案。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION QUOTE -->
+<section class="section mission">
+  <div class="container">
+    <blockquote class="mission__quote reveal" data-zh="青年不是明天的領袖，而是今天的行動者。" data-en="Youth are not the leaders of tomorrow — they are the changemakers of today.">
+      青年不是明天的領袖，而是今天的行動者。
+    </blockquote>
+    <div class="mission__meta reveal">
+      <div class="mission__meta-line"></div>
+      <span class="mission__meta-text" data-zh="TTT 核心信念" data-en="TTT Core Belief">TTT 核心信念</span>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="section" style="border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="label reveal" data-zh="核心價值" data-en="Core Values">核心價值</div>
+      <h2 class="reveal" style="margin-top:1rem;" data-zh="我們做事的方式" data-en="How We Work">我們做事的方式</h2>
+    </div>
+    <div class="values-grid stagger-parent">
+      <div class="value-item stagger-child">
+        <div class="value-item__num">01 — <span data-zh="行動力" data-en="Action">行動力</span></div>
+        <h3 class="value-item__title" data-zh="做，而不只是說" data-en="Do, not just say">做，而不只是說</h3>
+        <p class="value-item__desc" data-zh="我們把資源和精力放在真實可見的行動上，而非停留於討論和計畫。每個專案都有明確的目標、時程與可量化的成果。" data-en="We put resources and energy into real, visible actions — not just discussions and plans. Every project has clear goals, timelines, and measurable outcomes.">
+          我們把資源和精力放在真實可見的行動上，而非停留於討論和計畫。每個專案都有明確的目標、時程與可量化的成果。
+        </p>
+      </div>
+      <div class="value-item stagger-child">
+        <div class="value-item__num">02 — <span data-zh="多元包容" data-en="Diversity">多元包容</span></div>
+        <h3 class="value-item__title" data-zh="每種才能都有舞台" data-en="Every talent has a stage">每種才能都有舞台</h3>
+        <p class="value-item__desc" data-zh="設計師、工程師、研究員、影像創作者、行銷人——我們相信多元的背景與技能，才能打造出真正有影響力的解決方案。" data-en="Designers, engineers, researchers, filmmakers, marketers — we believe diverse backgrounds and skills create truly impactful solutions.">
+          設計師、工程師、研究員、影像創作者、行銷人——我們相信多元的背景與技能，才能打造出真正有影響力的解決方案。
+        </p>
+      </div>
+      <div class="value-item stagger-child">
+        <div class="value-item__num">03 — <span data-zh="透明負責" data-en="Accountability">透明負責</span></div>
+        <h3 class="value-item__title" data-zh="公開我們的每一步" data-en="We open every step">公開我們的每一步</h3>
+        <p class="value-item__desc" data-zh="從專案規劃到成果報告，我們對社會大眾保持透明。我們相信信任來自責任感，而責任感來自坦誠分享。" data-en="From project planning to outcome reports, we maintain transparency with the public. We believe trust comes from accountability, and accountability comes from honest sharing.">
+          從專案規劃到成果報告，我們對社會大眾保持透明。我們相信信任來自責任感，而責任感來自坦誠分享。
+        </p>
+      </div>
+      <div class="value-item stagger-child">
+        <div class="value-item__num">04 — <span data-zh="持續學習" data-en="Learning">持續學習</span></div>
+        <h3 class="value-item__title" data-zh="從每次失敗中成長" data-en="Grow from every failure">從每次失敗中成長</h3>
+        <p class="value-item__desc" data-zh="我們不害怕犯錯，因為我們把每次挑戰都視為學習的機會。組織的成長，源自於成員的成長。" data-en="We're not afraid to fail, because we treat every challenge as a learning opportunity. The organization grows as its members grow.">
+          我們不害怕犯錯，因為我們把每次挑戰都視為學習的機會。組織的成長，源自於成員的成長。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section" style="background:var(--bg-2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="stats-row stagger-parent">
+      <div class="stats-row__item stagger-child">
+        <span class="stats-strip__num counter" data-target="500" data-suffix="+">500+</span>
+        <span class="stats-strip__label" data-zh="參與青年" data-en="Youth Engaged">參與青年</span>
+      </div>
+      <div class="stats-row__item stagger-child">
+        <span class="stats-strip__num counter" data-target="30" data-suffix="+">30+</span>
+        <span class="stats-strip__label" data-zh="完成專案" data-en="Projects Done">完成專案</span>
+      </div>
+      <div class="stats-row__item stagger-child">
+        <span class="stats-strip__num counter" data-target="8" data-suffix="">8</span>
+        <span class="stats-strip__label" data-zh="核心部門" data-en="Departments">核心部門</span>
+      </div>
+      <div class="stats-row__item stagger-child">
+        <span class="stats-strip__num counter" data-target="2024" data-suffix="">2024</span>
+        <span class="stats-strip__label" data-zh="成立年份" data-en="Founded">成立年份</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section" style="border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-header">
+      <div class="label reveal" data-zh="我們的歷程" data-en="Our Journey">我們的歷程</div>
+      <h2 class="reveal" style="margin-top:1rem;" data-zh="從這裡開始的故事" data-en="The Story That Started Here">從這裡開始的故事</h2>
+    </div>
+    <div class="timeline" style="padding-left:2rem;">
+      <div class="timeline-item reveal">
+        <div class="timeline-item__year">2024</div>
+        <div>
+          <h3 class="timeline-item__title" data-zh="Taiwan Teen Trust 正式成立" data-en="Taiwan Teen Trust Founded">Taiwan Teen Trust 正式成立</h3>
+          <p class="timeline-item__desc" data-zh="由一群在台灣就讀的學生共同發起，以「青年改變社會」為核心信念，正式成立組織並完成第一屆招募。" data-en="Founded by a group of students in Taiwan, built on the core belief that 'youth change society,' completing the first recruitment cycle.">
+            由一群在台灣就讀的學生共同發起，以「青年改變社會」為核心信念，正式成立組織並完成第一屆招募。
+          </p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-item__year">2024</div>
+        <div>
+          <h3 class="timeline-item__title" data-zh="第一屆年度主題：高齡社會關懷" data-en="1st Annual Focus: Elder Care">第一屆年度主題：高齡社會關懷</h3>
+          <p class="timeline-item__desc" data-zh="以台灣快速老齡化問題為核心，發起「青銀交流計畫」，連結青年與獨居長者，建立跨代互動平台。" data-en="Focusing on Taiwan's rapid aging crisis, launched the 'Youth-Elder Exchange Program' connecting youth with isolated elderly and building an intergenerational interaction platform.">
+            以台灣快速老齡化問題為核心，發起「青銀交流計畫」，連結青年與獨居長者，建立跨代互動平台。
+          </p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-item__year">2025</div>
+        <div>
+          <h3 class="timeline-item__title" data-zh="第二屆年度主題：環境永續" data-en="2nd Annual Focus: Environmental Sustainability">第二屆年度主題：環境永續</h3>
+          <p class="timeline-item__desc" data-zh="擴大組織規模，新增設計與影像部門，以氣候行動為主軸，發起校園減碳計畫並舉辦大型公益展覽。" data-en="Expanded the organization, adding design and film departments. Led climate action initiatives including campus carbon reduction programs and a large-scale public exhibition.">
+            擴大組織規模，新增設計與影像部門，以氣候行動為主軸，發起校園減碳計畫並舉辦大型公益展覽。
+          </p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-item__year">2026</div>
+        <div>
+          <h3 class="timeline-item__title" data-zh="第三屆年度主題：流浪動物救援" data-en="3rd Annual Focus: Stray Animal Rescue">第三屆年度主題：流浪動物救援</h3>
+          <p class="timeline-item__desc" data-zh="推出全台第一個由青年主導的流浪動物救援資訊平台「Stray Aid Map」，整合收容所、動物醫院與餵食站數據。" data-en="Launching Taiwan's first youth-led stray animal rescue information platform 'Stray Aid Map,' integrating data from shelters, veterinary clinics, and feeding stations across the island.">
+            推出全台第一個由青年主導的流浪動物救援資訊平台「Stray Aid Map」，整合收容所、動物醫院與餵食站數據。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="container">
+    <div class="flex-between" style="flex-wrap:wrap;gap:2rem;">
+      <div>
+        <div class="label reveal" data-zh="一起行動" data-en="Take Action">一起行動</div>
+        <h2 class="reveal" style="margin-top:0.75rem;max-width:16ch;" data-zh="你也可以成為改變的一部分" data-en="You can be part of the change">你也可以成為改變的一部分</h2>
+      </div>
+      <div class="reveal-right" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+        <a href="join.html"    class="btn btn--primary btn--lg" data-zh="加入我們" data-en="Join Us">加入我們</a>
+        <a href="team.html"    class="btn btn--outline btn--lg" data-zh="認識團隊" data-en="Meet the Team">認識團隊</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="index.html" class="navbar__logo" style="display:inline-flex;">
+          <img src="assets/logo.svg" alt="TTT" width="32" height="32" />
+          <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+        </a>
+        <p class="footer__desc" data-zh="學生主導的台灣公益組織，致力於環境、社區與文化的正向改變。" data-en="A student-led Taiwanese nonprofit dedicated to positive change in environment, community, and culture.">
+          學生主導的台灣公益組織，致力於環境、社區與文化的正向改變。
+        </p>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="頁面" data-en="Pages">頁面</div>
+        <ul class="footer__links">
+          <li><a href="about.html"    class="footer__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+          <li><a href="team.html"     class="footer__link" data-zh="團隊成員" data-en="Team">團隊成員</a></li>
+          <li><a href="projects.html" class="footer__link" data-zh="專案"     data-en="Projects">專案</a></li>
+          <li><a href="focus.html"    class="footer__link" data-zh="年度主題" data-en="Annual Focus">年度主題</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="資源" data-en="Resources">資源</div>
+        <ul class="footer__links">
+          <li><a href="blog.html"                   class="footer__link" data-zh="部落格"     data-en="Blog">部落格</a></li>
+          <li><a href="projects/stray-aid-map.html" class="footer__link">Stray Aid Map</a></li>
+          <li><a href="join.html"                   class="footer__link" data-zh="加入我們"   data-en="Join Us">加入我們</a></li>
+          <li><a href="contact.html"                class="footer__link" data-zh="聯絡我們"   data-en="Contact">聯絡我們</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="社群" data-en="Social">社群</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Instagram</a></li>
+          <li><a href="#" class="footer__link">Facebook</a></li>
+          <li><a href="#" class="footer__link">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span class="footer__copy" data-zh="© 2026 Taiwan Teen Trust. 保留所有權利。" data-en="© 2026 Taiwan Teen Trust. All rights reserved.">© 2026 Taiwan Teen Trust. 保留所有權利。</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

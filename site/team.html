@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>團隊 — Taiwan Teen Trust</title>
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    .team-hero {
+      padding-top: 10rem;
+      padding-bottom: 5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .team-hero__title {
+      font-size: clamp(3.5rem, 7vw, 10rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+    .team-hero__sub {
+      font-size: clamp(1rem, 1.2vw, 1.15rem);
+      color: var(--text-2);
+      max-width: 50ch;
+    }
+
+    /* Year tabs */
+    .year-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-block: 2rem;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .year-tabs::-webkit-scrollbar { display: none; }
+
+    /* Department section */
+    .dept-section { padding-block: 4rem; border-bottom: 1px solid var(--border); }
+    .dept-section:last-child { border-bottom: none; }
+    .dept-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .dept-name {
+      font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .dept-count {
+      font-size: 0.8rem;
+      color: var(--text-3);
+      font-weight: 500;
+    }
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Member card upgrade */
+    .member-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .member-card__links {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.75rem;
+    }
+    .member-card__link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.8rem;
+      height: 1.8rem;
+      border: 1px solid var(--border-2);
+      border-radius: 50%;
+      font-size: 0.65rem;
+      color: var(--text-2);
+      transition: all var(--duration-fast);
+    }
+    .member-card__link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Leadership highlight */
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .leader-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      transition: border-color var(--duration-fast), transform var(--duration-base) var(--ease-out-expo);
+    }
+    .leader-card:hover {
+      border-color: rgba(46,202,212,0.3);
+      transform: translateY(-3px);
+    }
+    .leader-card__avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--bg-3);
+      border: 2px solid var(--accent-dim);
+      flex-shrink: 0;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .leader-card__info { flex: 1; min-width: 0; }
+    .leader-card__name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+    .leader-card__role {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+    .leader-card__bio {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* Legacy banner */
+    .legacy-banner {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 4rem;
+    }
+    .legacy-banner__text { font-size: 0.9rem; color: var(--text-2); }
+    .legacy-banner__title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+
+    @media (max-width: 768px) {
+      .dept-grid { grid-template-columns: repeat(2, 1fr); }
+      .leadership-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-loader" id="loader">
+  <div class="page-loader__inner">
+    <img src="assets/logo.svg" alt="TTT" class="page-loader__logo" />
+    <div class="page-loader__bar"><div class="page-loader__bar-fill"></div></div>
+  </div>
+</div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar__logo">
+    <img src="assets/logo.svg" alt="TTT" width="36" height="36" />
+    <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+  </a>
+  <ul class="navbar__nav">
+    <li><a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+    <li><a href="team.html"     class="navbar__link active" data-zh="團隊" data-en="Team">團隊</a></li>
+    <li><a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a></li>
+    <li><a href="blog.html"     class="navbar__link" data-zh="部落格"   data-en="Blog">部落格</a></li>
+    <li><a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+  </ul>
+  <div class="navbar__actions">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="join.html" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  </div>
+  <button class="navbar__hamburger" aria-label="選單"><span></span><span></span><span></span></button>
+</nav>
+<div class="navbar__mobile">
+  <a href="index.html"    class="navbar__link" data-zh="首頁"     data-en="Home">首頁</a>
+  <a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a>
+  <a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a>
+  <a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a>
+  <a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+  <a href="join.html"     class="navbar__link" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  <div class="lang-toggle" style="margin-top:1rem;">
+    <button class="lang-btn" data-lang="zh">中</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="team-hero">
+  <div class="container">
+    <div class="label reveal" data-zh="2026 現任團隊" data-en="2026 Current Team">2026 現任團隊</div>
+    <h1 class="team-hero__title reveal" style="margin-top:1rem;">
+      <span data-zh="認識我們" data-en="Meet the Team">認識我們</span>
+    </h1>
+    <p class="team-hero__sub reveal" data-zh="來自台灣各地的青年，以不同的專業背景與熱情，共同為社會帶來改變。" data-en="Youth from across Taiwan, united by diverse expertise and passion to bring change to society.">
+      來自台灣各地的青年，以不同的專業背景與熱情，共同為社會帶來改變。
+    </p>
+  </div>
+</section>
+
+<!-- YEAR TABS -->
+<div class="container">
+  <div class="year-tabs">
+    <button class="filter-tab active" data-year="2026" data-zh="2026（當前）" data-en="2026 (Current)">2026（當前）</button>
+    <button class="filter-tab" data-year="2025" data-zh="2025 歷屆" data-en="2025 Legacy">2025 歷屆</button>
+    <button class="filter-tab" data-year="2024" data-zh="2024 歷屆" data-en="2024 Legacy">2024 歷屆</button>
+  </div>
+</div>
+
+<!-- LEADERSHIP -->
+<section class="section" style="border-bottom:1px solid var(--border);" id="leadership">
+  <div class="container">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="領導核心" data-en="Leadership">領導核心</h2>
+      <span class="dept-count reveal">4 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="leadership-grid stagger-parent">
+      <div class="leader-card stagger-child">
+        <div class="leader-card__avatar">👤</div>
+        <div class="leader-card__info">
+          <div class="leader-card__name" data-zh="陳宇航" data-en="Yu-Hang Chen">陳宇航</div>
+          <div class="leader-card__role" data-zh="共同創辦人 / 執行長" data-en="Co-Founder / CEO">共同創辦人 / 執行長</div>
+          <div class="leader-card__bio" data-zh="致力於青年社會參與，相信每個行動都能帶來影響。" data-en="Committed to youth civic engagement, believing every action creates impact.">致力於青年社會參與，相信每個行動都能帶來影響。</div>
+        </div>
+      </div>
+      <div class="leader-card stagger-child">
+        <div class="leader-card__avatar">👤</div>
+        <div class="leader-card__info">
+          <div class="leader-card__name" data-zh="林思婷" data-en="Si-Ting Lin">林思婷</div>
+          <div class="leader-card__role" data-zh="共同創辦人 / 營運長" data-en="Co-Founder / COO">共同創辦人 / 營運長</div>
+          <div class="leader-card__bio" data-zh="擅長組織管理與跨部門協作，讓團隊效能最大化。" data-en="Expert in organizational management and cross-departmental collaboration.">擅長組織管理與跨部門協作，讓團隊效能最大化。</div>
+        </div>
+      </div>
+      <div class="leader-card stagger-child">
+        <div class="leader-card__avatar">👤</div>
+        <div class="leader-card__info">
+          <div class="leader-card__name" data-zh="王建豪" data-en="Jian-Hao Wang">王建豪</div>
+          <div class="leader-card__role" data-zh="策略總監" data-en="Director of Strategy">策略總監</div>
+          <div class="leader-card__bio" data-zh="負責年度主題研究與長期發展規劃。" data-en="Responsible for annual theme research and long-term development planning.">負責年度主題研究與長期發展規劃。</div>
+        </div>
+      </div>
+      <div class="leader-card stagger-child">
+        <div class="leader-card__avatar">👤</div>
+        <div class="leader-card__info">
+          <div class="leader-card__name" data-zh="黃雅琳" data-en="Ya-Lin Huang">黃雅琳</div>
+          <div class="leader-card__role" data-zh="對外關係總監" data-en="Director of External Relations">對外關係總監</div>
+          <div class="leader-card__bio" data-zh="負責媒體關係、夥伴合作與公共傳播策略。" data-en="Overseeing media relations, partnerships, and public communications strategy.">負責媒體關係、夥伴合作與公共傳播策略。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<div class="container" id="departments">
+
+  <!-- IT / Tech -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="🖥️ 資訊科技部" data-en="🖥️ Information Technology">🖥️ 資訊科技部</h2>
+      <span class="dept-count reveal">6 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">👨‍💻</div>
+        <div class="member-card__name" data-zh="張俊偉" data-en="Junwei Chang">張俊偉</div>
+        <div class="member-card__role" data-zh="技術總監" data-en="Tech Lead">技術總監</div>
+        <div class="member-card__dept" data-zh="資訊科技" data-en="IT">資訊科技</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">👩‍💻</div>
+        <div class="member-card__name" data-zh="李美慧" data-en="Mei-Hui Li">李美慧</div>
+        <div class="member-card__role" data-zh="前端工程師" data-en="Frontend Engineer">前端工程師</div>
+        <div class="member-card__dept" data-zh="資訊科技" data-en="IT">資訊科技</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">👨‍💻</div>
+        <div class="member-card__name" data-zh="蔡志明" data-en="Zhi-Ming Tsai">蔡志明</div>
+        <div class="member-card__role" data-zh="後端工程師" data-en="Backend Engineer">後端工程師</div>
+        <div class="member-card__dept" data-zh="資訊科技" data-en="IT">資訊科技</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">👩‍💻</div>
+        <div class="member-card__name" data-zh="鄭雨晴" data-en="Yu-Ching Cheng">鄭雨晴</div>
+        <div class="member-card__role" data-zh="資料工程師" data-en="Data Engineer">資料工程師</div>
+        <div class="member-card__dept" data-zh="資訊科技" data-en="IT">資訊科技</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Design -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="🎨 設計部" data-en="🎨 Design">🎨 設計部</h2>
+      <span class="dept-count reveal">5 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">🎨</div>
+        <div class="member-card__name" data-zh="吳芷婷" data-en="Zhi-Ting Wu">吳芷婷</div>
+        <div class="member-card__role" data-zh="設計總監" data-en="Design Director">設計總監</div>
+        <div class="member-card__dept" data-zh="設計" data-en="Design">設計</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">🖌️</div>
+        <div class="member-card__name" data-zh="楊采穎" data-en="Tsai-Ying Yang">楊采穎</div>
+        <div class="member-card__role" data-zh="視覺設計師" data-en="Visual Designer">視覺設計師</div>
+        <div class="member-card__dept" data-zh="設計" data-en="Design">設計</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📐</div>
+        <div class="member-card__name" data-zh="許文豪" data-en="Wen-Hao Hsu">許文豪</div>
+        <div class="member-card__role" data-zh="UI/UX 設計師" data-en="UI/UX Designer">UI/UX 設計師</div>
+        <div class="member-card__dept" data-zh="設計" data-en="Design">設計</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Marketing -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="📣 行銷部" data-en="📣 Marketing">📣 行銷部</h2>
+      <span class="dept-count reveal">5 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📱</div>
+        <div class="member-card__name" data-zh="劉宜蓁" data-en="Yi-Zhen Liu">劉宜蓁</div>
+        <div class="member-card__role" data-zh="行銷總監" data-en="Marketing Director">行銷總監</div>
+        <div class="member-card__dept" data-zh="行銷" data-en="Marketing">行銷</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">✍️</div>
+        <div class="member-card__name" data-zh="陳怡君" data-en="Yi-Jun Chen">陳怡君</div>
+        <div class="member-card__role" data-zh="內容策略師" data-en="Content Strategist">內容策略師</div>
+        <div class="member-card__dept" data-zh="行銷" data-en="Marketing">行銷</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📊</div>
+        <div class="member-card__name" data-zh="黃政凱" data-en="Zheng-Kai Huang">黃政凱</div>
+        <div class="member-card__role" data-zh="社群媒體專員" data-en="Social Media">社群媒體專員</div>
+        <div class="member-card__dept" data-zh="行銷" data-en="Marketing">行銷</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="🎬 影像部" data-en="🎬 Video">🎬 影像部</h2>
+      <span class="dept-count reveal">4 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">🎥</div>
+        <div class="member-card__name" data-zh="蘇建安" data-en="Jian-An Su">蘇建安</div>
+        <div class="member-card__role" data-zh="影像總監" data-en="Video Director">影像總監</div>
+        <div class="member-card__dept" data-zh="影像" data-en="Video">影像</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">🎞️</div>
+        <div class="member-card__name" data-zh="謝文靜" data-en="Wen-Jing Hsieh">謝文靜</div>
+        <div class="member-card__role" data-zh="剪輯師" data-en="Video Editor">剪輯師</div>
+        <div class="member-card__dept" data-zh="影像" data-en="Video">影像</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📷</div>
+        <div class="member-card__name" data-zh="曾品萱" data-en="Pin-Hsuan Tseng">曾品萱</div>
+        <div class="member-card__role" data-zh="攝影師" data-en="Photographer">攝影師</div>
+        <div class="member-card__dept" data-zh="影像" data-en="Video">影像</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Research -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="🔬 研究部" data-en="🔬 Research">🔬 研究部</h2>
+      <span class="dept-count reveal">4 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">🔍</div>
+        <div class="member-card__name" data-zh="林奕廷" data-en="Yi-Ting Lin">林奕廷</div>
+        <div class="member-card__role" data-zh="研究總監" data-en="Research Director">研究總監</div>
+        <div class="member-card__dept" data-zh="研究" data-en="Research">研究</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📋</div>
+        <div class="member-card__name" data-zh="方信瑜" data-en="Xin-Yu Fang">方信瑜</div>
+        <div class="member-card__role" data-zh="資料分析師" data-en="Data Analyst">資料分析師</div>
+        <div class="member-card__dept" data-zh="研究" data-en="Research">研究</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Events -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="🗓️ 活動部" data-en="🗓️ Events">🗓️ 活動部</h2>
+      <span class="dept-count reveal">4 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📅</div>
+        <div class="member-card__name" data-zh="郭雅文" data-en="Ya-Wen Guo">郭雅文</div>
+        <div class="member-card__role" data-zh="活動總監" data-en="Events Director">活動總監</div>
+        <div class="member-card__dept" data-zh="活動" data-en="Events">活動</div>
+      </div>
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">🤝</div>
+        <div class="member-card__name" data-zh="徐國豪" data-en="Guo-Hao Hsu">徐國豪</div>
+        <div class="member-card__role" data-zh="夥伴關係專員" data-en="Partnership Specialist">夥伴關係專員</div>
+        <div class="member-card__dept" data-zh="活動" data-en="Events">活動</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finance -->
+  <div class="dept-section">
+    <div class="dept-header">
+      <h2 class="dept-name reveal" data-zh="💰 財務部" data-en="💰 Finance">💰 財務部</h2>
+      <span class="dept-count reveal">3 <span data-zh="位成員" data-en="members">位成員</span></span>
+    </div>
+    <div class="dept-grid stagger-parent">
+      <div class="member-card stagger-child">
+        <div class="member-card__avatar" style="background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:2rem;">📈</div>
+        <div class="member-card__name" data-zh="葉靜怡" data-en="Jing-Yi Yeh">葉靜怡</div>
+        <div class="member-card__role" data-zh="財務總監" data-en="Finance Director">財務總監</div>
+        <div class="member-card__dept" data-zh="財務" data-en="Finance">財務</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legacy link banner -->
+  <div class="legacy-banner reveal">
+    <div>
+      <div class="legacy-banner__title" data-zh="尋找歷屆成員？" data-en="Looking for past members?">尋找歷屆成員？</div>
+      <div class="legacy-banner__text" data-zh="查看 2024 和 2025 年度的歷屆團隊成員名單。" data-en="View the roster of team members from the 2024 and 2025 cohorts.">查看 2024 和 2025 年度的歷屆團隊成員名單。</div>
+    </div>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <a href="#" class="btn btn--outline" data-zh="2025 歷屆" data-en="2025 Legacy">2025 歷屆</a>
+      <a href="#" class="btn btn--outline" data-zh="2024 歷屆" data-en="2024 Legacy">2024 歷屆</a>
+    </div>
+  </div>
+</div>
+
+<div style="height:5rem;"></div>
+
+<!-- JOIN CTA -->
+<section class="section" style="border-top:1px solid var(--border);background:var(--bg-2);">
+  <div class="container" style="text-align:center;">
+    <div class="label reveal" style="justify-content:center;" data-zh="開放招募中" data-en="Now Recruiting">開放招募中</div>
+    <h2 class="reveal" style="margin-top:1rem;font-size:clamp(2rem,4vw,5rem);letter-spacing:-0.03em;" data-zh="想成為我們的一員？" data-en="Want to join us?">想成為我們的一員？</h2>
+    <p class="reveal" style="color:var(--text-2);margin-top:1rem;margin-bottom:2.5rem;max-width:48ch;margin-inline:auto;" data-zh="我們每年定期招募新成員，歡迎所有對公益有熱情、有任何專業背景的台灣青年報名。" data-en="We recruit new members annually. We welcome all Taiwanese youth with passion for social good and any professional background.">
+      我們每年定期招募新成員，歡迎所有對公益有熱情、有任何專業背景的台灣青年報名。
+    </p>
+    <a href="join.html" class="btn btn--primary btn--lg reveal" data-zh="立即申請" data-en="Apply Now">立即申請</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="index.html" class="navbar__logo" style="display:inline-flex;">
+          <img src="assets/logo.svg" alt="TTT" width="32" height="32" />
+          <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+        </a>
+        <p class="footer__desc" data-zh="學生主導的台灣公益組織。" data-en="A student-led Taiwanese nonprofit.">學生主導的台灣公益組織。</p>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="頁面" data-en="Pages">頁面</div>
+        <ul class="footer__links">
+          <li><a href="about.html"    class="footer__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+          <li><a href="team.html"     class="footer__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+          <li><a href="projects.html" class="footer__link" data-zh="專案"     data-en="Projects">專案</a></li>
+          <li><a href="focus.html"    class="footer__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="資源" data-en="Resources">資源</div>
+        <ul class="footer__links">
+          <li><a href="blog.html"   class="footer__link" data-zh="部落格" data-en="Blog">部落格</a></li>
+          <li><a href="join.html"   class="footer__link" data-zh="加入我們" data-en="Join Us">加入我們</a></li>
+          <li><a href="contact.html" class="footer__link" data-zh="聯絡" data-en="Contact">聯絡</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="社群" data-en="Social">社群</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Instagram</a></li>
+          <li><a href="#" class="footer__link">Facebook</a></li>
+          <li><a href="#" class="footer__link">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span class="footer__copy">© 2026 Taiwan Teen Trust.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

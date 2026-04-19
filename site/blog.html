@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>部落格 — Taiwan Teen Trust</title>
+  <meta name="description" content="Taiwan Teen Trust 的觀點、故事與行動紀錄。" />
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <style>
+    /* ── Hero ── */
+    .blog-hero {
+      padding-top: 10rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .blog-hero__row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .blog-hero__title {
+      font-size: clamp(3.5rem, 7vw, 10rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .blog-hero__total {
+      text-align: right;
+    }
+    .blog-hero__total-num {
+      font-size: clamp(3rem, 5vw, 6rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .blog-hero__total-label {
+      font-size: 0.78rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Featured post ── */
+    .featured-post {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: var(--bg-2);
+      transition: border-color var(--duration-fast);
+      text-decoration: none;
+      color: inherit;
+    }
+    .featured-post:hover { border-color: var(--border-2); }
+    .featured-post__thumb {
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-post__thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10,10,10,0.3), transparent);
+    }
+    .featured-post__body {
+      padding: 3.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .featured-post__meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .post-tag {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid rgba(46,202,212,0.2);
+    }
+    .post-date {
+      font-size: 0.78rem;
+      color: var(--text-3);
+      font-weight: 500;
+    }
+    .featured-post__title {
+      font-size: clamp(1.6rem, 2.5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+    .featured-post__excerpt {
+      font-size: 0.95rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+      flex: 1;
+    }
+    .featured-post__author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .author-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .author-role {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+
+    /* ── Post grid ── */
+    .post-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .post-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color var(--duration-fast), transform var(--duration-base) var(--ease-out-expo);
+      text-decoration: none;
+      color: inherit;
+    }
+    .post-card:hover {
+      border-color: var(--border-2);
+      transform: translateY(-4px);
+    }
+    .post-card__thumb {
+      aspect-ratio: 16/10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+    .post-card__body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .post-card__meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .post-card__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.6rem;
+    }
+    .post-card__excerpt {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      line-height: 1.65;
+      flex: 1;
+    }
+    .post-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .post-card__read-time {
+      font-size: 0.72rem;
+      color: var(--text-3);
+    }
+    .post-card__link {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ── Category filter ── */
+    .blog-filter {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding-block: 1.5rem 2.5rem;
+    }
+
+    /* ── Load more ── */
+    .load-more-wrap {
+      text-align: center;
+      padding-top: 4rem;
+    }
+
+    /* ── Newsletter ── */
+    .newsletter {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .newsletter__title {
+      font-size: clamp(1.5rem, 2.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+    .newsletter__sub {
+      font-size: 0.9rem;
+      color: var(--text-2);
+    }
+    .newsletter__form {
+      display: flex;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 280px;
+      max-width: 460px;
+    }
+    .newsletter__input {
+      flex: 1;
+      background: var(--bg-3);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.1rem;
+      font-size: 0.875rem;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--duration-fast);
+    }
+    .newsletter__input:focus { border-color: var(--accent); }
+    .newsletter__input::placeholder { color: var(--text-3); }
+
+    @media (max-width: 900px) {
+      .featured-post { grid-template-columns: 1fr; }
+      .featured-post__thumb { aspect-ratio: 16/9; }
+      .post-grid { grid-template-columns: repeat(2, 1fr); }
+      .newsletter { flex-direction: column; }
+      .newsletter__form { max-width: 100%; width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .post-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-loader" id="loader">
+  <div class="page-loader__inner">
+    <img src="assets/logo.svg" alt="TTT" class="page-loader__logo" />
+    <div class="page-loader__bar"><div class="page-loader__bar-fill"></div></div>
+  </div>
+</div>
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="navbar__logo">
+    <img src="assets/logo.svg" alt="TTT" width="36" height="36" />
+    <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+  </a>
+  <ul class="navbar__nav">
+    <li><a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+    <li><a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+    <li><a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a></li>
+    <li><a href="blog.html"     class="navbar__link active" data-zh="部落格" data-en="Blog">部落格</a></li>
+    <li><a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+  </ul>
+  <div class="navbar__actions">
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a href="join.html" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  </div>
+  <button class="navbar__hamburger" aria-label="選單"><span></span><span></span><span></span></button>
+</nav>
+<div class="navbar__mobile">
+  <a href="index.html"    class="navbar__link" data-zh="首頁"     data-en="Home">首頁</a>
+  <a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a>
+  <a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a>
+  <a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a>
+  <a href="blog.html"     class="navbar__link" data-zh="部落格"   data-en="Blog">部落格</a>
+  <a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+  <a href="join.html"     class="navbar__link" data-zh="加入我們" data-en="Join Us">加入我們</a>
+  <div class="lang-toggle" style="margin-top:1rem;">
+    <button class="lang-btn" data-lang="zh">中</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="blog-hero">
+  <div class="container">
+    <div class="blog-hero__row">
+      <div>
+        <div class="label reveal" data-zh="部落格" data-en="Blog">部落格</div>
+        <h1 class="blog-hero__title reveal" style="margin-top:1rem;">
+          <span class="lang-zh">觀點<br>與故事</span>
+          <span class="lang-en" style="display:none;">Perspectives<br>& Stories</span>
+        </h1>
+      </div>
+      <div class="blog-hero__total reveal-right">
+        <div class="blog-hero__total-num">12</div>
+        <div class="blog-hero__total-label" data-zh="篇文章" data-en="Articles">篇文章</div>
+      </div>
+    </div>
+    <!-- Category filter -->
+    <div class="blog-filter reveal" id="blog-cat-filter">
+      <button class="filter-tab active" data-cat="all" data-zh="全部" data-en="All">全部</button>
+      <button class="filter-tab" data-cat="insight" data-zh="觀點" data-en="Insight">觀點</button>
+      <button class="filter-tab" data-cat="story" data-zh="故事" data-en="Story">故事</button>
+      <button class="filter-tab" data-cat="report" data-zh="報告" data-en="Report">報告</button>
+      <button class="filter-tab" data-cat="news" data-zh="動態" data-en="News">動態</button>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED POST -->
+<section class="section" style="padding-bottom:0;">
+  <div class="container">
+    <div class="label reveal" style="margin-bottom:1.5rem;" data-zh="最新文章" data-en="Latest Post">最新文章</div>
+    <a href="blog/stray-animals-taiwan.html" class="featured-post reveal-scale" data-cat="report">
+      <div class="featured-post__thumb" style="background:linear-gradient(135deg,#0d1a0d,#001a1a);">
+        🐾
+        <div class="featured-post__thumb-overlay"></div>
+      </div>
+      <div class="featured-post__body">
+        <div>
+          <div class="featured-post__meta">
+            <span class="post-tag" data-zh="報告" data-en="Report">報告</span>
+            <span class="post-date">2026.04.10</span>
+            <span class="post-date">· 8 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+          </div>
+          <h2 class="featured-post__title" data-zh="台灣流浪動物問題的真相：數字背後的故事" data-en="The Truth About Taiwan's Stray Animal Problem: The Story Behind the Numbers">
+            台灣流浪動物問題的真相：數字背後的故事
+          </h2>
+          <p class="featured-post__excerpt" data-zh="每年超過10萬隻流浪動物，公立收容所超載、安樂死率居高不下。我們深入調查台灣流浪動物議題的根本原因，並探討青年組織如何透過科技與行動帶來改變。" data-en="Over 100,000 stray animals per year, overloaded public shelters, high euthanasia rates. We investigate the root causes of Taiwan's stray animal issue and explore how youth organizations can bring change through technology and action.">
+            每年超過10萬隻流浪動物，公立收容所超載、安樂死率居高不下。我們深入調查台灣流浪動物議題的根本原因，並探討青年組織如何透過科技與行動帶來改變。
+          </p>
+        </div>
+        <div class="featured-post__author">
+          <div class="author-avatar">🔬</div>
+          <div>
+            <div class="author-name" data-zh="林奕廷" data-en="Yi-Ting Lin">林奕廷</div>
+            <div class="author-role" data-zh="研究總監" data-en="Research Director">研究總監</div>
+          </div>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ALL POSTS -->
+<section class="section">
+  <div class="container">
+    <div class="label reveal" style="margin-bottom:2rem;" data-zh="所有文章" data-en="All Articles">所有文章</div>
+
+    <div class="post-grid stagger-parent" id="post-grid">
+
+      <a href="blog/youth-power-change.html" class="post-card stagger-child" data-cat="insight">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0a0a1a,#060612);">💡</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" data-zh="觀點" data-en="Insight">觀點</span>
+            <span class="post-date">2026.03.22</span>
+          </div>
+          <h3 class="post-card__title" data-zh="為什麼青年的力量比我們想像的更強大？" data-en="Why Youth Power is Stronger Than We Think">
+            為什麼青年的力量比我們想像的更強大？
+          </h3>
+          <p class="post-card__excerpt" data-zh="從全球到台灣，歷史告訴我們：每一場重大的社會變革，背後都有青年的身影。" data-en="From global to local, history tells us: behind every major social transformation is the presence of youth.">
+            從全球到台灣，歷史告訴我們：每一場重大的社會變革，背後都有青年的身影。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">5 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/stray-aid-map-behind.html" class="post-card stagger-child" data-cat="story">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0d1a0d,#061006);">🗺️</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" style="background:rgba(127,178,133,0.12);color:#7fb285;border-color:rgba(127,178,133,0.25);" data-zh="故事" data-en="Story">故事</span>
+            <span class="post-date">2026.03.15</span>
+          </div>
+          <h3 class="post-card__title" data-zh="Stray Aid Map 背後的故事：從想法到現實的 60 天" data-en="Behind Stray Aid Map: 60 Days from Idea to Reality">
+            Stray Aid Map 背後的故事：從想法到現實的 60 天
+          </h3>
+          <p class="post-card__excerpt" data-zh="一個深夜的討論、一張白板上的草稿、三個部門的協作——我們如何在60天內打造出台灣第一個流浪動物救援地圖。" data-en="A late-night discussion, a draft on a whiteboard, collaboration across three departments — how we built Taiwan's first stray animal rescue map in 60 days.">
+            一個深夜的討論、一張白板上的草稿、三個部門的協作——我們如何在60天內打造出台灣第一個流浪動物救援地圖。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">7 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/climate-campus.html" class="post-card stagger-child" data-cat="report">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#001a08,#00100a);">🌿</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" data-zh="報告" data-en="Report">報告</span>
+            <span class="post-date">2025.12.08</span>
+          </div>
+          <h3 class="post-card__title" data-zh="2025 台灣校園碳排放調查報告" data-en="2025 Taiwan Campus Carbon Emissions Survey Report">
+            2025 台灣校園碳排放調查報告
+          </h3>
+          <p class="post-card__excerpt" data-zh="我們對12所高中進行為期6個月的碳足跡調查，發現校園碳排放的三大主要來源以及可立即改善的行動方案。" data-en="A 6-month carbon footprint investigation across 12 high schools, revealing the three main sources of campus carbon emissions and immediately actionable improvement plans.">
+            我們對12所高中進行為期6個月的碳足跡調查，發現校園碳排放的三大主要來源以及可立即改善的行動方案。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">12 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/elder-exchange.html" class="post-card stagger-child" data-cat="story">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#1a0d00,#100800);">🤝</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" style="background:rgba(127,178,133,0.12);color:#7fb285;border-color:rgba(127,178,133,0.25);" data-zh="故事" data-en="Story">故事</span>
+            <span class="post-date">2025.11.20</span>
+          </div>
+          <h3 class="post-card__title" data-zh="一個90歲阿嬤教會我的事" data-en="What a 90-Year-Old Grandma Taught Me">
+            一個90歲阿嬤教會我的事
+          </h3>
+          <p class="post-card__excerpt" data-zh="在青銀交流計畫的最後一次拜訪，陳阿嬤拉著我的手說了一句話，讓我重新思考「志工」這兩個字的意義。" data-en="On the final visit of the Youth-Elder Exchange Program, Grandma Chen took my hand and said something that made me rethink what 'volunteering' truly means.">
+            在青銀交流計畫的最後一次拜訪，陳阿嬤拉著我的手說了一句話，讓我重新思考「志工」這兩個字的意義。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">6 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/join-ttt.html" class="post-card stagger-child" data-cat="news">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#001220,#000c18);">📣</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" style="background:rgba(91,143,185,0.12);color:#5b8fb9;border-color:rgba(91,143,185,0.25);" data-zh="動態" data-en="News">動態</span>
+            <span class="post-date">2026.03.01</span>
+          </div>
+          <h3 class="post-card__title" data-zh="2026 年度招募正式開始！" data-en="2026 Annual Recruitment Now Open!">
+            2026 年度招募正式開始！
+          </h3>
+          <p class="post-card__excerpt" data-zh="TTT 2026 年度招募正式開跑！我們正在尋找對設計、影片、研究、行銷、IT 有熱情的你。" data-en="TTT 2026 annual recruitment is officially underway! We're looking for passionate people in design, video, research, marketing, and IT.">
+            TTT 2026 年度招募正式開跑！我們正在尋找對設計、影片、研究、行銷、IT 有熱情的你。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">3 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/art-exhibition-recap.html" class="post-card stagger-child" data-cat="news">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#1a001a,#0d000d);">🎭</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" style="background:rgba(91,143,185,0.12);color:#5b8fb9;border-color:rgba(91,143,185,0.25);" data-zh="動態" data-en="News">動態</span>
+            <span class="post-date">2025.10.05</span>
+          </div>
+          <h3 class="post-card__title" data-zh="社會議題藝術展圓滿落幕：3,000人參與" data-en="Social Issue Art Exhibition Concludes: 3,000 Visitors">
+            社會議題藝術展圓滿落幕：3,000人參與
+          </h3>
+          <p class="post-card__excerpt" data-zh="為期兩週的展覽吸引超過3,000位民眾參觀，20位青年藝術家用創作傳遞台灣當代社會議題。完整回顧在這裡。" data-en="The two-week exhibition attracted over 3,000 visitors, with 20 young artists using creative works to communicate contemporary social issues in Taiwan. Full recap here.">
+            為期兩週的展覽吸引超過3,000位民眾參觀，20位青年藝術家用創作傳遞台灣當代社會議題。完整回顧在這裡。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">5 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/what-is-social-impact.html" class="post-card stagger-child" data-cat="insight">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0a0a0a,#141414);">🌏</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" data-zh="觀點" data-en="Insight">觀點</span>
+            <span class="post-date">2025.09.18</span>
+          </div>
+          <h3 class="post-card__title" data-zh="什麼是真正的「社會影響力」？" data-en="What Is Real \"Social Impact\"?">
+            什麼是真正的「社會影響力」？
+          </h3>
+          <p class="post-card__excerpt" data-zh="「社會影響力」這個詞被過度使用了。我們來談談如何分辨真正有影響力的行動，以及那些只是看起來有影響力的行動。" data-en="The term 'social impact' is overused. Let's talk about how to distinguish truly impactful actions from those that merely appear impactful.">
+            「社會影響力」這個詞被過度使用了。我們來談談如何分辨真正有影響力的行動，以及那些只是看起來有影響力的行動。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">9 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/tnr-program.html" class="post-card stagger-child" data-cat="report">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0d1a0d,#061006);">🐈</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" data-zh="報告" data-en="Report">報告</span>
+            <span class="post-date">2026.02.14</span>
+          </div>
+          <h3 class="post-card__title" data-zh="TNR 結紮回置計畫：台灣推廣現況與挑戰" data-en="TNR Programs in Taiwan: Current Status and Challenges">
+            TNR 結紮回置計畫：台灣推廣現況與挑戰
+          </h3>
+          <p class="post-card__excerpt" data-zh="TNR（誘捕、結紮、回置）是國際公認最人道有效的流浪動物控制方式，但在台灣的推廣面臨哪些困難？" data-en="TNR (Trap-Neuter-Return) is internationally recognized as the most humane and effective stray animal control method, but what challenges does it face in Taiwan?">
+            TNR（誘捕、結紮、回置）是國際公認最人道有效的流浪動物控制方式，但在台灣的推廣面臨哪些困難？
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">10 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+      <a href="blog/first-year-reflection.html" class="post-card stagger-child" data-cat="story">
+        <div class="post-card__thumb" style="background:linear-gradient(135deg,#1a1a00,#101000);">✨</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" style="background:rgba(127,178,133,0.12);color:#7fb285;border-color:rgba(127,178,133,0.25);" data-zh="故事" data-en="Story">故事</span>
+            <span class="post-date">2025.01.10</span>
+          </div>
+          <h3 class="post-card__title" data-zh="TTT 成立一年：我們學到了什麼？" data-en="TTT's First Year: What Did We Learn?">
+            TTT 成立一年：我們學到了什麼？
+          </h3>
+          <p class="post-card__excerpt" data-zh="從零到500人、從一個想法到30個專案，TTT 的第一年充滿了挑戰、失敗與成長。我們誠實地分享這一年的所有收穫。" data-en="From zero to 500 people, from one idea to 30 projects — TTT's first year was full of challenges, failures, and growth. We share honestly everything we learned this year.">
+            從零到500人、從一個想法到30個專案，TTT 的第一年充滿了挑戰、失敗與成長。我們誠實地分享這一年的所有收穫。
+          </p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">11 <span data-zh="分鐘閱讀" data-en="min read">分鐘閱讀</span></span>
+            <span class="post-card__link" data-zh="閱讀全文 →" data-en="Read more →">閱讀全文 →</span>
+          </div>
+        </div>
+      </a>
+
+    </div><!-- end post-grid -->
+
+    <!-- No results -->
+    <div id="no-results" style="display:none;text-align:center;padding:5rem 0;color:var(--text-3);">
+      <div style="font-size:3rem;margin-bottom:1rem;">📭</div>
+      <p data-zh="此分類暫無文章" data-en="No articles in this category">此分類暫無文章</p>
+    </div>
+
+    <!-- Load more placeholder -->
+    <div class="load-more-wrap reveal">
+      <button class="btn btn--outline btn--lg" data-zh="載入更多文章" data-en="Load More Articles">載入更多文章</button>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="section" style="border-top:1px solid var(--border);">
+  <div class="container">
+    <div class="newsletter reveal-scale">
+      <div>
+        <h2 class="newsletter__title" data-zh="訂閱 TTT 電子報" data-en="Subscribe to TTT Newsletter">訂閱 TTT 電子報</h2>
+        <p class="newsletter__sub" data-zh="每月收到最新文章、專案進度與活動資訊，不漏接 TTT 的每一個行動。" data-en="Receive the latest articles, project updates, and event info monthly — never miss a TTT action.">
+          每月收到最新文章、專案進度與活動資訊，不漏接 TTT 的每一個行動。
+        </p>
+      </div>
+      <form class="newsletter__form" onsubmit="return false;">
+        <input class="newsletter__input" type="email" placeholder="your@email.com" aria-label="Email" />
+        <button class="btn btn--primary" type="submit" data-zh="訂閱" data-en="Subscribe">訂閱</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="index.html" class="navbar__logo" style="display:inline-flex;">
+          <img src="assets/logo.svg" alt="TTT" width="32" height="32" />
+          <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+        </a>
+        <p class="footer__desc" data-zh="學生主導的台灣公益組織。" data-en="A student-led Taiwanese nonprofit.">學生主導的台灣公益組織。</p>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="頁面" data-en="Pages">頁面</div>
+        <ul class="footer__links">
+          <li><a href="about.html"    class="footer__link" data-zh="關於我們" data-en="About">關於我們</a></li>
+          <li><a href="team.html"     class="footer__link" data-zh="團隊"     data-en="Team">團隊</a></li>
+          <li><a href="projects.html" class="footer__link" data-zh="專案"     data-en="Projects">專案</a></li>
+          <li><a href="focus.html"    class="footer__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="資源" data-en="Resources">資源</div>
+        <ul class="footer__links">
+          <li><a href="blog.html"    class="footer__link" data-zh="部落格" data-en="Blog">部落格</a></li>
+          <li><a href="join.html"    class="footer__link" data-zh="加入我們" data-en="Join Us">加入我們</a></li>
+          <li><a href="contact.html" class="footer__link" data-zh="聯絡" data-en="Contact">聯絡</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer__col-title" data-zh="社群" data-en="Social">社群</div>
+        <ul class="footer__links">
+          <li><a href="#" class="footer__link">Instagram</a></li>
+          <li><a href="#" class="footer__link">Facebook</a></li>
+          <li><a href="#" class="footer__link">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span class="footer__copy">© 2026 Taiwan Teen Trust.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cards  = document.querySelectorAll('.post-card[data-cat]');
+  const noRes  = document.getElementById('no-results');
+  let activeCat = 'all';
+
+  document.getElementById('blog-cat-filter').addEventListener('click', e => {
+    const btn = e.target.closest('[data-cat]');
+    if (!btn) return;
+    document.querySelectorAll('#blog-cat-filter .filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    let visible = 0;
+    cards.forEach(card => {
+      const show = activeCat === 'all' || card.dataset.cat === activeCat;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    noRes.style.display = visible === 0 ? 'block' : 'none';
+  });
+});
+</script>
+</body>
+</html>

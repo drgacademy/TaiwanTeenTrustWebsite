@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>管理後台登入 — Taiwan Teen Trust</title>
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 120 130" fill="none" width="32" height="35">
+        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
+        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="login-logo-text">Taiwan Teen Trust</div>
+        <div class="login-logo-sub">Admin Panel</div>
+      </div>
+    </div>
+
+    <h1 class="login-title">歡迎回來</h1>
+    <p class="login-sub">請輸入管理員帳號登入後台。</p>
+
+    <div class="login-error" id="login-error"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="login-email">電子郵件</label>
+        <input class="form-input" id="login-email" type="email" placeholder="admin@taiwanteentrust.org" autocomplete="email" required />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-pass">密碼</label>
+        <input class="form-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn-login">登入</button>
+    </form>
+
+    <p class="login-hint">示範帳號：admin@taiwanteentrust.org / ttt2025</p>
+  </div>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
