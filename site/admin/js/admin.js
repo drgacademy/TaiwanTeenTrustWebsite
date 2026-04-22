@@ -148,8 +148,9 @@ async function callAdminFn(method, { body, query } = {}) {
     return { ok: false, status: 0, error: e.message || 'network error' };
   }
   if (!resp.ok) {
-    console.error('[admin-users]', method, resp.status, json);
-    return { ok: false, status: resp.status, error: json.error || json.raw || `HTTP ${resp.status}` };
+    console.error('[admin-users]', method, resp.status, 'body:', text, 'parsed:', json);
+    const msg = json.error || json.message || json.msg || json.code || json.raw || text || `HTTP ${resp.status}`;
+    return { ok: false, status: resp.status, error: `${resp.status}: ${msg}` };
   }
   return { ok: true, status: resp.status, data: json };
 }
