@@ -125,33 +125,47 @@ const Storage = {
 };
 
 /* ════════════════════ ADMIN USERS (edge function) ════════════════════ */
+const ADMIN_FN_URL = `${SUPABASE_URL}/functions/v1/admin-users`;
+
+async function callAdminFn(method, { body, query } = {}) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return { ok: false, status: 401, error: 'Not signed in' };
+  const url = query ? `${ADMIN_FN_URL}?${new URLSearchParams(query)}` : ADMIN_FN_URL;
+  let resp, text, json;
+  try {
+    resp = await fetch(url, {
+      method,
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'apikey': SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    text = await resp.text();
+    try { json = text ? JSON.parse(text) : {}; } catch { json = { raw: text }; }
+  } catch (e) {
+    return { ok: false, status: 0, error: e.message || 'network error' };
+  }
+  if (!resp.ok) {
+    console.error('[admin-users]', method, resp.status, json);
+    return { ok: false, status: resp.status, error: json.error || json.raw || `HTTP ${resp.status}` };
+  }
+  return { ok: true, status: resp.status, data: json };
+}
+
 const Admins = {
   async list() {
-    const { data, error } = await sb.functions.invoke('admin-users', { method: 'GET' });
-    if (error) { console.error('[Admins.list]', error); return { ok: false, error: error.message || 'fail', list: [] }; }
-    return { ok: true, list: data?.admins || [] };
+    const r = await callAdminFn('GET');
+    return r.ok ? { ok: true, list: r.data?.admins || [] } : { ok: false, error: r.error, list: [] };
   },
   async invite(email, name) {
-    const { data, error } = await sb.functions.invoke('admin-users', {
-      method: 'POST',
-      body: { email, name }
-    });
-    if (error) {
-      const msg = data?.error || error.message || 'fail';
-      return { ok: false, error: msg };
-    }
-    return { ok: true, admin: data?.admin };
+    const r = await callAdminFn('POST', { body: { email, name } });
+    return r.ok ? { ok: true, admin: r.data?.admin } : { ok: false, error: r.error };
   },
   async remove(id) {
-    const { data, error } = await sb.functions.invoke('admin-users', {
-      method: 'DELETE',
-      body: { id }
-    });
-    if (error) {
-      const msg = data?.error || error.message || 'fail';
-      return { ok: false, error: msg };
-    }
-    return { ok: true };
+    const r = await callAdminFn('DELETE', { query: { id } });
+    return r.ok ? { ok: true } : { ok: false, error: r.error };
   }
 };
 
