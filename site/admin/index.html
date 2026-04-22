@@ -3,46 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>管理後台登入 — Taiwan Teen Trust</title>
-  <link rel="stylesheet" href="css/admin.css" />
+  <title data-i18n-title-key="login.title">TTT Admin — 登入</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
 </head>
 <body>
 
 <div class="login-page">
   <div class="login-box">
     <div class="login-logo">
-      <svg viewBox="0 0 120 130" fill="none" width="32" height="35">
-        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
-      </svg>
+      <img src="../assets/logo-real.png" alt="TTT" style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0">
       <div>
         <div class="login-logo-text">Taiwan Teen Trust</div>
-        <div class="login-logo-sub">Admin Panel</div>
+        <div class="login-logo-sub" data-i18n="login.brand.sub">Admin Panel</div>
       </div>
     </div>
 
-    <h1 class="login-title">歡迎回來</h1>
-    <p class="login-sub">請輸入管理員帳號登入後台。</p>
+    <h1 class="login-title" data-i18n="login.title">歡迎回來</h1>
+    <p class="login-sub" data-i18n="login.sub">請輸入管理員帳號登入後台。</p>
 
     <div class="login-error" id="login-error"></div>
 
     <form id="login-form">
       <div class="form-group">
-        <label class="form-label" for="login-email">電子郵件</label>
-        <input class="form-input" id="login-email" type="email" placeholder="admin@taiwanteentrust.org" autocomplete="email" required />
+        <label class="form-label" for="login-email" data-i18n="login.email">電子郵件</label>
+        <input class="form-input" id="login-email" type="email" data-i18n-ph="login.email.ph" placeholder="name@example.com" autocomplete="email" required />
       </div>
       <div class="form-group">
-        <label class="form-label" for="login-pass">密碼</label>
-        <input class="form-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" required />
+        <label class="form-label" for="login-pass" data-i18n="login.password">密碼</label>
+        <div class="password-wrap">
+          <input class="form-input password-input" id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" required />
+          <button type="button" class="password-toggle" id="password-toggle" data-i18n-aria="login.showpass" data-i18n-title="login.showpass" aria-label="顯示密碼" title="顯示密碼">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <button type="submit" class="btn-login">登入</button>
+      <button type="submit" class="btn-login" data-i18n="login.submit">登入</button>
     </form>
 
-    <p class="login-hint">示範帳號：admin@taiwanteentrust.org / ttt2025</p>
+    <p class="login-hint" data-i18n="login.hint">使用管理員帳號登入。忘記密碼請聯絡系統管理員。</p>
   </div>
 </div>
 
-<script src="js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=3"></script>
 </body>
 </html>

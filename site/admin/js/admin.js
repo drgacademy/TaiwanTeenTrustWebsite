@@ -1,133 +1,142 @@
 /* ============================================================
-   Taiwan Teen Trust — Admin JS
-   Auth guard + LocalStorage data layer + UI utilities
-   Supabase-ready: swap storageGet/storageSet/storageDelete
-   for supabase.from(...) calls when backend is live.
+   Taiwan Teen Trust — Admin JS (Supabase Edition)
+   Auth (Supabase Auth) + DB (Postgres) + Storage (media bucket)
+   + UI utilities (toast, modal, sidebar, upload zone)
    ============================================================ */
 
 'use strict';
 
-/* ════════════════════ AUTH ════════════════════ */
-const AUTH_KEY = 'ttt-admin-auth';
-const DEMO_EMAIL = 'admin@taiwanteentrust.org';
-const DEMO_PASS  = 'ttt2025';
+/* ════════════════════ SUPABASE CLIENT ════════════════════ */
+const SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
 
+if (!window.supabase || !window.supabase.createClient) {
+  throw new Error('Supabase JS library not loaded. Include @supabase/supabase-js before admin.js.');
+}
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+/* ════════════════════ AUTH ════════════════════ */
 const Auth = {
-  login(email, password) {
-    if (email === DEMO_EMAIL && password === DEMO_PASS) {
-      localStorage.setItem(AUTH_KEY, JSON.stringify({ email, role: 'admin', ts: Date.now() }));
-      return true;
-    }
-    return false;
+  async login(email, password) {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    return { ok: !error, error: error?.message, user: data?.user || null };
   },
-  logout() {
-    localStorage.removeItem(AUTH_KEY);
+
+  async logout() {
+    await sb.auth.signOut();
     window.location.href = 'index.html';
   },
-  check() {
-    const session = localStorage.getItem(AUTH_KEY);
+
+  async check() {
+    const { data: { session } } = await sb.auth.getSession();
     if (!session) { window.location.href = 'index.html'; return null; }
-    return JSON.parse(session);
+    return session.user;
   },
-  get() {
-    const s = localStorage.getItem(AUTH_KEY);
-    return s ? JSON.parse(s) : null;
+
+  async get() {
+    const { data: { session } } = await sb.auth.getSession();
+    return session?.user || null;
   }
 };
 
-/* ════════════════════ DATA LAYER ════════════════════ */
-/* Each collection stored as JSON array in localStorage.
-   Key names match future Supabase table names. */
-
+/* ════════════════════ DATA LAYER (async) ════════════════════ */
 const DB = {
-  _get(table)        { return JSON.parse(localStorage.getItem('ttt_' + table) || '[]'); },
-  _set(table, data)  { localStorage.setItem('ttt_' + table, JSON.stringify(data)); },
-  _nextId(table)     { const rows = this._get(table); return rows.length ? Math.max(...rows.map(r => r.id)) + 1 : 1; },
-
-  getAll(table)      { return this._get(table); },
-  getById(table, id) { return this._get(table).find(r => r.id === id) || null; },
-
-  insert(table, row) {
-    const rows = this._get(table);
-    const newRow = { ...row, id: this._nextId(table), created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
-    rows.unshift(newRow);
-    this._set(table, rows);
-    return newRow;
+  async getAll(table, { orderBy = 'created_at', ascending = false } = {}) {
+    const { data, error } = await sb.from(table).select('*').order(orderBy, { ascending });
+    if (error) { console.error('[DB.getAll]', table, error); showToast('讀取失敗：' + error.message, 'error'); return []; }
+    return data || [];
   },
 
-  update(table, id, patch) {
-    const rows = this._get(table);
-    const idx = rows.findIndex(r => r.id === id);
-    if (idx === -1) return null;
-    rows[idx] = { ...rows[idx], ...patch, updated_at: new Date().toISOString() };
-    this._set(table, rows);
-    return rows[idx];
+  async getById(table, id) {
+    const { data, error } = await sb.from(table).select('*').eq('id', id).single();
+    if (error) { console.error('[DB.getById]', table, id, error); return null; }
+    return data;
   },
 
-  delete(table, id) {
-    const rows = this._get(table).filter(r => r.id !== id);
-    this._set(table, rows);
+  async insert(table, row) {
+    const { data, error } = await sb.from(table).insert(row).select().single();
+    if (error) { console.error('[DB.insert]', table, error); showToast('新增失敗：' + error.message, 'error'); return null; }
+    return data;
+  },
+
+  async update(table, id, patch) {
+    const { data, error } = await sb.from(table).update(patch).eq('id', id).select().single();
+    if (error) { console.error('[DB.update]', table, id, error); showToast('更新失敗：' + error.message, 'error'); return null; }
+    return data;
+  },
+
+  async delete(table, id) {
+    const { error } = await sb.from(table).delete().eq('id', id);
+    if (error) { console.error('[DB.delete]', table, id, error); showToast('刪除失敗：' + error.message, 'error'); return false; }
+    return true;
+  },
+
+  /* Upsert by key — useful for site_content (key-value) */
+  async upsert(table, row, conflictKey = 'id') {
+    const { data, error } = await sb.from(table).upsert(row, { onConflict: conflictKey }).select().single();
+    if (error) { console.error('[DB.upsert]', table, error); showToast('儲存失敗：' + error.message, 'error'); return null; }
+    return data;
+  },
+
+  /* Count rows — used by dashboard */
+  async count(table) {
+    const { count, error } = await sb.from(table).select('*', { count: 'exact', head: true });
+    if (error) { console.error('[DB.count]', table, error); return 0; }
+    return count || 0;
   }
 };
 
-/* ── Seed demo data if tables are empty ── */
-function seedIfEmpty() {
-  /* Members */
-  if (DB.getAll('members').length === 0) {
-    const members = [
-      { name: '陳雅婷', name_en: 'Ya-Ting Chen', dept: '資訊科技', year: '2025', role: '部長', status: 'active', email: 'yaoting@example.com', bio: '負責網站開發與系統維護。', bio_en: 'Handles web development and system maintenance.' },
-      { name: '林子祥', name_en: 'Zi-Xiang Lin', dept: '行銷', year: '2025', role: '副部長', status: 'active', email: 'zixiang@example.com', bio: '社群媒體策略與品牌推廣。', bio_en: 'Social media strategy and brand promotion.' },
-      { name: '王思涵', name_en: 'Si-Han Wang', dept: '設計', year: '2025', role: '部長', status: 'active', email: 'sihan@example.com', bio: '視覺設計與品牌識別。', bio_en: 'Visual design and brand identity.' },
-      { name: '張家豪', name_en: 'Jia-Hao Zhang', dept: '研究', year: '2024', role: '研究員', status: 'alumni', email: 'jiahao@example.com', bio: '專注動物保護政策研究。', bio_en: 'Animal protection policy research.' },
-      { name: '許靜雯', name_en: 'Jing-Wen Xu', dept: '活動', year: '2025', role: '部長', status: 'active', email: 'jingwen@example.com', bio: '活動策劃與執行。', bio_en: 'Event planning and execution.' },
-    ];
-    members.forEach(m => DB.insert('members', m));
-  }
+/* ════════════════════ STORAGE (media bucket) ════════════════════ */
+const Storage = {
+  /**
+   * Upload a File/Blob to the 'media' bucket.
+   * folder: subfolder under 'media/' e.g. 'members', 'projects', 'posts'
+   * Returns the public URL, or null on error.
+   */
+  async upload(file, folder = 'general') {
+    const ext = (file.name || 'file').split('.').pop().toLowerCase() || 'bin';
+    const rand = Math.random().toString(36).slice(2, 10);
+    const path = `${folder}/${Date.now()}-${rand}.${ext}`;
+    const { error } = await sb.storage.from('media').upload(path, file, {
+      cacheControl: '3600',
+      upsert: false,
+      contentType: file.type || undefined
+    });
+    if (error) { console.error('[Storage.upload]', error); showToast('上傳失敗：' + error.message, 'error'); return null; }
+    const { data } = sb.storage.from('media').getPublicUrl(path);
+    return data.publicUrl;
+  },
 
-  /* Projects */
-  if (DB.getAll('projects').length === 0) {
-    const projects = [
-      { title: 'Stray Aid Map', title_en: 'Stray Aid Map', slug: 'stray-aid-map', category: 'animals', status: 'active', year: '2026', summary: '整合全台流浪動物救援資源的互動地圖。', summary_en: 'Interactive map aggregating stray animal rescue resources across Taiwan.' },
-      { title: '流浪動物 TNR 倡議', title_en: 'Stray Animal TNR Advocacy', slug: 'tnr-advocacy', category: 'advocacy', status: 'active', year: '2026', summary: '推廣人道捕捉、絕育、回置政策。', summary_en: 'Promoting humane trap-neuter-return policy.' },
-      { title: '校園流浪貓調查', title_en: 'Campus Stray Cat Survey', slug: 'campus-cat-survey', category: 'research', status: 'completed', year: '2025', summary: '北台灣15所高中校園流浪貓數量與現況調查。', summary_en: 'Survey of stray cat populations across 15 high school campuses in northern Taiwan.' },
-    ];
-    projects.forEach(p => DB.insert('projects', p));
+  /**
+   * Delete a file by its public URL (extracts the storage path).
+   */
+  async delete(publicUrl) {
+    if (!publicUrl) return false;
+    const idx = publicUrl.indexOf('/media/');
+    if (idx === -1) return false;
+    const path = publicUrl.slice(idx + 7);
+    const { error } = await sb.storage.from('media').remove([path]);
+    if (error) { console.error('[Storage.delete]', error); return false; }
+    return true;
   }
-
-  /* Blog posts */
-  if (DB.getAll('posts').length === 0) {
-    const posts = [
-      { title: '台灣流浪動物問題的根源', title_en: 'Root Causes of Taiwan\'s Stray Animal Problem', slug: 'stray-animals-taiwan', category: '報告', status: 'published', author: '研究小組', date: '2025-11-15', summary: '深入分析台灣流浪動物危機的成因與應對方式。', summary_en: 'Deep analysis of the causes of and responses to Taiwan\'s stray animal crisis.' },
-      { title: '認識 TNR：人道捕捉絕育回置', title_en: 'Understanding TNR: Trap-Neuter-Return', slug: 'understanding-tnr', category: '觀點', status: 'published', author: '林子祥', date: '2025-10-01', summary: 'TNR 是什麼？為什麼它是目前控制流浪動物最人道的方式？', summary_en: 'What is TNR and why is it the most humane way to manage stray animal populations?' },
-      { title: '我與一隻橘貓的故事', title_en: 'My Story with an Orange Cat', slug: 'orange-cat-story', category: '故事', status: 'published', author: '王思涵', date: '2025-09-10', summary: '一位義工與校園流浪貓建立情感的紀錄。', summary_en: 'A volunteer\'s account of bonding with a campus stray cat.' },
-      { title: '2025 年度工作報告草稿', title_en: '2025 Annual Report Draft', slug: '2025-annual-report', category: '報告', status: 'draft', author: '陳雅婷', date: '2026-01-01', summary: '尚未發布的年度報告草稿。', summary_en: 'Unpublished draft of the annual report.' },
-    ];
-    posts.forEach(p => DB.insert('posts', p));
-  }
-
-  /* Map locations */
-  if (DB.getAll('map_locations').length === 0) {
-    const locs = [
-      { name: '臺北市動物之家', name_en: 'Taipei Animal Shelter', type: 'shelter', address: '台北市北投區立農街二段350號', address_en: '350 Linong St. Sec.2, Beitou, Taipei', phone: '02-2858-3700', hours: '週二–週日 09:00–17:00', hours_en: 'Tue–Sun 09:00–17:00', lat: '25.1306', lng: '121.4984', status: 'active' },
-      { name: '台大附設動物醫院', name_en: 'NTU Veterinary Hospital', type: 'vet', address: '台北市大安區基隆路三段153號', address_en: '153 Keelung Rd. Sec.3, Da\'an, Taipei', phone: '02-2739-6828', hours: '週一–週五 08:30–17:00', hours_en: 'Mon–Fri 08:30–17:00', lat: '25.0139', lng: '121.5454', status: 'active' },
-      { name: '大安森林公園餵食點', name_en: 'Da\'an Forest Park Feeding Station', type: 'feed', address: '台北市大安區新生南路二段與和平東路口', address_en: 'Xinsheng S. Rd. Sec.2 & Heping E. Rd., Taipei', phone: '', hours: '每日 07:00、18:00', hours_en: 'Daily 07:00 & 18:00', lat: '25.0299', lng: '121.5342', status: 'active' },
-      { name: '台灣動物緊急救援小組', name_en: 'Taiwan Emergency Animal Rescue', type: 'rescue', address: '台北市中山區民權東路三段106巷', address_en: 'Lane 106 Minquan E. Rd. Sec.3, Zhongshan, Taipei', phone: '02-2599-1083', hours: '週一–週五 09:00–18:00（緊急24小時）', hours_en: 'Mon–Fri 09:00–18:00 (Emergency 24hr)', lat: '25.0618', lng: '121.5378', status: 'active' },
-    ];
-    locs.forEach(l => DB.insert('map_locations', l));
-  }
-}
+};
 
 /* ════════════════════ UI UTILITIES ════════════════════ */
 
 /* ── Toast notifications ── */
 let toastContainer;
 function initToasts() {
+  if (toastContainer) return;
   toastContainer = document.createElement('div');
   toastContainer.className = 'toast-container';
   document.body.appendChild(toastContainer);
 }
 
 function showToast(message, type = 'info') {
+  if (!toastContainer) initToasts();
   const icons = { success: '✓', error: '✕', info: 'ℹ' };
   const toast = document.createElement('div');
   toast.className = `toast toast--${type}`;
@@ -195,13 +204,13 @@ function confirmAction(title, text, onConfirm) {
 }
 
 /* ── Sidebar ── */
-function initSidebar() {
-  const session = Auth.get();
-  if (!session) return;
+async function initSidebar() {
+  const user = await Auth.get();
+  if (!user) return;
   const avatar = document.querySelector('.sidebar-avatar');
   const name   = document.querySelector('.sidebar-user-name');
-  if (avatar) avatar.textContent = session.email[0].toUpperCase();
-  if (name)   name.textContent   = session.email;
+  if (avatar) avatar.textContent = (user.email || '?')[0].toUpperCase();
+  if (name)   name.textContent   = user.email || '';
   const logoutBtn = document.querySelector('.btn-logout');
   if (logoutBtn) logoutBtn.addEventListener('click', () => Auth.logout());
 }
@@ -219,33 +228,676 @@ function fmtDate(iso) {
   return new Date(iso).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
 }
 
+/* ════════════════════ I18N ════════════════════ */
+const I18N = {
+  zh: {
+    /* Brand / sidebar */
+    'brand.name': 'TTT Admin',
+    'brand.sub': '管理後台',
+    'nav.main': '主選單',
+    'nav.system': '系統',
+    'nav.dashboard': '儀表板',
+    'nav.members': '團隊成員',
+    'nav.projects': '專案管理',
+    'nav.blog': '部落格文章',
+    'nav.map': '地圖資料點',
+    'nav.settings': '網站設定',
+    'nav.preview': '前台預覽',
+    'user.role.admin': '管理員',
+    'btn.logout': '登出',
+    'btn.view_site': '前台',
+    'btn.save': '儲存',
+    'btn.saving': '儲存中…',
+    'btn.cancel': '取消',
+    'btn.delete': '刪除',
+    'btn.confirm_delete': '確認刪除',
+    'btn.edit': '編輯',
+    'btn.add': '新增',
+    'btn.upload': '上傳',
+    'btn.remove': '移除',
+    'common.home': '首頁',
+    'common.all': '全部',
+    'common.loading': '讀取中…',
+
+    /* Login */
+    'login.brand.sub': 'Admin Panel',
+    'login.title': '歡迎回來',
+    'login.sub': '請輸入管理員帳號登入後台。',
+    'login.email': '電子郵件',
+    'login.password': '密碼',
+    'login.submit': '登入',
+    'login.submitting': '登入中…',
+    'login.hint': '使用管理員帳號登入。忘記密碼請聯絡系統管理員。',
+    'login.err.invalid': '電子郵件或密碼不正確。',
+    'login.err.generic': '登入失敗，請稍後再試。',
+    'login.showpass': '顯示密碼',
+    'login.hidepass': '隱藏密碼',
+    'login.email.ph': 'name@example.com',
+
+    /* Dashboard */
+    'dash.title': '總覽',
+    'dash.crumb.current': '儀表板',
+    'dash.stat.members': '團隊成員',
+    'dash.stat.projects': '進行中專案',
+    'dash.stat.posts': '已發布文章',
+    'dash.stat.locations': '地圖資料點',
+    'dash.panel.activity': '最新動態',
+    'dash.panel.quick': '快速操作',
+    'dash.qa.new_member': '新增團隊成員',
+    'dash.qa.new_project': '新增專案',
+    'dash.qa.new_post': '撰寫新文章',
+    'dash.qa.new_location': '新增地圖資料點',
+    'dash.qa.preview_map': '預覽 Stray Aid Map',
+    'dash.card.members.desc': '新增、編輯、停用成員帳號與個人資料。',
+    'dash.card.projects.desc': '管理專案狀態、分類與展示資訊。',
+    'dash.card.blog': '部落格',
+    'dash.card.blog.desc': '發布、編輯與管理所有文章。',
+    'dash.card.map.desc': '管理流浪動物地圖上的收容所、醫院等資料。',
+    'dash.activity.empty': '尚無動態。',
+    'dash.activity.updated': '已更新',
+    'dash.type.member': '成員',
+    'dash.type.project': '專案',
+    'dash.type.post': '文章',
+    'dash.type.location': '地點',
+
+    /* Members */
+    'members.title': '所有成員',
+    'members.new': '新增成員',
+    'members.edit': '編輯成員',
+    'members.search.ph': '搜尋姓名、部門…',
+    'members.filter.dept': '所有部門',
+    'members.filter.status': '所有狀態',
+    'members.status.active': '現役',
+    'members.status.alumni': '校友',
+    'members.col.name_zh': '姓名',
+    'members.col.name_en': '英文姓名',
+    'members.col.dept': '部門',
+    'members.col.role': '職稱',
+    'members.col.year': '屆別',
+    'members.col.status': '狀態',
+    'members.col.email': '電子郵件',
+    'members.col.actions': '操作',
+    'members.photo.title': '成員大頭照',
+    'members.photo.hint': '建議尺寸 400×400，JPG/PNG，點擊或拖曳上傳',
+    'members.f.name_zh': '中文姓名 *',
+    'members.f.name_en': '英文姓名',
+    'members.f.dept': '部門 *',
+    'members.f.role': '職稱',
+    'members.f.year': '屆別',
+    'members.f.email': '電子郵件',
+    'members.f.status': '狀態',
+    'members.f.bio': '簡介',
+
+    /* Projects */
+    'projects.title': '所有專案',
+    'projects.new': '新增專案',
+    'projects.edit': '編輯專案',
+    'projects.search.ph': '搜尋專案名稱…',
+    'projects.filter.cat': '所有分類',
+    'projects.filter.status': '所有狀態',
+    'projects.status.active': '進行中',
+    'projects.status.archived': '已封存',
+    'projects.status.draft': '草稿',
+    'projects.col.title': '專案名稱',
+    'projects.col.category': '分類',
+    'projects.col.status': '狀態',
+    'projects.col.updated': '最後更新',
+    'projects.col.actions': '操作',
+    'projects.f.title_zh': '中文名稱 *',
+    'projects.f.title_en': '英文名稱',
+    'projects.f.category': '分類 *',
+    'projects.f.status': '狀態',
+    'projects.f.summary_zh': '簡介（中）',
+    'projects.f.summary_en': '簡介（英）',
+    'projects.f.link': '專案連結',
+
+    /* Blog */
+    'blog.title': '所有文章',
+    'blog.new': '撰寫文章',
+    'blog.edit': '編輯文章',
+    'blog.search.ph': '搜尋文章標題…',
+    'blog.filter.status': '所有狀態',
+    'blog.status.published': '已發布',
+    'blog.status.draft': '草稿',
+    'blog.col.title': '標題',
+    'blog.col.author': '作者',
+    'blog.col.status': '狀態',
+    'blog.col.published': '發布日期',
+    'blog.col.actions': '操作',
+    'blog.f.title_zh': '中文標題 *',
+    'blog.f.title_en': '英文標題',
+    'blog.f.author': '作者',
+    'blog.f.status': '狀態',
+    'blog.f.excerpt_zh': '摘要（中）',
+    'blog.f.excerpt_en': '摘要（英）',
+    'blog.f.body_zh': '內文（中）',
+    'blog.f.body_en': '內文（英）',
+
+    /* Map locations */
+    'map.title': '所有資料點',
+    'map.new': '新增資料點',
+    'map.edit': '編輯資料點',
+    'map.search.ph': '搜尋名稱、地址…',
+    'map.filter.type': '所有類型',
+    'map.type.shelter': '收容所',
+    'map.type.vet': '動物醫院',
+    'map.type.feed': '餵食站',
+    'map.type.rescue': '救援站',
+    'map.col.name': '名稱',
+    'map.col.type': '類型',
+    'map.col.city': '城市',
+    'map.col.coord': '座標',
+    'map.col.actions': '操作',
+    'map.f.name': '名稱 *',
+    'map.f.type': '類型 *',
+    'map.f.city': '城市',
+    'map.f.address': '地址',
+    'map.f.phone': '電話',
+    'map.f.lat': '緯度',
+    'map.f.lng': '經度',
+    'map.f.desc': '描述',
+    'map.f.photos': '照片',
+
+    /* Settings */
+    'settings.crumb.current': '網站設定',
+    'settings.title': '網站設定',
+    'settings.sub': '管理前台顯示的文字、圖片與社群連結。',
+    'settings.save_all': '全部儲存',
+    'settings.section.basic': '基本資訊',
+    'settings.section.logo': '網站 Logo',
+    'settings.section.hero': '首頁 Hero 區塊',
+    'settings.section.mission': '使命宣言',
+    'settings.section.pillars': '三大支柱',
+    'settings.section.stats': '統計數字',
+    'settings.section.social': '社群連結',
+    'settings.lang.zh': '中文',
+    'settings.lang.en': 'English',
+    'settings.f.site_name_zh': '組織名稱（中文）',
+    'settings.f.site_name_en': '組織名稱（英文）',
+    'settings.f.email': '聯絡 Email',
+    'settings.f.year': '成立年份',
+    'settings.f.hero_tagline_zh': '主標語（中文）',
+    'settings.f.hero_tagline_en': '主標語（英文）',
+    'settings.f.hero_desc_zh': '描述（中文）',
+    'settings.f.hero_desc_en': '描述（英文）',
+    'settings.f.mission_quote_zh': '金句（中文）',
+    'settings.f.mission_quote_en': '金句（英文）',
+    'settings.f.mission_body_zh': '內文（中文）',
+    'settings.f.mission_body_en': '內文（英文）',
+    'settings.f.pillar': '主軸',
+    'settings.f.title_zh': '標題（中文）',
+    'settings.f.title_en': '標題（英文）',
+    'settings.f.desc_zh': '描述（中文）',
+    'settings.f.desc_en': '描述（英文）',
+    'settings.f.stat_members': '現役成員',
+    'settings.f.stat_projects': '進行中專案',
+    'settings.f.stat_themes': '年度主題',
+    'settings.f.stat_reached': '觸及人次',
+    'settings.f.instagram': 'Instagram 連結',
+    'settings.f.threads': 'Threads 連結',
+    'settings.logo.current': '目前 Logo',
+    'settings.logo.upload_new': '上傳新 Logo',
+    'settings.logo.drop_hint': '點擊或拖曳上傳',
+    'settings.logo.accept_hint': 'PNG、JPG — 建議正方形，最少 256×256',
+    'settings.logo.footnote': 'Logo 會上傳至 Supabase Storage。清除後前台將顯示預設 logo。',
+    'settings.logo.reset': '清除',
+
+    /* Toast / misc */
+    'msg.saved': '已儲存',
+    'msg.deleted': '已刪除',
+    'msg.created': '已新增',
+    'msg.updated': '已更新',
+    'msg.load_fail': '讀取失敗',
+    'msg.save_fail': '儲存失敗',
+    'msg.save_partial_fail': '部分儲存失敗',
+    'msg.confirm_del_title': '確定要刪除嗎？',
+    'msg.confirm_del_text': '此動作無法復原。',
+    'msg.uploading': '上傳中…',
+    'msg.upload_invalid': '請選擇圖片檔案',
+    'msg.logo_uploaded': 'Logo 已上傳（記得儲存）',
+    'msg.logo_will_clear': '將在儲存後清除 Logo',
+    'msg.settings_saved': '設定已儲存',
+  },
+
+  en: {
+    'brand.name': 'TTT Admin',
+    'brand.sub': 'Admin Console',
+    'nav.main': 'Main',
+    'nav.system': 'System',
+    'nav.dashboard': 'Dashboard',
+    'nav.members': 'Team Members',
+    'nav.projects': 'Projects',
+    'nav.blog': 'Blog Posts',
+    'nav.map': 'Map Locations',
+    'nav.settings': 'Site Settings',
+    'nav.preview': 'View Site',
+    'user.role.admin': 'Administrator',
+    'btn.logout': 'Log out',
+    'btn.view_site': 'View site',
+    'btn.save': 'Save',
+    'btn.saving': 'Saving…',
+    'btn.cancel': 'Cancel',
+    'btn.delete': 'Delete',
+    'btn.confirm_delete': 'Confirm delete',
+    'btn.edit': 'Edit',
+    'btn.add': 'Add',
+    'btn.upload': 'Upload',
+    'btn.remove': 'Remove',
+    'common.home': 'Home',
+    'common.all': 'All',
+    'common.loading': 'Loading…',
+
+    'login.brand.sub': 'Admin Panel',
+    'login.title': 'Welcome back',
+    'login.sub': 'Sign in with your admin credentials to continue.',
+    'login.email': 'Email',
+    'login.password': 'Password',
+    'login.submit': 'Sign in',
+    'login.submitting': 'Signing in…',
+    'login.hint': 'Admin access only. Contact your system administrator if you forgot your password.',
+    'login.err.invalid': 'Incorrect email or password.',
+    'login.err.generic': 'Sign-in failed. Please try again later.',
+    'login.showpass': 'Show password',
+    'login.hidepass': 'Hide password',
+    'login.email.ph': 'name@example.com',
+
+    'dash.title': 'Overview',
+    'dash.crumb.current': 'Dashboard',
+    'dash.stat.members': 'Team Members',
+    'dash.stat.projects': 'Active Projects',
+    'dash.stat.posts': 'Published Posts',
+    'dash.stat.locations': 'Map Locations',
+    'dash.panel.activity': 'Recent Activity',
+    'dash.panel.quick': 'Quick Actions',
+    'dash.qa.new_member': 'Add team member',
+    'dash.qa.new_project': 'Add project',
+    'dash.qa.new_post': 'Write post',
+    'dash.qa.new_location': 'Add map location',
+    'dash.qa.preview_map': 'Preview Stray Aid Map',
+    'dash.card.members.desc': 'Create, edit, and deactivate team accounts and profiles.',
+    'dash.card.projects.desc': 'Manage project status, categories, and display details.',
+    'dash.card.blog': 'Blog',
+    'dash.card.blog.desc': 'Publish, edit, and manage all posts.',
+    'dash.card.map.desc': 'Manage shelters, clinics, and other points on the stray-aid map.',
+    'dash.activity.empty': 'No recent activity.',
+    'dash.activity.updated': 'updated',
+    'dash.type.member': 'Member',
+    'dash.type.project': 'Project',
+    'dash.type.post': 'Post',
+    'dash.type.location': 'Location',
+
+    'members.title': 'All Members',
+    'members.new': 'Add Member',
+    'members.edit': 'Edit Member',
+    'members.search.ph': 'Search name, department…',
+    'members.filter.dept': 'All departments',
+    'members.filter.status': 'All statuses',
+    'members.status.active': 'Active',
+    'members.status.alumni': 'Alumni',
+    'members.col.name_zh': 'Name (ZH)',
+    'members.col.name_en': 'Name (EN)',
+    'members.col.dept': 'Department',
+    'members.col.role': 'Role',
+    'members.col.year': 'Cohort',
+    'members.col.status': 'Status',
+    'members.col.email': 'Email',
+    'members.col.actions': 'Actions',
+    'members.photo.title': 'Profile photo',
+    'members.photo.hint': 'Recommended 400×400, JPG/PNG. Click or drop to upload.',
+    'members.f.name_zh': 'Chinese name *',
+    'members.f.name_en': 'English name',
+    'members.f.dept': 'Department *',
+    'members.f.role': 'Role',
+    'members.f.year': 'Cohort',
+    'members.f.email': 'Email',
+    'members.f.status': 'Status',
+    'members.f.bio': 'Bio',
+
+    'projects.title': 'All Projects',
+    'projects.new': 'New Project',
+    'projects.edit': 'Edit Project',
+    'projects.search.ph': 'Search project name…',
+    'projects.filter.cat': 'All categories',
+    'projects.filter.status': 'All statuses',
+    'projects.status.active': 'Active',
+    'projects.status.archived': 'Archived',
+    'projects.status.draft': 'Draft',
+    'projects.col.title': 'Project',
+    'projects.col.category': 'Category',
+    'projects.col.status': 'Status',
+    'projects.col.updated': 'Last updated',
+    'projects.col.actions': 'Actions',
+    'projects.f.title_zh': 'Chinese title *',
+    'projects.f.title_en': 'English title',
+    'projects.f.category': 'Category *',
+    'projects.f.status': 'Status',
+    'projects.f.summary_zh': 'Summary (ZH)',
+    'projects.f.summary_en': 'Summary (EN)',
+    'projects.f.link': 'Project link',
+
+    'blog.title': 'All Posts',
+    'blog.new': 'Write Post',
+    'blog.edit': 'Edit Post',
+    'blog.search.ph': 'Search post title…',
+    'blog.filter.status': 'All statuses',
+    'blog.status.published': 'Published',
+    'blog.status.draft': 'Draft',
+    'blog.col.title': 'Title',
+    'blog.col.author': 'Author',
+    'blog.col.status': 'Status',
+    'blog.col.published': 'Published',
+    'blog.col.actions': 'Actions',
+    'blog.f.title_zh': 'Chinese title *',
+    'blog.f.title_en': 'English title',
+    'blog.f.author': 'Author',
+    'blog.f.status': 'Status',
+    'blog.f.excerpt_zh': 'Excerpt (ZH)',
+    'blog.f.excerpt_en': 'Excerpt (EN)',
+    'blog.f.body_zh': 'Body (ZH)',
+    'blog.f.body_en': 'Body (EN)',
+
+    'map.title': 'All Locations',
+    'map.new': 'Add Location',
+    'map.edit': 'Edit Location',
+    'map.search.ph': 'Search name, address…',
+    'map.filter.type': 'All types',
+    'map.type.shelter': 'Shelter',
+    'map.type.vet': 'Vet clinic',
+    'map.type.feed': 'Feeding station',
+    'map.type.rescue': 'Rescue base',
+    'map.col.name': 'Name',
+    'map.col.type': 'Type',
+    'map.col.city': 'City',
+    'map.col.coord': 'Coordinates',
+    'map.col.actions': 'Actions',
+    'map.f.name': 'Name *',
+    'map.f.type': 'Type *',
+    'map.f.city': 'City',
+    'map.f.address': 'Address',
+    'map.f.phone': 'Phone',
+    'map.f.lat': 'Latitude',
+    'map.f.lng': 'Longitude',
+    'map.f.desc': 'Description',
+    'map.f.photos': 'Photos',
+
+    'settings.crumb.current': 'Site Settings',
+    'settings.title': 'Site Settings',
+    'settings.sub': 'Manage front-end text, images, and social links.',
+    'settings.save_all': 'Save all',
+    'settings.section.basic': 'Basic Info',
+    'settings.section.logo': 'Site Logo',
+    'settings.section.hero': 'Homepage Hero',
+    'settings.section.mission': 'Mission Statement',
+    'settings.section.pillars': 'Three Pillars',
+    'settings.section.stats': 'Stats',
+    'settings.section.social': 'Social Links',
+    'settings.lang.zh': '中文',
+    'settings.lang.en': 'English',
+    'settings.f.site_name_zh': 'Organization name (Chinese)',
+    'settings.f.site_name_en': 'Organization name (English)',
+    'settings.f.email': 'Contact email',
+    'settings.f.year': 'Founded year',
+    'settings.f.hero_tagline_zh': 'Tagline (Chinese)',
+    'settings.f.hero_tagline_en': 'Tagline (English)',
+    'settings.f.hero_desc_zh': 'Description (Chinese)',
+    'settings.f.hero_desc_en': 'Description (English)',
+    'settings.f.mission_quote_zh': 'Quote (Chinese)',
+    'settings.f.mission_quote_en': 'Quote (English)',
+    'settings.f.mission_body_zh': 'Body (Chinese)',
+    'settings.f.mission_body_en': 'Body (English)',
+    'settings.f.pillar': 'Pillar',
+    'settings.f.title_zh': 'Title (Chinese)',
+    'settings.f.title_en': 'Title (English)',
+    'settings.f.desc_zh': 'Description (Chinese)',
+    'settings.f.desc_en': 'Description (English)',
+    'settings.f.stat_members': 'Active members',
+    'settings.f.stat_projects': 'Active projects',
+    'settings.f.stat_themes': 'Annual themes',
+    'settings.f.stat_reached': 'People reached',
+    'settings.f.instagram': 'Instagram URL',
+    'settings.f.threads': 'Threads URL',
+    'settings.logo.current': 'Current logo',
+    'settings.logo.upload_new': 'Upload new logo',
+    'settings.logo.drop_hint': 'Click or drag to upload',
+    'settings.logo.accept_hint': 'PNG, JPG — square recommended, min 256×256',
+    'settings.logo.footnote': 'Logo is uploaded to Supabase Storage. Clearing restores the default logo.',
+    'settings.logo.reset': 'Clear',
+
+    'msg.saved': 'Saved',
+    'msg.deleted': 'Deleted',
+    'msg.created': 'Created',
+    'msg.updated': 'Updated',
+    'msg.load_fail': 'Load failed',
+    'msg.save_fail': 'Save failed',
+    'msg.save_partial_fail': 'Some items failed to save',
+    'msg.confirm_del_title': 'Delete this item?',
+    'msg.confirm_del_text': 'This action cannot be undone.',
+    'msg.uploading': 'Uploading…',
+    'msg.upload_invalid': 'Please select an image file',
+    'msg.logo_uploaded': 'Logo uploaded (remember to save)',
+    'msg.logo_will_clear': 'Logo will be cleared on save',
+    'msg.settings_saved': 'Settings saved',
+  }
+};
+
+const LANG_KEY = 'ttt-admin-lang';
+
+function getLang() {
+  const saved = localStorage.getItem(LANG_KEY);
+  return (saved === 'en' || saved === 'zh') ? saved : 'zh';
+}
+
+function setLang(lang) {
+  localStorage.setItem(LANG_KEY, lang);
+  document.documentElement.lang = (lang === 'en' ? 'en' : 'zh-TW');
+  applyI18n();
+  document.querySelectorAll('[data-lang-btn]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.langBtn === lang);
+  });
+  document.dispatchEvent(new CustomEvent('admin-lang-changed', { detail: lang }));
+}
+
+function t(key) {
+  const lang = getLang();
+  return (I18N[lang] && I18N[lang][key]) || (I18N.zh && I18N.zh[key]) || key;
+}
+
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t(key);
+    if (val) el.textContent = val;
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    const val = t(key);
+    if (val) el.setAttribute('placeholder', val);
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => {
+    const key = el.dataset.i18nTitle;
+    const val = t(key);
+    if (val) el.setAttribute('title', val);
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.dataset.i18nAria;
+    const val = t(key);
+    if (val) el.setAttribute('aria-label', val);
+  });
+  /* Document title */
+  const titleEl = document.querySelector('title[data-i18n-title-key]');
+  if (titleEl) {
+    const baseKey = titleEl.dataset.i18nTitleKey;
+    const baseVal = t(baseKey);
+    if (baseVal) titleEl.textContent = `TTT Admin — ${baseVal}`;
+  }
+}
+
+/* Inject language toggle into sidebar footer (admin pages) */
+function injectSidebarLangToggle() {
+  const footer = document.querySelector('.sidebar-footer');
+  if (!footer || footer.querySelector('.sidebar-lang')) return;
+  const cur = getLang();
+  const wrap = document.createElement('div');
+  wrap.className = 'sidebar-lang';
+  wrap.innerHTML = `
+    <button type="button" data-lang-btn="zh" class="${cur==='zh'?'active':''}">中文</button>
+    <button type="button" data-lang-btn="en" class="${cur==='en'?'active':''}">EN</button>`;
+  const user = footer.querySelector('.sidebar-user');
+  footer.insertBefore(wrap, user || footer.firstChild);
+  wrap.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => setLang(b.dataset.langBtn));
+  });
+}
+
+/* Inject language toggle into login page (top-right of body) */
+function injectLoginLangToggle() {
+  if (document.querySelector('.login-lang')) return;
+  const page = document.querySelector('.login-page');
+  if (!page) return;
+  const cur = getLang();
+  const wrap = document.createElement('div');
+  wrap.className = 'login-lang';
+  wrap.innerHTML = `
+    <button type="button" data-lang-btn="zh" class="${cur==='zh'?'active':''}">中文</button>
+    <button type="button" data-lang-btn="en" class="${cur==='en'?'active':''}">EN</button>`;
+  page.appendChild(wrap);
+  wrap.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => setLang(b.dataset.langBtn));
+  });
+}
+
 /* ════════════════════ PAGE INIT ════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  seedIfEmpty();
+document.addEventListener('DOMContentLoaded', async () => {
   initToasts();
   initModals();
-  initSidebar();
+  document.documentElement.lang = (getLang() === 'en' ? 'en' : 'zh-TW');
 
-  /* Login form */
+  /* ── Login page ── */
   const loginForm = document.getElementById('login-form');
   if (loginForm) {
+    injectLoginLangToggle();
+    applyI18n();
+
     const emailIn = document.getElementById('login-email');
     const passIn  = document.getElementById('login-pass');
     const errEl   = document.getElementById('login-error');
-    loginForm.addEventListener('submit', e => {
+    const btn     = loginForm.querySelector('button[type="submit"]');
+
+    /* Password show/hide toggle */
+    const pwToggle = document.getElementById('password-toggle');
+    if (pwToggle) {
+      pwToggle.addEventListener('click', () => {
+        const showing = passIn.type === 'password';
+        passIn.type = showing ? 'text' : 'password';
+        pwToggle.classList.toggle('shown', showing);
+        const label = showing ? t('login.hidepass') : t('login.showpass');
+        pwToggle.setAttribute('aria-label', label);
+        pwToggle.setAttribute('title', label);
+      });
+    }
+
+    loginForm.addEventListener('submit', async e => {
       e.preventDefault();
-      if (Auth.login(emailIn.value.trim(), passIn.value)) {
+      errEl.classList.remove('show');
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = t('login.submitting');
+
+      const { ok, error } = await Auth.login(emailIn.value.trim(), passIn.value);
+      if (ok) {
         window.location.href = 'dashboard.html';
       } else {
-        errEl.textContent = '電子郵件或密碼不正確。';
+        errEl.textContent = error === 'Invalid login credentials'
+          ? t('login.err.invalid')
+          : (error || t('login.err.generic'));
         errEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = originalText;
       }
     });
+
     /* If already logged in, skip login */
-    if (Auth.get()) window.location.href = 'dashboard.html';
+    const existing = await Auth.get();
+    if (existing) window.location.href = 'dashboard.html';
     return;
   }
 
-  /* All other admin pages: check auth */
-  if (!document.querySelector('.login-page')) Auth.check();
+  /* ── All other admin pages: require auth ── */
+  if (!document.querySelector('.login-page')) {
+    const user = await Auth.check();
+    if (user) {
+      await initSidebar();
+      injectSidebarLangToggle();
+      applyI18n();
+    }
+  }
 });
+
+/* ════════════════════ IMAGE UTILITIES ════════════════════ */
+
+/**
+ * Compress an image File → Blob (JPEG) with max dimensions.
+ * Non-image files (video, SVG, GIF) pass through unchanged.
+ */
+function compressImage(file, maxW = 1600, maxH = 1600, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const passthrough = !file.type.startsWith('image/')
+      || file.type === 'image/gif'
+      || file.type === 'image/svg+xml';
+    if (passthrough) { resolve(file); return; }
+
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = e => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+        const w = Math.round(img.width  * ratio);
+        const h = Math.round(img.height * ratio);
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        cv.toBlob(blob => {
+          if (!blob) { reject(new Error('Canvas toBlob failed')); return; }
+          /* Wrap Blob as File so Storage.upload can use .name */
+          const out = new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' });
+          resolve(out);
+        }, 'image/jpeg', quality);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * High-level helper: compress (if image) then upload to Storage.
+ * Returns the public URL.
+ */
+async function uploadToMedia(file, folder = 'general', opts = {}) {
+  const { maxW = 1600, maxH = 1600, quality = 0.85, compress = true } = opts;
+  const toUpload = (compress && file.type.startsWith('image/'))
+    ? await compressImage(file, maxW, maxH, quality)
+    : file;
+  return await Storage.upload(toUpload, folder);
+}
+
+/**
+ * Wire a drop-zone element + hidden <input type="file"> to a callback.
+ * onFiles(files[]) receives the raw File objects (no compression).
+ * Caller is responsible for uploading / processing.
+ */
+function bindUploadZone(zoneEl, inputEl, onFiles) {
+  zoneEl.addEventListener('click', () => inputEl.click());
+  zoneEl.addEventListener('dragover',  e => { e.preventDefault(); zoneEl.classList.add('drag-over'); });
+  zoneEl.addEventListener('dragleave', () => zoneEl.classList.remove('drag-over'));
+  zoneEl.addEventListener('drop', e => {
+    e.preventDefault(); zoneEl.classList.remove('drag-over');
+    onFiles([...e.dataTransfer.files]);
+  });
+  inputEl.addEventListener('change', () => {
+    onFiles([...inputEl.files]);
+    inputEl.value = '';
+  });
+}

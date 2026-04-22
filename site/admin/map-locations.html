@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>地圖資料點 — TTT Admin</title>
-  <link rel="stylesheet" href="css/admin.css" />
+  <title data-i18n-title-key="nav.map">TTT Admin — 地圖資料點</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     #preview-map { height: 200px; border-radius: .4rem; overflow: hidden; margin-top: .5rem; }
@@ -18,67 +19,63 @@
 <div class="admin-layout">
   <aside class="admin-sidebar" id="admin-sidebar">
     <div class="sidebar-brand">
-      <svg viewBox="0 0 120 130" fill="none" width="24" height="26">
-        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
-      </svg>
-      <div><div class="sidebar-brand-text">TTT Admin</div><div class="sidebar-brand-sub">管理後台</div></div>
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">主選單</div>
-      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>儀表板</a>
-      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>團隊成員</a>
-      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>專案管理</a>
-      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>部落格文章</a>
-      <a href="map-locations.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>地圖資料點</a>
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
+      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
+      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
+      <a href="map-locations.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
+      <a href="settings.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">系統</div>
-      <a href="../projects/stray-aid-map.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>預覽地圖</a>
-      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>前台預覽</a>
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="../projects/stray-aid-map.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span>Stray Aid Map</span></a>
+      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
     </div>
     <div class="sidebar-footer">
-      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role">管理員</div></div></div>
-      <button class="btn-logout">登出</button>
+      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
     </div>
   </aside>
 
   <div class="admin-main">
     <div class="admin-topbar">
-      <div class="topbar-breadcrumb"><a href="dashboard.html">首頁</a><span>/</span><span style="color:var(--text)">地圖資料點</span></div>
+      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.map">地圖資料點</span></div>
       <div class="topbar-actions">
-        <a href="../projects/stray-aid-map.html" target="_blank" class="btn btn--outline btn--sm">預覽地圖</a>
+        <a href="../projects/stray-aid-map.html" target="_blank" class="btn btn--outline btn--sm">Stray Aid Map</a>
         <button class="btn btn--primary btn--sm" id="btn-new-loc">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          新增資料點
+          <span data-i18n="map.new">新增資料點</span>
         </button>
       </div>
     </div>
 
     <div class="admin-content">
-      <!-- Stats strip -->
       <div class="stats-grid" id="loc-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.25rem"></div>
 
       <div class="panel">
         <div class="panel__header">
-          <div class="panel__title">所有資料點</div>
+          <div class="panel__title" data-i18n="map.title">所有資料點</div>
           <div class="panel__toolbar">
             <div class="search-input">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input type="text" id="search-locs" placeholder="搜尋名稱、地址…" />
+              <input type="text" id="search-locs" data-i18n-ph="map.search.ph" placeholder="搜尋名稱、地址…" />
             </div>
             <select class="select-input" id="filter-loctype">
-              <option value="">所有類型</option>
-              <option value="shelter">收容所</option>
-              <option value="vet">動物醫院</option>
-              <option value="feed">餵食點</option>
-              <option value="rescue">救援站</option>
+              <option value="" data-i18n="map.filter.type">所有類型</option>
+              <option value="shelter" data-i18n="map.type.shelter">收容所</option>
+              <option value="vet" data-i18n="map.type.vet">動物醫院</option>
+              <option value="feed" data-i18n="map.type.feed">餵食點</option>
+              <option value="rescue" data-i18n="map.type.rescue">救援站</option>
             </select>
             <select class="select-input" id="filter-locstatus">
-              <option value="">所有狀態</option>
-              <option value="active">啟用</option>
-              <option value="inactive">停用</option>
+              <option value="">—</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
             </select>
           </div>
         </div>
@@ -86,13 +83,14 @@
           <table>
             <thead>
               <tr>
-                <th>名稱</th>
-                <th>類型</th>
-                <th>地址</th>
-                <th>電話</th>
-                <th>座標</th>
-                <th>狀態</th>
-                <th style="text-align:right">操作</th>
+                <th data-i18n="map.col.name">名稱</th>
+                <th data-i18n="map.col.type">類型</th>
+                <th data-i18n="map.f.address">地址</th>
+                <th data-i18n="map.f.phone">電話</th>
+                <th data-i18n="map.col.coord">座標</th>
+                <th>Photos</th>
+                <th>Status</th>
+                <th style="text-align:right" data-i18n="map.col.actions">操作</th>
               </tr>
             </thead>
             <tbody id="locs-tbody"></tbody>
@@ -111,93 +109,100 @@
 <div class="modal-backdrop" id="loc-modal">
   <div class="modal modal--lg">
     <div class="modal__header">
-      <div class="modal__title" id="loc-modal-title">新增資料點</div>
+      <div class="modal__title" id="loc-modal-title" data-i18n="map.new">新增資料點</div>
       <button class="modal__close" data-close-modal>✕</button>
     </div>
     <div class="modal__body">
       <input type="hidden" id="loc-id" />
       <div class="field-row">
         <div class="field">
-          <label class="field-label">名稱（中文）*</label>
+          <label class="field-label" data-i18n="map.f.name">名稱 *</label>
           <input class="field-input" id="l-name" placeholder="臺北市動物之家" required />
         </div>
         <div class="field">
-          <label class="field-label">名稱（英文）</label>
+          <label class="field-label">Name (EN)</label>
           <input class="field-input" id="l-name-en" placeholder="Taipei Animal Shelter" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">類型 *</label>
+          <label class="field-label" data-i18n="map.f.type">類型 *</label>
           <select class="field-select" id="l-type">
-            <option value="">選擇類型</option>
-            <option value="shelter">收容所</option>
-            <option value="vet">動物醫院</option>
-            <option value="feed">餵食點</option>
-            <option value="rescue">救援站</option>
+            <option value="">—</option>
+            <option value="shelter" data-i18n="map.type.shelter">收容所</option>
+            <option value="vet" data-i18n="map.type.vet">動物醫院</option>
+            <option value="feed" data-i18n="map.type.feed">餵食點</option>
+            <option value="rescue" data-i18n="map.type.rescue">救援站</option>
           </select>
         </div>
         <div class="field">
-          <label class="field-label">狀態</label>
+          <label class="field-label">Status</label>
           <select class="field-select" id="l-status">
-            <option value="active">啟用</option>
-            <option value="inactive">停用</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
           </select>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">地址（中文）</label>
+        <label class="field-label" data-i18n="map.f.address">地址</label>
         <input class="field-input" id="l-address" placeholder="台北市北投區立農街二段350號" />
       </div>
       <div class="field">
-        <label class="field-label">地址（英文）</label>
+        <label class="field-label">Address (EN)</label>
         <input class="field-input" id="l-address-en" placeholder="350 Linong St. Sec.2, Beitou, Taipei" />
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">電話</label>
+          <label class="field-label" data-i18n="map.f.phone">電話</label>
           <input class="field-input" id="l-phone" placeholder="02-2858-3700" />
         </div>
         <div class="field">
-          <label class="field-label">狀態</label>
           <select class="field-select" id="l-status2" style="display:none"></select>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">開放時間（中文）</label>
+        <label class="field-label">Hours (中)</label>
         <input class="field-input" id="l-hours" placeholder="週二–週日 09:00–17:00" />
       </div>
       <div class="field">
-        <label class="field-label">開放時間（英文）</label>
+        <label class="field-label">Hours (EN)</label>
         <input class="field-input" id="l-hours-en" placeholder="Tue–Sun 09:00–17:00" />
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">緯度 (Lat)</label>
+          <label class="field-label" data-i18n="map.f.lat">緯度</label>
           <input class="field-input" id="l-lat" placeholder="25.1306" oninput="updatePreviewMap()" />
         </div>
         <div class="field">
-          <label class="field-label">經度 (Lng)</label>
+          <label class="field-label" data-i18n="map.f.lng">經度</label>
           <input class="field-input" id="l-lng" placeholder="121.4984" oninput="updatePreviewMap()" />
         </div>
       </div>
       <div class="field">
-        <label class="field-label">地圖預覽</label>
+        <label class="field-label">Map preview</label>
         <div id="preview-map"></div>
-        <div class="field-hint">輸入座標後地圖自動更新。可前往 <a href="https://www.google.com/maps" target="_blank" style="color:var(--accent)">Google Maps</a> 右鍵複製座標。</div>
+        <div class="field-hint">→ <a href="https://www.google.com/maps" target="_blank" style="color:var(--accent)">Google Maps</a></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" data-i18n="map.f.photos">照片</label>
+        <div class="photo-upload-section">
+          <div class="photo-gallery" id="loc-photo-gallery"></div>
+        </div>
+        <input type="file" id="loc-photo-input" accept="image/*" multiple style="display:none" />
       </div>
     </div>
     <div class="modal__footer">
-      <button class="btn btn--outline" data-close-modal>取消</button>
-      <button class="btn btn--primary" id="btn-save-loc">儲存</button>
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--primary" id="btn-save-loc" data-i18n="btn.save">儲存</button>
     </div>
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=3"></script>
 <script>
-const TYPE_LABEL  = { shelter:'收容所', vet:'動物醫院', feed:'餵食點', rescue:'救援站' };
 const TYPE_BADGE  = { shelter:'badge--shelter', vet:'badge--vet', feed:'badge--feed', rescue:'badge--rescue' };
 const TYPE_COLOR  = { shelter:'#2ECAD4', vet:'#7fb285', feed:'#c9a96e', rescue:'#e07070' };
 const TYPE_ICON   = { shelter:'🏠', vet:'🏥', feed:'🍽️', rescue:'🚑' };
@@ -206,45 +211,101 @@ let allLocs = [], filteredLocs = [];
 const PAGE_SIZE = 10;
 let currentPage = 1;
 let previewMap, previewMarker;
+let locPhotos = [];
+const MAX_LOC_PHOTOS = 6;
 
-/* ── Stats strip ── */
+function getTypeLabels() {
+  return {
+    shelter: t('map.type.shelter'),
+    vet: t('map.type.vet'),
+    feed: t('map.type.feed'),
+    rescue: t('map.type.rescue'),
+  };
+}
+
+function renderLocPhotos() {
+  const gallery = document.getElementById('loc-photo-gallery');
+  if (!gallery) return;
+  let html = locPhotos.map((src, i) => `
+    <div class="photo-thumb">
+      <img src="${src}" alt="photo ${i+1}">
+      <button class="photo-thumb__del" onclick="removeLocPhoto(${i})">✕</button>
+    </div>`).join('');
+  if (locPhotos.length < MAX_LOC_PHOTOS) {
+    html += `
+      <div class="photo-add-tile" id="photo-add-tile">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        ${t('btn.upload')}
+      </div>`;
+  }
+  gallery.innerHTML = html;
+  const tile = document.getElementById('photo-add-tile');
+  if (tile) tile.addEventListener('click', () => document.getElementById('loc-photo-input').click());
+}
+
+function removeLocPhoto(idx) {
+  locPhotos.splice(idx, 1);
+  renderLocPhotos();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('loc-photo-input');
+  input.addEventListener('change', async () => {
+    const files = [...input.files].slice(0, MAX_LOC_PHOTOS - locPhotos.length);
+    for (const f of files) {
+      const url = await uploadToMedia(f, 'map_locations', { maxW: 900, maxH: 675, quality: 0.82 });
+      if (url) locPhotos.push(url);
+    }
+    input.value = '';
+    renderLocPhotos();
+  });
+});
+
 function renderStats() {
+  const labels = getTypeLabels();
   const counts = { shelter:0, vet:0, feed:0, rescue:0 };
   allLocs.forEach(l => { if (counts[l.type] !== undefined) counts[l.type]++; });
   document.getElementById('loc-stats').innerHTML = Object.entries(counts).map(([type, n]) => `
     <div class="stat-card">
       <div class="stat-card__icon">${TYPE_ICON[type]}</div>
       <div class="stat-card__value">${n}</div>
-      <div class="stat-card__label">${TYPE_LABEL[type]}</div>
+      <div class="stat-card__label">${labels[type]}</div>
     </div>`).join('');
 }
 
-/* ── Table ── */
 function renderTable() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = filteredLocs.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('locs-tbody');
+  const labels = getTypeLabels();
+  const tEdit = t('btn.edit');
+  const tDel = t('btn.delete');
 
   if (filteredLocs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state__icon">📍</div><div class="empty-state__title">找不到資料點</div><div class="empty-state__text">請調整篩選條件或新增資料點。</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon">📍</div><div class="empty-state__title">—</div></div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = page.map(l => `
     <tr>
       <td class="td-name">${l.name}</td>
-      <td>${l.type ? `<span class="badge ${TYPE_BADGE[l.type]||'badge--gray'}">${TYPE_LABEL[l.type]||l.type}</span>` : '—'}</td>
+      <td>${l.type ? `<span class="badge ${TYPE_BADGE[l.type]||'badge--gray'}">${labels[l.type]||l.type}</span>` : '—'}</td>
       <td style="font-size:.78rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.address || '—'}</td>
       <td class="td-mono">${l.phone || '—'}</td>
       <td class="td-mono" style="font-size:.7rem;color:var(--text-3)">${l.lat && l.lng ? `${l.lat}, ${l.lng}` : '—'}</td>
-      <td><span class="badge ${l.status==='active'?'badge--green':'badge--gray'}">${l.status==='active'?'啟用':'停用'}</span></td>
+      <td>
+        ${l.photos && l.photos.length
+          ? `<span class="photo-count-badge">📷 ${l.photos.length}</span>`
+          : `<span style="color:var(--text-3);font-size:.72rem">—</span>`}
+      </td>
+      <td><span class="badge ${l.status==='active'?'badge--green':'badge--gray'}">${l.status||'—'}</span></td>
       <td><div class="td-actions">
-        <button class="btn btn--ghost btn--sm" onclick="editLoc(${l.id})">編輯</button>
-        <button class="btn btn--danger-ghost btn--sm" onclick="deleteLoc(${l.id})">刪除</button>
+        <button class="btn btn--ghost btn--sm" onclick="editLoc('${l.id}')">${tEdit}</button>
+        <button class="btn btn--danger-ghost btn--sm" onclick="deleteLoc('${l.id}')">${tDel}</button>
       </div></td>
     </tr>`).join('');
 
-  document.getElementById('locs-count').textContent = `共 ${filteredLocs.length} 筆`;
+  document.getElementById('locs-count').textContent = `${filteredLocs.length}`;
   const total = Math.ceil(filteredLocs.length / PAGE_SIZE);
   document.getElementById('locs-pages').innerHTML = total <= 1 ? '' :
     Array.from({length:total},(_,i)=>`<button class="page-btn${i+1===currentPage?' active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
@@ -264,7 +325,6 @@ function applyFilter() {
   renderTable();
 }
 
-/* ── Preview map ── */
 function initPreviewMap() {
   previewMap = L.map('preview-map', { zoomControl: true, attributionControl: false });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(previewMap);
@@ -281,15 +341,16 @@ function updatePreviewMap() {
   previewMap.setView([lat, lng], 14);
 }
 
-/* ── Form ── */
 function openNewModal() {
   document.getElementById('loc-id').value = '';
-  document.getElementById('loc-modal-title').textContent = '新增資料點';
+  document.getElementById('loc-modal-title').textContent = t('map.new');
   ['name','name-en','address','address-en','phone','hours','hours-en','lat','lng'].forEach(f => {
     const el = document.getElementById('l-'+f); if (el) el.value = '';
   });
   document.getElementById('l-type').value   = '';
   document.getElementById('l-status').value = 'active';
+  locPhotos = [];
+  renderLocPhotos();
   openModal('loc-modal');
   setTimeout(() => {
     if (!previewMap) initPreviewMap();
@@ -299,11 +360,11 @@ function openNewModal() {
   }, 100);
 }
 
-function editLoc(id) {
-  const l = DB.getById('map_locations', id);
+async function editLoc(id) {
+  const l = await DB.getById('map_locations', id);
   if (!l) return;
   document.getElementById('loc-id').value       = l.id;
-  document.getElementById('loc-modal-title').textContent = '編輯資料點';
+  document.getElementById('loc-modal-title').textContent = t('map.edit');
   document.getElementById('l-name').value       = l.name || '';
   document.getElementById('l-name-en').value    = l.name_en || '';
   document.getElementById('l-type').value       = l.type || '';
@@ -315,6 +376,8 @@ function editLoc(id) {
   document.getElementById('l-hours-en').value   = l.hours_en || '';
   document.getElementById('l-lat').value        = l.lat || '';
   document.getElementById('l-lng').value        = l.lng || '';
+  locPhotos = Array.isArray(l.photos) ? [...l.photos] : [];
+  renderLocPhotos();
   openModal('loc-modal');
   setTimeout(() => {
     if (!previewMap) initPreviewMap();
@@ -323,19 +386,21 @@ function editLoc(id) {
   }, 100);
 }
 
-function deleteLoc(id) {
-  const l = DB.getById('map_locations', id);
-  confirmAction('確認刪除', `確定要刪除「${l.name}」嗎？`, () => {
-    DB.delete('map_locations', id);
-    allLocs = DB.getAll('map_locations');
+async function deleteLoc(id) {
+  const l = await DB.getById('map_locations', id);
+  if (!l) return;
+  confirmAction(t('msg.confirm_del_title'), `${l.name} — ${t('msg.confirm_del_text')}`, async () => {
+    const ok = await DB.delete('map_locations', id);
+    if (!ok) return;
+    allLocs = await DB.getAll('map_locations');
     renderStats();
     applyFilter();
-    showToast('資料點已刪除', 'success');
+    showToast(t('msg.deleted'), 'success');
   });
 }
 
-document.getElementById('btn-save-loc').addEventListener('click', () => {
-  const id = parseInt(document.getElementById('loc-id').value) || null;
+document.getElementById('btn-save-loc').addEventListener('click', async () => {
+  const id = document.getElementById('loc-id').value || null;
   const data = {
     name:       document.getElementById('l-name').value.trim(),
     name_en:    document.getElementById('l-name-en').value.trim(),
@@ -346,15 +411,22 @@ document.getElementById('btn-save-loc').addEventListener('click', () => {
     phone:      document.getElementById('l-phone').value.trim(),
     hours:      document.getElementById('l-hours').value.trim(),
     hours_en:   document.getElementById('l-hours-en').value.trim(),
-    lat:        document.getElementById('l-lat').value.trim(),
-    lng:        document.getElementById('l-lng').value.trim(),
+    lat:        parseFloat(document.getElementById('l-lat').value) || null,
+    lng:        parseFloat(document.getElementById('l-lng').value) || null,
+    photos:     [...locPhotos],
   };
-  if (!data.name) { showToast('請填寫名稱', 'error'); return; }
-  if (!data.type) { showToast('請選擇類型', 'error'); return; }
-  if (id) { DB.update('map_locations', id, data); showToast('資料點已更新', 'success'); }
-  else     { DB.insert('map_locations', data);    showToast('資料點已新增', 'success'); }
+  if (!data.name) { showToast(t('msg.save_fail'), 'error'); return; }
+  if (!data.type) { showToast(t('msg.save_fail'), 'error'); return; }
+  const btn = document.getElementById('btn-save-loc');
+  btn.disabled = true;
+  const result = id
+    ? await DB.update('map_locations', id, data)
+    : await DB.insert('map_locations', data);
+  btn.disabled = false;
+  if (!result) return;
+  showToast(id ? t('msg.updated') : t('msg.created'), 'success');
   closeModal('loc-modal');
-  allLocs = DB.getAll('map_locations');
+  allLocs = await DB.getAll('map_locations');
   renderStats();
   applyFilter();
 });
@@ -364,13 +436,16 @@ document.getElementById('search-locs').addEventListener('input', applyFilter);
 document.getElementById('filter-loctype').addEventListener('change', applyFilter);
 document.getElementById('filter-locstatus').addEventListener('change', applyFilter);
 
-document.addEventListener('DOMContentLoaded', () => {
-  allLocs = DB.getAll('map_locations');
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  allLocs = await DB.getAll('map_locations');
   filteredLocs = allLocs;
   renderStats();
   renderTable();
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();
 });
+document.addEventListener('admin-lang-changed', () => { renderStats(); renderTable(); });
 </script>
 </body>
 </html>

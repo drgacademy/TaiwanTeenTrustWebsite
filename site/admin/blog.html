@@ -3,46 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>部落格文章 — TTT Admin</title>
-  <link rel="stylesheet" href="css/admin.css" />
+  <title data-i18n-title-key="nav.blog">TTT Admin — 部落格</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
 </head>
 <body>
 
 <div class="admin-layout">
   <aside class="admin-sidebar" id="admin-sidebar">
     <div class="sidebar-brand">
-      <svg viewBox="0 0 120 130" fill="none" width="24" height="26">
-        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
-      </svg>
-      <div><div class="sidebar-brand-text">TTT Admin</div><div class="sidebar-brand-sub">管理後台</div></div>
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">主選單</div>
-      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>儀表板</a>
-      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>團隊成員</a>
-      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>專案管理</a>
-      <a href="blog.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>部落格文章</a>
-      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>地圖資料點</a>
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
+      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
+      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="blog.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
+      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
+      <a href="settings.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">系統</div>
-      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>前台預覽</a>
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
     </div>
     <div class="sidebar-footer">
-      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role">管理員</div></div></div>
-      <button class="btn-logout">登出</button>
+      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
     </div>
   </aside>
 
   <div class="admin-main">
     <div class="admin-topbar">
-      <div class="topbar-breadcrumb"><a href="dashboard.html">首頁</a><span>/</span><span style="color:var(--text)">部落格文章</span></div>
+      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.blog">部落格文章</span></div>
       <div class="topbar-actions">
         <button class="btn btn--primary btn--sm" id="btn-new-post">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          撰寫新文章
+          <span data-i18n="blog.new">撰寫新文章</span>
         </button>
       </div>
     </div>
@@ -50,20 +48,20 @@
     <div class="admin-content">
       <div class="panel">
         <div class="panel__header">
-          <div class="panel__title">所有文章</div>
+          <div class="panel__title" data-i18n="blog.title">所有文章</div>
           <div class="panel__toolbar">
             <div class="search-input">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input type="text" id="search-posts" placeholder="搜尋標題、作者…" />
+              <input type="text" id="search-posts" data-i18n-ph="blog.search.ph" placeholder="搜尋標題、作者…" />
             </div>
             <select class="select-input" id="filter-postcat">
-              <option value="">所有類別</option>
+              <option value="">—</option>
               <option>觀點</option><option>故事</option><option>報告</option><option>動態</option>
             </select>
             <select class="select-input" id="filter-poststatus">
-              <option value="">所有狀態</option>
-              <option value="published">已發布</option>
-              <option value="draft">草稿</option>
+              <option value="" data-i18n="blog.filter.status">所有狀態</option>
+              <option value="published" data-i18n="blog.status.published">已發布</option>
+              <option value="draft" data-i18n="blog.status.draft">草稿</option>
             </select>
           </div>
         </div>
@@ -71,13 +69,13 @@
           <table>
             <thead>
               <tr>
-                <th>標題</th>
-                <th>類別</th>
-                <th>作者</th>
-                <th>發布日期</th>
-                <th>狀態</th>
-                <th>最後更新</th>
-                <th style="text-align:right">操作</th>
+                <th data-i18n="blog.col.title">標題</th>
+                <th>Category</th>
+                <th data-i18n="blog.col.author">作者</th>
+                <th data-i18n="blog.col.published">發布日期</th>
+                <th data-i18n="blog.col.status">狀態</th>
+                <th data-i18n="projects.col.updated">最後更新</th>
+                <th style="text-align:right" data-i18n="blog.col.actions">操作</th>
               </tr>
             </thead>
             <tbody id="posts-tbody"></tbody>
@@ -96,67 +94,68 @@
 <div class="modal-backdrop" id="post-modal">
   <div class="modal modal--lg">
     <div class="modal__header">
-      <div class="modal__title" id="post-modal-title">撰寫新文章</div>
+      <div class="modal__title" id="post-modal-title" data-i18n="blog.new">撰寫新文章</div>
       <button class="modal__close" data-close-modal>✕</button>
     </div>
     <div class="modal__body">
       <input type="hidden" id="post-id" />
       <div class="field">
-        <label class="field-label">標題（中文）*</label>
+        <label class="field-label" data-i18n="blog.f.title_zh">中文標題 *</label>
         <input class="field-input" id="po-title" placeholder="文章標題" required />
       </div>
       <div class="field">
-        <label class="field-label">標題（英文）</label>
+        <label class="field-label" data-i18n="blog.f.title_en">英文標題</label>
         <input class="field-input" id="po-title-en" placeholder="Article Title" />
       </div>
       <div class="field">
-        <label class="field-label">Slug（URL）</label>
+        <label class="field-label">Slug</label>
         <input class="field-input" id="po-slug" placeholder="article-slug" />
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">類別</label>
+          <label class="field-label">Category</label>
           <select class="field-select" id="po-category">
-            <option value="">選擇類別</option>
+            <option value="">—</option>
             <option>觀點</option><option>故事</option><option>報告</option><option>動態</option>
           </select>
         </div>
         <div class="field">
-          <label class="field-label">狀態</label>
+          <label class="field-label" data-i18n="blog.f.status">狀態</label>
           <select class="field-select" id="po-status">
-            <option value="draft">草稿</option>
-            <option value="published">已發布</option>
+            <option value="draft" data-i18n="blog.status.draft">草稿</option>
+            <option value="published" data-i18n="blog.status.published">已發布</option>
           </select>
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">作者</label>
+          <label class="field-label" data-i18n="blog.f.author">作者</label>
           <input class="field-input" id="po-author" placeholder="陳雅婷" />
         </div>
         <div class="field">
-          <label class="field-label">發布日期</label>
+          <label class="field-label" data-i18n="blog.col.published">發布日期</label>
           <input class="field-input" id="po-date" type="date" />
         </div>
       </div>
       <div class="field">
-        <label class="field-label">摘要（中文）</label>
+        <label class="field-label" data-i18n="blog.f.excerpt_zh">摘要（中）</label>
         <textarea class="field-textarea" id="po-summary" placeholder="文章摘要…"></textarea>
       </div>
       <div class="field">
-        <label class="field-label">摘要（英文）</label>
+        <label class="field-label" data-i18n="blog.f.excerpt_en">摘要（英）</label>
         <textarea class="field-textarea" id="po-summary-en" placeholder="Article summary…"></textarea>
       </div>
     </div>
     <div class="modal__footer">
-      <button class="btn btn--outline" data-close-modal>取消</button>
-      <button class="btn btn--ghost" id="btn-save-draft" style="color:var(--text-2)">存為草稿</button>
-      <button class="btn btn--primary" id="btn-save-post">發布</button>
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--ghost" id="btn-save-draft" style="color:var(--text-2)" data-i18n="blog.status.draft">草稿</button>
+      <button class="btn btn--primary" id="btn-save-post" data-i18n="blog.status.published">已發布</button>
     </div>
   </div>
 </div>
 
-<script src="js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=3"></script>
 <script>
 const CAT_BADGE = { '觀點':'badge--cyan', '故事':'badge--gold', '報告':'badge--green', '動態':'badge--gray' };
 
@@ -169,8 +168,13 @@ function renderTable() {
   const page  = filteredPosts.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('posts-tbody');
 
+  const stPub = t('blog.status.published');
+  const stDraft = t('blog.status.draft');
+  const tEdit = t('btn.edit');
+  const tDel = t('btn.delete');
+
   if (filteredPosts.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state__icon">📝</div><div class="empty-state__title">找不到文章</div><div class="empty-state__text">請調整篩選條件或撰寫新文章。</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state__icon">📝</div><div class="empty-state__title">—</div></div></td></tr>`;
     return;
   }
 
@@ -180,15 +184,15 @@ function renderTable() {
       <td>${p.category ? `<span class="badge ${CAT_BADGE[p.category]||'badge--gray'}">${p.category}</span>` : '—'}</td>
       <td>${p.author || '—'}</td>
       <td style="color:var(--text-3);font-size:.75rem">${p.date || '—'}</td>
-      <td><span class="badge ${p.status==='published'?'badge--green':'badge--gray'}">${p.status==='published'?'已發布':'草稿'}</span></td>
+      <td><span class="badge ${p.status==='published'?'badge--green':'badge--gray'}">${p.status==='published'?stPub:stDraft}</span></td>
       <td style="color:var(--text-3);font-size:.75rem">${fmtDate(p.updated_at)}</td>
       <td><div class="td-actions">
-        <button class="btn btn--ghost btn--sm" onclick="editPost(${p.id})">編輯</button>
-        <button class="btn btn--danger-ghost btn--sm" onclick="deletePost(${p.id})">刪除</button>
+        <button class="btn btn--ghost btn--sm" onclick="editPost('${p.id}')">${tEdit}</button>
+        <button class="btn btn--danger-ghost btn--sm" onclick="deletePost('${p.id}')">${tDel}</button>
       </div></td>
     </tr>`).join('');
 
-  document.getElementById('posts-count').textContent = `共 ${filteredPosts.length} 筆`;
+  document.getElementById('posts-count').textContent = `${filteredPosts.length}`;
   const total = Math.ceil(filteredPosts.length / PAGE_SIZE);
   document.getElementById('posts-pages').innerHTML = total <= 1 ? '' :
     Array.from({length:total},(_,i)=>`<button class="page-btn${i+1===currentPage?' active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
@@ -210,7 +214,7 @@ function applyFilter() {
 
 function openNewModal() {
   document.getElementById('post-id').value = '';
-  document.getElementById('post-modal-title').textContent = '撰寫新文章';
+  document.getElementById('post-modal-title').textContent = t('blog.new');
   ['title','title-en','slug','author','summary','summary-en'].forEach(f => { const el = document.getElementById('po-'+f); if (el) el.value = ''; });
   document.getElementById('po-category').value = '';
   document.getElementById('po-status').value = 'draft';
@@ -218,11 +222,11 @@ function openNewModal() {
   openModal('post-modal');
 }
 
-function editPost(id) {
-  const p = DB.getById('posts', id);
+async function editPost(id) {
+  const p = await DB.getById('posts', id);
   if (!p) return;
   document.getElementById('post-id').value      = p.id;
-  document.getElementById('post-modal-title').textContent = '編輯文章';
+  document.getElementById('post-modal-title').textContent = t('blog.edit');
   document.getElementById('po-title').value     = p.title || '';
   document.getElementById('po-title-en').value  = p.title_en || '';
   document.getElementById('po-slug').value      = p.slug || '';
@@ -235,18 +239,20 @@ function editPost(id) {
   openModal('post-modal');
 }
 
-function deletePost(id) {
-  const p = DB.getById('posts', id);
-  confirmAction('確認刪除', `確定要刪除「${p.title}」嗎？`, () => {
-    DB.delete('posts', id);
-    allPosts = DB.getAll('posts');
+async function deletePost(id) {
+  const p = await DB.getById('posts', id);
+  if (!p) return;
+  confirmAction(t('msg.confirm_del_title'), `${p.title} — ${t('msg.confirm_del_text')}`, async () => {
+    const ok = await DB.delete('posts', id);
+    if (!ok) return;
+    allPosts = await DB.getAll('posts');
     applyFilter();
-    showToast('文章已刪除', 'success');
+    showToast(t('msg.deleted'), 'success');
   });
 }
 
-function savePost(status) {
-  const id = parseInt(document.getElementById('post-id').value) || null;
+async function savePost(status) {
+  const id = document.getElementById('post-id').value || null;
   const data = {
     title:      document.getElementById('po-title').value.trim(),
     title_en:   document.getElementById('po-title-en').value.trim(),
@@ -258,11 +264,18 @@ function savePost(status) {
     summary:    document.getElementById('po-summary').value.trim(),
     summary_en: document.getElementById('po-summary-en').value.trim(),
   };
-  if (!data.title) { showToast('請填寫文章標題', 'error'); return; }
-  if (id) { DB.update('posts', id, data); showToast('文章已更新', 'success'); }
-  else     { DB.insert('posts', data);    showToast(data.status==='published'?'文章已發布':'草稿已儲存', 'success'); }
+  if (!data.title) { showToast(t('msg.save_fail'), 'error'); return; }
+  const btnP = document.getElementById('btn-save-post');
+  const btnD = document.getElementById('btn-save-draft');
+  btnP.disabled = btnD.disabled = true;
+  const result = id
+    ? await DB.update('posts', id, data)
+    : await DB.insert('posts', data);
+  btnP.disabled = btnD.disabled = false;
+  if (!result) return;
+  showToast(id ? t('msg.updated') : t('msg.created'), 'success');
   closeModal('post-modal');
-  allPosts = DB.getAll('posts');
+  allPosts = await DB.getAll('posts');
   applyFilter();
 }
 
@@ -273,12 +286,15 @@ document.getElementById('search-posts').addEventListener('input', applyFilter);
 document.getElementById('filter-postcat').addEventListener('change', applyFilter);
 document.getElementById('filter-poststatus').addEventListener('change', applyFilter);
 
-document.addEventListener('DOMContentLoaded', () => {
-  allPosts = DB.getAll('posts');
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  allPosts = await DB.getAll('posts');
   filteredPosts = allPosts;
   renderTable();
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();
 });
+document.addEventListener('admin-lang-changed', () => renderTable());
 </script>
 </body>
 </html>

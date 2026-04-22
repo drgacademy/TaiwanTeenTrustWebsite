@@ -44,9 +44,8 @@ function setLang(lang) {
       : (el.dataset.en || el.dataset.zh);
   });
 
-  // Toggle .lang-zh / .lang-en visibility (for HTML-containing elements)
-  document.querySelectorAll('.lang-zh').forEach(el => { el.style.display = lang === 'zh' ? '' : 'none'; });
-  document.querySelectorAll('.lang-en').forEach(el => { el.style.display = lang === 'en' ? '' : 'none'; });
+  // Toggle body class — CSS handles .lang-zh/.lang-en visibility
+  document.body.classList.toggle('lang-en', lang === 'en');
 
   // Update lang buttons
   document.querySelectorAll('.lang-btn').forEach(btn => {

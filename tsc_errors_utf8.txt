@@ -1,4 +1,0 @@
-﻿sanity.config.ts(7,28): error TS2307: Cannot find module '@sanity/vision' or its corresponding type declarations.
-src/app/studio/[[...tool]]/page.tsx(2,20): error TS2307: Cannot find module '../../../sanity.config' or its corresponding type declarations.
-src/app/team/page.tsx(8,35): error TS2307: Cannot find module '@sanity/image-url/lib/types/types' or its corresponding type declarations.
-src/sanity/lib/image.ts(3,35): error TS2307: Cannot find module '@sanity/image-url/lib/types/types' or its corresponding type declarations.

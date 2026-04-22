@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n-title-key="settings.title">TTT Admin — 設定</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <img id="sidebar-logo" src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0" />
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
+      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
+      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
+      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="settings.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
+      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="settings.crumb.current">網站設定</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn--primary btn--sm" id="btn-save-all" data-i18n="settings.save_all">全部儲存</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ── 基本資訊 ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.basic">基本資訊</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.site_name_zh">組織名稱（中文）</label>
+              <input class="field-input" data-key="site_name" data-lang="zh" />
+            </div>
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.site_name_en">組織名稱（英文）</label>
+              <input class="field-input" data-key="site_name" data-lang="en" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.email">聯絡 Email</label>
+              <input class="field-input" type="email" data-key="site_email" data-lang="zh" />
+            </div>
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.year">成立年份</label>
+              <input class="field-input" data-key="site_year" data-lang="zh" style="max-width:140px" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Logo ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.logo">網站 Logo</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div style="display:flex;align-items:flex-start;gap:2.5rem;flex-wrap:wrap">
+            <div>
+              <div style="font-size:.75rem;color:var(--text-3);margin-bottom:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em" data-i18n="settings.logo.current">目前 Logo</div>
+              <div style="width:120px;height:120px;border-radius:16px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border)">
+                <img id="logo-preview-img" src="../assets/logo-real.png" alt="Logo" style="width:100%;height:100%;object-fit:cover" />
+              </div>
+              <button class="btn btn--danger-ghost btn--sm" id="btn-reset-logo" style="margin-top:.75rem;width:120px" data-i18n="settings.logo.reset">清除</button>
+            </div>
+            <div style="flex:1;min-width:260px">
+              <div style="font-size:.75rem;color:var(--text-3);margin-bottom:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em" data-i18n="settings.logo.upload_new">上傳新 Logo</div>
+              <label class="upload-zone" id="upload-zone" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;padding:2.5rem;border:2px dashed var(--border);border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-3)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <div style="text-align:center">
+                  <div style="font-size:.9rem;font-weight:600;margin-bottom:.25rem" data-i18n="settings.logo.drop_hint">點擊或拖曳上傳</div>
+                  <div style="font-size:.75rem;color:var(--text-3)" data-i18n="settings.logo.accept_hint">PNG、JPG — 建議正方形，最少 256×256</div>
+                </div>
+                <input type="file" id="logo-file" accept="image/*" style="display:none" />
+              </label>
+              <p style="font-size:.75rem;color:var(--text-3);margin-top:1rem" data-i18n="settings.logo.footnote">Logo 會上傳至 Supabase Storage。清除後前台將顯示預設 logo。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Hero ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.hero">首頁 Hero 區塊</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.hero_tagline_zh">主標語（中文）</label>
+              <input class="field-input" data-key="hero_tagline" data-lang="zh" />
+            </div>
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.hero_tagline_en">主標語（英文）</label>
+              <input class="field-input" data-key="hero_tagline" data-lang="en" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" data-i18n="settings.f.hero_desc_zh">描述（中文）</label>
+            <textarea class="field-textarea" data-key="hero_desc" data-lang="zh"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" data-i18n="settings.f.hero_desc_en">描述（英文）</label>
+            <textarea class="field-textarea" data-key="hero_desc" data-lang="en"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Mission ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.mission">使命宣言</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.mission_quote_zh">金句（中文）</label>
+              <input class="field-input" data-key="mission_quote" data-lang="zh" />
+            </div>
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.mission_quote_en">金句（英文）</label>
+              <input class="field-input" data-key="mission_quote" data-lang="en" />
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" data-i18n="settings.f.mission_body_zh">內文（中文）</label>
+            <textarea class="field-textarea" data-key="mission_body" data-lang="zh"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" data-i18n="settings.f.mission_body_en">內文（英文）</label>
+            <textarea class="field-textarea" data-key="mission_body" data-lang="en"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Pillars ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.pillars">三大支柱</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div id="pillar-editors"></div>
+        </div>
+      </div>
+
+      <!-- ── Stats ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.stats">統計數字</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.stat_members">現役成員</label>
+              <input class="field-input" type="number" data-key="stat_members" data-lang="zh" />
+            </div>
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.stat_projects">進行中專案</label>
+              <input class="field-input" type="number" data-key="stat_projects" data-lang="zh" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.stat_themes">年度主題</label>
+              <input class="field-input" type="number" data-key="stat_themes" data-lang="zh" />
+            </div>
+            <div class="field">
+              <label class="field-label" data-i18n="settings.f.stat_reached">觸及人次</label>
+              <input class="field-input" type="number" data-key="stat_reached" data-lang="zh" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Social ── -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header"><div class="panel__title" data-i18n="settings.section.social">社群連結</div></div>
+        <div class="panel__body" style="padding:1.5rem 2rem">
+          <div class="field">
+            <label class="field-label" data-i18n="settings.f.instagram">Instagram 連結</label>
+            <input class="field-input" type="url" data-key="social_instagram" data-lang="zh" placeholder="https://instagram.com/..." />
+          </div>
+          <div class="field">
+            <label class="field-label" data-i18n="settings.f.threads">Threads 連結</label>
+            <input class="field-input" type="url" data-key="social_threads" data-lang="zh" placeholder="https://www.threads.net/@..." />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=3"></script>
+<script>
+/* ── State ── */
+let siteMap = {};
+let dirtyKeys = new Set();
+let pendingLogoUrl = null;
+let logoCleared = false;
+
+async function loadAll() {
+  const rows = await DB.getAll('site_content', { orderBy: 'key', ascending: true });
+  siteMap = {};
+  rows.forEach(r => { siteMap[r.key] = { value_zh: r.value_zh, value_en: r.value_en }; });
+
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.dataset.key;
+    const lang = el.dataset.lang;
+    const row = siteMap[key];
+    if (!row) return;
+    el.value = (lang === 'en' ? row.value_en : row.value_zh) || '';
+  });
+
+  const logoUrl = siteMap.site_logo_url?.value_zh;
+  if (logoUrl) document.getElementById('logo-preview-img').src = logoUrl;
+
+  renderPillarEditors();
+  dirtyKeys.clear();
+}
+
+function renderPillarEditors() {
+  const c = document.getElementById('pillar-editors');
+  const tPillar = t('settings.f.pillar');
+  const tTitleZh = t('settings.f.title_zh');
+  const tTitleEn = t('settings.f.title_en');
+  const tDescZh = t('settings.f.desc_zh');
+  const tDescEn = t('settings.f.desc_en');
+  c.innerHTML = [1,2,3].map(n => `
+    <div style="padding:1rem 0;${n<3?'border-bottom:1px solid var(--border);margin-bottom:1rem':''}">
+      <div style="font-size:.8rem;font-weight:700;color:var(--text-2);margin-bottom:.75rem">${tPillar} ${n}</div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">${tTitleZh}</label>
+          <input class="field-input" data-key="pillar_${n}_title" data-lang="zh" value="${esc(siteMap[`pillar_${n}_title`]?.value_zh || '')}" />
+        </div>
+        <div class="field">
+          <label class="field-label">${tTitleEn}</label>
+          <input class="field-input" data-key="pillar_${n}_title" data-lang="en" value="${esc(siteMap[`pillar_${n}_title`]?.value_en || '')}" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">${tDescZh}</label>
+        <textarea class="field-textarea" data-key="pillar_${n}_desc" data-lang="zh">${esc(siteMap[`pillar_${n}_desc`]?.value_zh || '')}</textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">${tDescEn}</label>
+        <textarea class="field-textarea" data-key="pillar_${n}_desc" data-lang="en">${esc(siteMap[`pillar_${n}_desc`]?.value_en || '')}</textarea>
+      </div>
+    </div>
+  `).join('');
+  wireDirtyTracking(c);
+}
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function wireDirtyTracking(root = document) {
+  root.querySelectorAll('[data-key]').forEach(el => {
+    if (el.dataset.wired) return;
+    el.dataset.wired = '1';
+    el.addEventListener('input', () => dirtyKeys.add(el.dataset.key));
+  });
+}
+
+/* ── Logo upload ── */
+const fileInput = document.getElementById('logo-file');
+const uploadZone = document.getElementById('upload-zone');
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = '#2ECAD4'; });
+uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+uploadZone.addEventListener('drop', async e => {
+  e.preventDefault(); uploadZone.style.borderColor = '';
+  const file = e.dataTransfer.files[0];
+  if (file) await handleLogoFile(file);
+});
+fileInput.addEventListener('change', async () => {
+  if (fileInput.files[0]) await handleLogoFile(fileInput.files[0]);
+  fileInput.value = '';
+});
+
+async function handleLogoFile(file) {
+  if (!file.type.startsWith('image/')) { showToast(t('msg.upload_invalid'), 'error'); return; }
+  showToast(t('msg.uploading'), 'info');
+  const url = await uploadToMedia(file, 'site', { maxW: 512, maxH: 512, quality: 0.9 });
+  if (!url) return;
+  pendingLogoUrl = url;
+  logoCleared = false;
+  document.getElementById('logo-preview-img').src = url;
+  showToast(t('msg.logo_uploaded'), 'success');
+}
+
+document.getElementById('btn-reset-logo').addEventListener('click', () => {
+  pendingLogoUrl = null;
+  logoCleared = true;
+  document.getElementById('logo-preview-img').src = '../assets/logo-real.png';
+  showToast(t('msg.logo_will_clear'), 'info');
+});
+
+/* ── Save all ── */
+document.getElementById('btn-save-all').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-save-all');
+  btn.disabled = true;
+  btn.textContent = t('btn.saving');
+
+  const byKey = {};
+  document.querySelectorAll('[data-key]').forEach(el => {
+    const key = el.dataset.key;
+    const lang = el.dataset.lang;
+    byKey[key] = byKey[key] || { key, value_zh: null, value_en: null };
+    if (lang === 'en') byKey[key].value_en = el.value;
+    else               byKey[key].value_zh = el.value;
+  });
+
+  if (pendingLogoUrl !== null) {
+    byKey.site_logo_url = { key: 'site_logo_url', value_zh: pendingLogoUrl, value_en: pendingLogoUrl };
+  } else if (logoCleared) {
+    byKey.site_logo_url = { key: 'site_logo_url', value_zh: '', value_en: '' };
+  }
+
+  const rows = Object.values(byKey);
+  const results = await Promise.all(rows.map(r => DB.upsert('site_content', r, 'key')));
+  const failed = results.filter(r => !r).length;
+
+  btn.disabled = false;
+  btn.textContent = t('settings.save_all');
+  if (failed) showToast(`${t('msg.save_partial_fail')}（${failed}）`, 'error');
+  else        showToast(t('msg.settings_saved'), 'success');
+
+  pendingLogoUrl = null;
+  logoCleared = false;
+  await loadAll();
+});
+
+/* ── Re-render pillars + save button when language changes ── */
+document.addEventListener('admin-lang-changed', () => {
+  renderPillarEditors();
+  // restore values (renderPillarEditors uses siteMap which is cached, good)
+});
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  await loadAll();
+  wireDirtyTracking();
+});
+</script>
+</body>
+</html>

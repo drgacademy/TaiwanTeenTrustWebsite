@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>團隊成員 — TTT Admin</title>
-  <link rel="stylesheet" href="css/admin.css" />
+  <title data-i18n-title-key="nav.members">TTT Admin — 團隊成員</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
 </head>
 <body>
 
@@ -13,43 +14,42 @@
   <!-- Sidebar -->
   <aside class="admin-sidebar" id="admin-sidebar">
     <div class="sidebar-brand">
-      <svg viewBox="0 0 120 130" fill="none" width="24" height="26">
-        <path d="M60 8 L108 90 L12 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <path d="M60 40 L90 90 L30 90 Z" stroke="#2ECAD4" stroke-width="7" fill="none" stroke-linejoin="round"/>
-        <line x1="60" y1="90" x2="60" y2="122" stroke="#2ECAD4" stroke-width="7" stroke-linecap="round"/>
-      </svg>
-      <div><div class="sidebar-brand-text">TTT Admin</div><div class="sidebar-brand-sub">管理後台</div></div>
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">主選單</div>
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
       <a href="dashboard.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>儀表板
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span>
       </a>
       <a href="members.html" class="sidebar-link active">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>團隊成員
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav.members">團隊成員</span>
       </a>
       <a href="projects.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>專案管理
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span>
       </a>
       <a href="blog.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>部落格文章
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span>
       </a>
       <a href="map-locations.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>地圖資料點
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span>
+      </a>
+      <a href="settings.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span>
       </a>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-section-label">系統</div>
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
       <a href="../index.html" target="_blank" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>前台預覽
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span>
       </a>
     </div>
     <div class="sidebar-footer">
       <div class="sidebar-user">
         <div class="sidebar-avatar">A</div>
-        <div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role">管理員</div></div>
+        <div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div>
       </div>
-      <button class="btn-logout">登出</button>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
     </div>
   </aside>
 
@@ -57,12 +57,12 @@
   <div class="admin-main">
     <div class="admin-topbar">
       <div class="topbar-breadcrumb">
-        <a href="dashboard.html">首頁</a><span>/</span><span style="color:var(--text)">團隊成員</span>
+        <a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.members">團隊成員</span>
       </div>
       <div class="topbar-actions">
         <button class="btn btn--primary btn--sm" id="btn-new-member">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          新增成員
+          <span data-i18n="members.new">新增成員</span>
         </button>
       </div>
     </div>
@@ -70,21 +70,21 @@
     <div class="admin-content">
       <div class="panel">
         <div class="panel__header">
-          <div class="panel__title">所有成員</div>
+          <div class="panel__title" data-i18n="members.title">所有成員</div>
           <div class="panel__toolbar">
             <div class="search-input">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input type="text" id="search-members" placeholder="搜尋姓名、部門…" />
+              <input type="text" id="search-members" data-i18n-ph="members.search.ph" placeholder="搜尋姓名、部門…" />
             </div>
             <select class="select-input" id="filter-dept">
-              <option value="">所有部門</option>
+              <option value="" data-i18n="members.filter.dept">所有部門</option>
               <option>資訊科技</option><option>設計</option><option>行銷</option>
               <option>影像</option><option>研究</option><option>活動</option><option>財務</option>
             </select>
             <select class="select-input" id="filter-status">
-              <option value="">所有狀態</option>
-              <option value="active">現役</option>
-              <option value="alumni">校友</option>
+              <option value="" data-i18n="members.filter.status">所有狀態</option>
+              <option value="active" data-i18n="members.status.active">現役</option>
+              <option value="alumni" data-i18n="members.status.alumni">校友</option>
             </select>
           </div>
         </div>
@@ -92,14 +92,14 @@
           <table>
             <thead>
               <tr>
-                <th>姓名</th>
-                <th>英文姓名</th>
-                <th>部門</th>
-                <th>職稱</th>
-                <th>屆別</th>
-                <th>狀態</th>
-                <th>電子郵件</th>
-                <th style="text-align:right">操作</th>
+                <th data-i18n="members.col.name_zh">姓名</th>
+                <th data-i18n="members.col.name_en">英文姓名</th>
+                <th data-i18n="members.col.dept">部門</th>
+                <th data-i18n="members.col.role">職稱</th>
+                <th data-i18n="members.col.year">屆別</th>
+                <th data-i18n="members.col.status">狀態</th>
+                <th data-i18n="members.col.email">電子郵件</th>
+                <th style="text-align:right" data-i18n="members.col.actions">操作</th>
               </tr>
             </thead>
             <tbody id="members-tbody"></tbody>
@@ -118,75 +118,114 @@
 <div class="modal-backdrop" id="member-modal">
   <div class="modal">
     <div class="modal__header">
-      <div class="modal__title" id="member-modal-title">新增成員</div>
+      <div class="modal__title" id="member-modal-title" data-i18n="members.new">新增成員</div>
       <button class="modal__close" data-close-modal>✕</button>
     </div>
     <div class="modal__body">
       <input type="hidden" id="member-id" />
+
+      <!-- Photo upload -->
+      <div class="member-photo-row" id="photo-zone">
+        <div class="member-avatar-preview" id="avatar-preview">👤</div>
+        <div class="member-photo-meta">
+          <p data-i18n="members.photo.title">成員大頭照</p>
+          <div class="hint" data-i18n="members.photo.hint">建議尺寸 400×400，JPG/PNG，點擊或拖曳上傳</div>
+          <div style="margin-top:.6rem;display:flex;gap:.5rem;flex-wrap:wrap">
+            <button type="button" class="btn btn--outline btn--sm" id="btn-upload-photo" data-i18n="btn.upload">上傳照片</button>
+            <button type="button" class="btn btn--ghost btn--sm" id="btn-clear-photo" style="display:none" data-i18n="btn.remove">移除</button>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="photo-file-input" accept="image/*" style="display:none" />
+
       <div class="field-row">
         <div class="field">
-          <label class="field-label">中文姓名 *</label>
+          <label class="field-label" data-i18n="members.f.name_zh">中文姓名 *</label>
           <input class="field-input" id="m-name" placeholder="陳雅婷" required />
         </div>
         <div class="field">
-          <label class="field-label">英文姓名</label>
+          <label class="field-label" data-i18n="members.f.name_en">英文姓名</label>
           <input class="field-input" id="m-name-en" placeholder="Ya-Ting Chen" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">部門 *</label>
+          <label class="field-label" data-i18n="members.f.dept">部門 *</label>
           <select class="field-select" id="m-dept">
-            <option value="">選擇部門</option>
+            <option value="">—</option>
             <option>資訊科技</option><option>設計</option><option>行銷</option>
             <option>影像</option><option>研究</option><option>活動</option><option>財務</option>
           </select>
         </div>
         <div class="field">
-          <label class="field-label">職稱</label>
+          <label class="field-label" data-i18n="members.f.role">職稱</label>
           <input class="field-input" id="m-role" placeholder="部長 / 副部長 / 組員" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label">屆別</label>
+          <label class="field-label" data-i18n="members.f.year">屆別</label>
           <input class="field-input" id="m-year" placeholder="2025" />
         </div>
         <div class="field">
-          <label class="field-label">狀態</label>
+          <label class="field-label" data-i18n="members.f.status">狀態</label>
           <select class="field-select" id="m-status">
-            <option value="active">現役</option>
-            <option value="alumni">校友</option>
+            <option value="active" data-i18n="members.status.active">現役</option>
+            <option value="alumni" data-i18n="members.status.alumni">校友</option>
           </select>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">電子郵件</label>
+        <label class="field-label" data-i18n="members.f.email">電子郵件</label>
         <input class="field-input" id="m-email" type="email" placeholder="example@example.com" />
       </div>
       <div class="field">
-        <label class="field-label">個人簡介（中文）</label>
+        <label class="field-label" data-i18n="members.f.bio">簡介（中）</label>
         <textarea class="field-textarea" id="m-bio" placeholder="負責…"></textarea>
       </div>
       <div class="field">
-        <label class="field-label">個人簡介（英文）</label>
+        <label class="field-label">簡介（EN）</label>
         <textarea class="field-textarea" id="m-bio-en" placeholder="Handles…"></textarea>
       </div>
     </div>
     <div class="modal__footer">
-      <button class="btn btn--outline" data-close-modal>取消</button>
-      <button class="btn btn--primary" id="btn-save-member">儲存</button>
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--primary" id="btn-save-member" data-i18n="btn.save">儲存</button>
     </div>
   </div>
 </div>
 
-<script src="js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=3"></script>
 <script>
 /* ── State ── */
 let allMembers = [];
 let filteredMembers = [];
 const PAGE_SIZE = 10;
 let currentPage = 1;
+let memberPhoto = null;   // public URL or null
+
+/* ── Photo upload wiring ── */
+function setAvatarPreview(url) {
+  memberPhoto = url;
+  const el = document.getElementById('avatar-preview');
+  el.innerHTML = url ? `<img src="${url}" alt="avatar">` : '👤';
+  document.getElementById('btn-clear-photo').style.display = url ? '' : 'none';
+}
+
+async function handlePhotoFiles(files) {
+  if (!files || !files[0]) return;
+  const url = await uploadToMedia(files[0], 'members', { maxW: 400, maxH: 400, quality: 0.82 });
+  if (url) { setAvatarPreview(url); showToast(t('msg.saved'), 'success'); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const zone  = document.getElementById('photo-zone');
+  const input = document.getElementById('photo-file-input');
+  document.getElementById('btn-upload-photo').addEventListener('click', e => { e.stopPropagation(); input.click(); });
+  document.getElementById('btn-clear-photo').addEventListener('click', e => { e.stopPropagation(); setAvatarPreview(null); });
+  bindUploadZone(zone, input, handlePhotoFiles);
+});
 
 /* ── Render ── */
 function renderTable() {
@@ -195,28 +234,37 @@ function renderTable() {
   const tbody = document.getElementById('members-tbody');
 
   if (filteredMembers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon">👥</div><div class="empty-state__title">找不到成員</div><div class="empty-state__text">請調整篩選條件或新增成員。</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon">👥</div><div class="empty-state__title">—</div><div class="empty-state__text">${t('common.loading')}</div></div></td></tr>`;
     return;
   }
 
+  const stActive = t('members.status.active');
+  const stAlumni = t('members.status.alumni');
+  const tEdit = t('btn.edit');
+  const tDel  = t('btn.delete');
+
   tbody.innerHTML = page.map(m => `
     <tr>
-      <td class="td-name">${m.name}</td>
+      <td class="td-name">
+        ${m.photo
+          ? `<img src="${m.photo}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:.5rem;border:1px solid rgba(255,255,255,.12)">`
+          : `<span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--surface-3);font-size:.85rem;vertical-align:middle;margin-right:.5rem">👤</span>`}${m.name}
+      </td>
       <td>${m.name_en || '—'}</td>
       <td><span class="badge badge--cyan">${m.dept || '—'}</span></td>
       <td>${m.role || '—'}</td>
       <td>${m.year || '—'}</td>
-      <td><span class="badge ${m.status === 'active' ? 'badge--green' : 'badge--gray'}">${m.status === 'active' ? '現役' : '校友'}</span></td>
+      <td><span class="badge ${m.status === 'active' ? 'badge--green' : 'badge--gray'}">${m.status === 'active' ? stActive : stAlumni}</span></td>
       <td class="td-mono">${m.email || '—'}</td>
       <td>
         <div class="td-actions">
-          <button class="btn btn--ghost btn--sm" onclick="editMember(${m.id})">編輯</button>
-          <button class="btn btn--danger-ghost btn--sm" onclick="deleteMember(${m.id})">刪除</button>
+          <button class="btn btn--ghost btn--sm" onclick="editMember('${m.id}')">${tEdit}</button>
+          <button class="btn btn--danger-ghost btn--sm" onclick="deleteMember('${m.id}')">${tDel}</button>
         </div>
       </td>
     </tr>`).join('');
 
-  document.getElementById('members-count').textContent = `共 ${filteredMembers.length} 筆`;
+  document.getElementById('members-count').textContent = `${filteredMembers.length}`;
   renderPages();
 }
 
@@ -248,21 +296,22 @@ function applyFilter() {
 /* ── Form ── */
 function openNewModal() {
   document.getElementById('member-id').value = '';
-  document.getElementById('member-modal-title').textContent = '新增成員';
+  document.getElementById('member-modal-title').textContent = t('members.new');
   ['name','name_en','role','year','email','bio','bio_en'].forEach(f => {
     const el = document.getElementById('m-' + f.replace('_','-'));
     if (el) el.value = '';
   });
   document.getElementById('m-dept').value = '';
   document.getElementById('m-status').value = 'active';
+  setAvatarPreview(null);
   openModal('member-modal');
 }
 
-function editMember(id) {
-  const m = DB.getById('members', id);
+async function editMember(id) {
+  const m = await DB.getById('members', id);
   if (!m) return;
   document.getElementById('member-id').value = m.id;
-  document.getElementById('member-modal-title').textContent = '編輯成員';
+  document.getElementById('member-modal-title').textContent = t('members.edit');
   document.getElementById('m-name').value     = m.name || '';
   document.getElementById('m-name-en').value  = m.name_en || '';
   document.getElementById('m-dept').value     = m.dept || '';
@@ -272,21 +321,24 @@ function editMember(id) {
   document.getElementById('m-email').value    = m.email || '';
   document.getElementById('m-bio').value      = m.bio || '';
   document.getElementById('m-bio-en').value   = m.bio_en || '';
+  setAvatarPreview(m.photo || null);
   openModal('member-modal');
 }
 
-function deleteMember(id) {
-  const m = DB.getById('members', id);
-  confirmAction('確認刪除', `確定要刪除「${m.name}」嗎？此操作無法復原。`, () => {
-    DB.delete('members', id);
-    allMembers = DB.getAll('members');
+async function deleteMember(id) {
+  const m = await DB.getById('members', id);
+  if (!m) return;
+  confirmAction(t('msg.confirm_del_title'), `${m.name} — ${t('msg.confirm_del_text')}`, async () => {
+    const ok = await DB.delete('members', id);
+    if (!ok) return;
+    allMembers = await DB.getAll('members');
     applyFilter();
-    showToast('成員已刪除', 'success');
+    showToast(t('msg.deleted'), 'success');
   });
 }
 
-document.getElementById('btn-save-member').addEventListener('click', () => {
-  const id   = parseInt(document.getElementById('member-id').value) || null;
+document.getElementById('btn-save-member').addEventListener('click', async () => {
+  const id   = document.getElementById('member-id').value || null;
   const data = {
     name:    document.getElementById('m-name').value.trim(),
     name_en: document.getElementById('m-name-en').value.trim(),
@@ -297,17 +349,23 @@ document.getElementById('btn-save-member').addEventListener('click', () => {
     email:   document.getElementById('m-email').value.trim(),
     bio:     document.getElementById('m-bio').value.trim(),
     bio_en:  document.getElementById('m-bio-en').value.trim(),
+    photo:   memberPhoto || null,
   };
-  if (!data.name) { showToast('請填寫姓名', 'error'); return; }
+  if (!data.name) { showToast(t('msg.save_fail'), 'error'); return; }
+  const btn = document.getElementById('btn-save-member');
+  btn.disabled = true;
+  let result;
   if (id) {
-    DB.update('members', id, data);
-    showToast('成員資料已更新', 'success');
+    result = await DB.update('members', id, data);
+    if (result) showToast(t('msg.updated'), 'success');
   } else {
-    DB.insert('members', data);
-    showToast('成員已新增', 'success');
+    result = await DB.insert('members', data);
+    if (result) showToast(t('msg.created'), 'success');
   }
+  btn.disabled = false;
+  if (!result) return;
   closeModal('member-modal');
-  allMembers = DB.getAll('members');
+  allMembers = await DB.getAll('members');
   applyFilter();
 });
 
@@ -318,14 +376,17 @@ document.getElementById('filter-dept').addEventListener('change', applyFilter);
 document.getElementById('filter-status').addEventListener('change', applyFilter);
 
 /* ── Init ── */
-document.addEventListener('DOMContentLoaded', () => {
-  allMembers = DB.getAll('members');
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  allMembers = await DB.getAll('members');
   filteredMembers = allMembers;
   renderTable();
 
   const params = new URLSearchParams(location.search);
   if (params.get('action') === 'new') openNewModal();
 });
+document.addEventListener('admin-lang-changed', () => renderTable());
 </script>
 </body>
 </html>

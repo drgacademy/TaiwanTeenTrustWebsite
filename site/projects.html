@@ -3,580 +3,717 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>專案 — Taiwan Teen Trust</title>
-  <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <title>Taiwan Teen Trust</title>
+  <meta name="description" content="Taiwan Teen Trust 的所有社會行動專案，包括浪浪援助地圖、校園減碳計畫、青銀交流計畫等。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/design-system.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
   <style>
-    .projects-hero {
-      padding-top: 10rem;
-      padding-bottom: 4rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .projects-hero__top {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin-bottom: 3rem;
-    }
-    .projects-hero__title {
-      font-size: clamp(3.5rem, 7vw, 10rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      line-height: 1;
-    }
-    .projects-hero__count {
-      font-size: clamp(3rem, 5vw, 7rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      color: var(--accent);
-      line-height: 1;
-    }
-    .projects-hero__count-label {
-      font-size: 0.8rem;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-top: 0.25rem;
-    }
+:root{--r1:#ff3b3b;--r2:#ff8c00;--r3:#ffd600;--r4:#00c95d;--r5:#0099ff;--r6:#7c3aff;--r7:#ff2dca;--rainbow:linear-gradient(90deg,#ff3b3b 0%,#ff8c00 16%,#ffd600 32%,#00c95d 48%,#0099ff 65%,#7c3aff 82%,#ff2dca 100%);--black:#0a0a0a;--white:#fff;--gray:#f5f5f5;--gray-2:#e8e8e8;--text-2:rgba(10,10,10,.5);--text-3:rgba(10,10,10,.28);--ease:cubic-bezier(0.16,1,0.3,1);--gutter:clamp(1.25rem,5vw,5rem);--ttt-cyan:#2ECAD4;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{font-family:'Inter','Noto Sans TC',sans-serif;background:#fff;color:#0a0a0a;overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}button{cursor:pointer;border:none;background:none;font-family:inherit}
+img,svg{display:block;max-width:100%}
+.rainbow-text{background:var(--rainbow);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lw{overflow:hidden;display:block}.li{display:block;transform:translateY(110%);will-change:transform}
+/* Navbar */
+.nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.1rem var(--gutter);display:flex;align-items:center;justify-content:space-between;transition:background .4s var(--ease),border-color .4s var(--ease);border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom-color:rgba(0,0,0,.08)}
+.nav__logo{display:flex;align-items:center;gap:.75rem;font-size:1rem;font-weight:800;letter-spacing:-.01em;color:var(--black)}
+.nav__links{display:flex;align-items:center;gap:2.5rem}
+.nav__link{font-size:.95rem;font-weight:500;color:var(--text-2);letter-spacing:.02em;transition:color .2s;position:relative}
+.nav__link:hover{color:var(--black)}
+.nav__link::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1.5px;background:var(--rainbow);transition:width .4s var(--ease)}
+.nav__link:hover::after{width:100%}
+.nav__actions{display:flex;align-items:center;gap:.9rem}
+.nav__lang{display:flex;align-items:center;background:rgba(0,0,0,.06);border-radius:100px;padding:3px;gap:2px}
+.nav__lang-btn{padding:.28rem .7rem;border-radius:100px;font-size:.75rem;font-weight:600;color:var(--text-2);transition:all .2s;background:none;font-family:inherit}
+.nav__lang-btn.active{background:var(--black);color:#fff}
+.nav__cta{padding:.6rem 1.4rem;border-radius:4px;font-size:.9rem;font-weight:700;letter-spacing:.02em;background:var(--black);color:#fff;transition:all .2s;position:relative;overflow:hidden}
+.nav__cta::before{content:'';position:absolute;inset:0;background:var(--rainbow);opacity:0;transition:opacity .3s}
+.nav__cta:hover::before{opacity:1}
+.nav__cta span{position:relative;z-index:1}
+.nav__hamburger{display:none;flex-direction:column;gap:5px;padding:4px}
+.nav__hamburger span{display:block;width:22px;height:1.5px;background:var(--black);transition:all .35s var(--ease);transform-origin:center}
+.nav__hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav__hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.nav__hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.nav__drawer{position:fixed;inset:0;background:#fff;z-index:490;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;transform:translateX(100%);transition:transform .5s var(--ease)}
+.nav__drawer.open{transform:translateX(0)}
+.nav__drawer .nav__link{font-size:clamp(2rem,7vw,4rem);font-weight:800;color:var(--black)}
+@media(max-width:860px){.nav__links,.nav__actions{display:none}.nav__hamburger{display:flex}}
+/* Lang */
+body:not(.lang-en) .lang-en{display:none}
+body.lang-en .lang-zh{display:none}
+/* Footer */
+footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
+.footer-inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3rem}
+.footer-brand{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.footer-brand span{font-size:1rem;font-weight:800;color:#fff}
+.footer-desc{font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.75;max-width:28ch}
+.footer-col-title{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:1.2rem}
+.footer-links{list-style:none}.footer-links li{margin-bottom:.6rem}
+.footer-links a{font-size:.88rem;color:rgba(255,255,255,.55);transition:color .2s}
+.footer-links a:hover{color:#fff}
+.footer-bottom{max-width:1400px;margin:3rem auto 0;border-top:1px solid rgba(255,255,255,.08);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:.75rem;color:rgba(255,255,255,.3)}
+.footer-rainbow{height:2px;background:var(--rainbow);border-radius:1px;width:80px}
+@media(max-width:700px){.footer-inner{grid-template-columns:1fr;gap:2rem}}
+.sec-tag{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:.7rem}
+.sec-title{font-size:clamp(2rem,4vw,4.5rem);font-weight:900;letter-spacing:-.03em;line-height:1.05}
 
-    /* Filter bar */
-    .filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .filter-bar__group {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-    .filter-bar__sep { width: 1px; height: 24px; background: var(--border-2); }
+/* ── Page ── */
+.page-hero{padding:10rem var(--gutter) 5rem;border-bottom:1px solid rgba(0,0,0,.07)}
+.page-hero__top{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:3rem}
+.page-hero__title{font-size:clamp(4rem,8vw,9rem);font-weight:900;letter-spacing:-.04em;line-height:.95}
+.page-hero__count{font-size:clamp(3rem,5vw,6rem);font-weight:900;letter-spacing:-.04em;line-height:1}
+.page-hero__count-label{font-size:.75rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem}
 
-    /* Search */
-    .search-box {
-      position: relative;
-      margin-left: auto;
-    }
-    .search-box input {
-      background: var(--bg-2);
-      border: 1px solid var(--border-2);
-      border-radius: var(--radius-sm);
-      padding: 0.5rem 1rem 0.5rem 2.5rem;
-      font-size: 0.85rem;
-      color: var(--text);
-      font-family: inherit;
-      width: 220px;
-      outline: none;
-      transition: border-color var(--duration-fast);
-    }
-    .search-box input:focus { border-color: var(--accent); }
-    .search-box input::placeholder { color: var(--text-3); }
-    .search-icon {
-      position: absolute;
-      left: 0.75rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-3);
-      font-size: 0.85rem;
-      pointer-events: none;
-    }
+/* Filter */
+.filter-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.filter-btn{padding:.45rem 1.1rem;border-radius:100px;font-size:.8rem;font-weight:600;border:1.5px solid rgba(0,0,0,.1);color:var(--text-2);transition:all .2s;background:#fff;font-family:inherit}
+.filter-btn:hover{border-color:rgba(0,0,0,.3);color:var(--black)}
+.filter-btn.active{background:var(--black);color:#fff;border-color:var(--black)}
 
-    /* Featured project */
-    .featured-project {
-      position: relative;
-      border: 1px solid rgba(46,202,212,0.2);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      background: var(--bg-2);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 420px;
-      margin-bottom: 3rem;
-      transition: border-color var(--duration-fast);
-    }
-    .featured-project:hover { border-color: rgba(46,202,212,0.5); }
-    .featured-project__visual {
-      background: linear-gradient(135deg, #0d1a0d, #001a1a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 6rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .featured-project__visual::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(46,202,212,0.08), transparent);
-    }
-    .featured-project__body {
-      padding: 3.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .featured-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-    }
-    .featured-badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse-dot 2s ease infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.4; transform: scale(0.7); }
-    }
-    .featured-project__title {
-      font-size: clamp(1.8rem, 3vw, 3rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      margin-bottom: 1rem;
-    }
-    .featured-project__desc {
-      font-size: 0.95rem;
-      color: var(--text-2);
-      line-height: 1.75;
-      margin-bottom: 2rem;
-    }
-    .featured-project__meta {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .featured-project__meta-item { font-size: 0.8rem; color: var(--text-3); }
-    .featured-project__meta-item strong { color: var(--text-2); display: block; margin-bottom: 0.2rem; }
+/* Featured */
+.featured{padding:4rem var(--gutter);border-bottom:1px solid rgba(0,0,0,.07)}
+.featured__inner{max-width:1400px;margin:0 auto}
+.featured-card{display:grid;grid-template-columns:1fr 1fr;border-radius:20px;overflow:hidden;border:1px solid rgba(0,0,0,.08);min-height:440px;transition:border-color .2s}
+.featured-card:hover{border-color:rgba(0,0,0,.2)}
+.featured-card__visual{background:var(--black);display:flex;align-items:center;justify-content:center;font-size:7rem;position:relative;overflow:hidden;padding:0}
+.featured-card__visual::after{content:'';position:absolute;inset:0;background:var(--rainbow);opacity:.06}
+.featured-card__body{padding:3.5rem;display:flex;flex-direction:column;justify-content:space-between}
+.live-dot{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--r4);margin-bottom:1.5rem}
+.live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--r4);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.featured-card__title{font-size:clamp(1.6rem,2.5vw,2.5rem);font-weight:900;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.featured-card__desc{font-size:.92rem;color:var(--text-2);line-height:1.8;margin-bottom:1.75rem;flex:1}
+.featured-card__meta{display:flex;gap:2rem;margin-bottom:1.75rem;flex-wrap:wrap}
+.meta-item{font-size:.78rem;color:var(--text-3)}
+.meta-item strong{display:block;color:var(--text-2);font-weight:600;margin-bottom:.15rem}
+.btn-fill{padding:.85rem 2rem;border-radius:5px;font-size:.88rem;font-weight:700;background:var(--black);color:#fff;display:inline-flex;align-items:center;gap:.5rem;transition:all .25s;position:relative;overflow:hidden}
+.btn-fill::before{content:'';position:absolute;inset:0;background:var(--rainbow);opacity:0;transition:opacity .3s}
+.btn-fill span{position:relative;z-index:1}
+.btn-fill:hover::before{opacity:1}.btn-fill:hover{transform:translateY(-2px)}
+@media(max-width:860px){.featured-card{grid-template-columns:1fr}.featured-card__visual{min-height:220px;font-size:5rem}}
 
-    /* Projects grid */
-    .projects-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-    .project-card {
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      transition: border-color var(--duration-fast), transform var(--duration-base) var(--ease-out-expo);
-      display: flex;
-      flex-direction: column;
-    }
-    .project-card:hover {
-      border-color: var(--border-2);
-      transform: translateY(-4px);
-    }
-    .project-card__thumb {
-      aspect-ratio: 16/10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-      flex-shrink: 0;
-    }
-    .project-card__body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
-    .project-card__tags { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    .project-card__year { font-size: 0.7rem; color: var(--text-3); font-weight: 500; }
-    .project-card__title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.3;
-      margin-bottom: 0.6rem;
-    }
-    .project-card__desc {
-      font-size: 0.82rem;
-      color: var(--text-2);
-      line-height: 1.65;
-      flex: 1;
-    }
-    .project-card__footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--border);
-    }
-    .project-card__dept { font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.08em; }
-    .project-card__link {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      transition: gap var(--duration-fast);
-    }
-    .project-card:hover .project-card__link { gap: 0.6rem; }
-
-    @media (max-width: 1024px) { .projects-list { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 768px) {
-      .featured-project { grid-template-columns: 1fr; }
-      .featured-project__visual { min-height: 200px; }
-      .projects-list { grid-template-columns: 1fr; }
-      .filter-bar { gap: 0.75rem; }
-      .search-box { margin-left: 0; width: 100%; }
-      .search-box input { width: 100%; }
-    }
+/* Projects grid */
+.projects-sec{padding:5rem var(--gutter)}
+.projects-sec__inner{max-width:1400px;margin:0 auto}
+.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem}
+.proj-card{border:1px solid rgba(0,0,0,.08);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s,transform .3s var(--ease);background:#fff}
+@keyframes card-in{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.proj-card.animating{animation:card-in .7s cubic-bezier(0.16,1,0.3,1) both}
+.proj-card:hover{border-color:rgba(0,0,0,.2);transform:translateY(-5px)}
+.proj-card__thumb{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;font-size:3.5rem}
+.proj-card__body{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+.proj-card__tags{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap}
+.proj-tag{padding:.2rem .65rem;border-radius:100px;font-size:.68rem;font-weight:600;letter-spacing:.06em}
+.proj-year{font-size:.68rem;color:var(--text-3);font-weight:500}
+.proj-card__title{font-size:1.05rem;font-weight:800;letter-spacing:-.01em;line-height:1.3;margin-bottom:.6rem}
+.proj-card__desc{font-size:.82rem;color:var(--text-2);line-height:1.7;flex:1}
+.proj-card__footer{display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid rgba(0,0,0,.06)}
+.proj-card__dept{font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em}
+.proj-card__link{font-size:.78rem;font-weight:700;color:var(--r5);transition:gap .2s;display:flex;align-items:center;gap:.3rem}
+.proj-card:hover .proj-card__link{gap:.6rem}
+#no-results{display:none;text-align:center;padding:5rem 0;color:var(--text-3)}
+@media(max-width:1024px){.projects-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.projects-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-<div class="page-loader" id="loader">
-  <div class="page-loader__inner">
-    <img src="assets/logo.svg" alt="TTT" class="page-loader__logo" />
-    <div class="page-loader__bar"><div class="page-loader__bar-fill"></div></div>
-  </div>
-</div>
-<div class="cursor-dot"></div>
-<div class="cursor-ring"></div>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <a href="index.html" class="navbar__logo">
-    <img src="assets/logo.svg" alt="TTT" width="36" height="36" />
-    <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav__logo" aria-label="Taiwan Teen Trust">
+    <img src="assets/logo-real.png" alt="TTT Logo" style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0" />
+    <span>Taiwan Teen Trust</span>
   </a>
-  <ul class="navbar__nav">
-    <li><a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a></li>
-    <li><a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a></li>
-    <li><a href="projects.html" class="navbar__link active" data-zh="專案" data-en="Projects">專案</a></li>
-    <li><a href="blog.html"     class="navbar__link" data-zh="部落格"   data-en="Blog">部落格</a></li>
-    <li><a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a></li>
-  </ul>
-  <div class="navbar__actions">
-    <div class="lang-toggle">
-      <button class="lang-btn" data-lang="zh">中</button>
-      <button class="lang-btn" data-lang="en">EN</button>
+  <div class="nav__links">
+    <a href="index.html" class="nav__link" data-zh="首頁" data-en="Home">首頁</a>
+    <a href="about.html" class="nav__link" data-zh="關於" data-en="About">關於</a>
+    <a href="team.html" class="nav__link" data-zh="團隊" data-en="Team">團隊</a>
+    <a href="projects.html" class="nav__link" data-zh="專案" data-en="Projects">專案</a>
+    <a href="focus.html" class="nav__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+    <a href="blog.html" class="nav__link" data-zh="部落格" data-en="Blog">部落格</a>
+  </div>
+  <div class="nav__actions">
+    <div class="nav__lang">
+      <button class="nav__lang-btn active" data-lang="zh">中</button>
+      <button class="nav__lang-btn" data-lang="en">EN</button>
     </div>
-    <a href="join.html" class="btn btn--primary" data-zh="加入我們" data-en="Join Us">加入我們</a>
+    <a href="index.html#join" class="nav__cta">
+      <span class="lang-zh">加入我們</span><span class="lang-en">Join Us</span>
+    </a>
   </div>
-  <button class="navbar__hamburger" aria-label="選單"><span></span><span></span><span></span></button>
+  <button class="nav__hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
-<div class="navbar__mobile">
-  <a href="index.html"    class="navbar__link" data-zh="首頁"     data-en="Home">首頁</a>
-  <a href="about.html"    class="navbar__link" data-zh="關於我們" data-en="About">關於我們</a>
-  <a href="team.html"     class="navbar__link" data-zh="團隊"     data-en="Team">團隊</a>
-  <a href="projects.html" class="navbar__link" data-zh="專案"     data-en="Projects">專案</a>
-  <a href="focus.html"    class="navbar__link" data-zh="年度主題" data-en="Focus">年度主題</a>
-  <a href="join.html"     class="navbar__link" data-zh="加入我們" data-en="Join Us">加入我們</a>
-  <div class="lang-toggle" style="margin-top:1rem;">
-    <button class="lang-btn" data-lang="zh">中</button>
-    <button class="lang-btn" data-lang="en">EN</button>
-  </div>
+<div class="nav__drawer" id="nav-drawer">
+  <a href="index.html" class="nav__link" data-zh="首頁" data-en="Home">首頁</a>
+  <a href="about.html" class="nav__link" data-zh="關於" data-en="About">關於我們</a>
+  <a href="team.html" class="nav__link" data-zh="團隊" data-en="Team">團隊</a>
+  <a href="projects.html" class="nav__link" data-zh="專案" data-en="Projects">專案</a>
+  <a href="focus.html" class="nav__link" data-zh="年度主題" data-en="Focus">年度主題</a>
+  <a href="blog.html" class="nav__link" data-zh="部落格" data-en="Blog">部落格</a>
 </div>
 
 <!-- HERO -->
-<section class="projects-hero">
-  <div class="container">
-    <div class="projects-hero__top">
+<section class="page-hero">
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="page-hero__top">
       <div>
-        <div class="label reveal" data-zh="所有專案" data-en="All Projects">所有專案</div>
-        <h1 class="projects-hero__title reveal" style="margin-top:1rem;" data-zh="我們的行動" data-en="Our Actions">我們的行動</h1>
+        <div class="sec-tag lang-zh">所有專案</div>
+        <div class="sec-tag lang-en">All Projects</div>
+        <h1 class="page-hero__title" style="margin-top:.5rem">
+          <span class="lw"><span class="li lang-zh">我們的行動</span><span class="li lang-en">Our Actions</span></span>
+        </h1>
       </div>
-      <div class="reveal-right" style="text-align:right;">
-        <div class="projects-hero__count">30+</div>
-        <div class="projects-hero__count-label" data-zh="完成專案" data-en="Projects Completed">完成專案</div>
+      <div style="text-align:right">
+        <div class="page-hero__count rainbow-text">30+</div>
+        <div class="page-hero__count-label lang-zh">完成專案</div>
+        <div class="page-hero__count-label lang-en">Projects Completed</div>
       </div>
     </div>
-
-    <!-- Filter bar -->
-    <div class="filter-bar reveal">
-      <div class="filter-bar__group" id="cat-filter">
-        <button class="filter-tab active" data-cat="all" data-zh="全部" data-en="All">全部</button>
-        <button class="filter-tab" data-cat="environment" data-zh="環境" data-en="Environment">環境</button>
-        <button class="filter-tab" data-cat="community" data-zh="社區" data-en="Community">社區</button>
-        <button class="filter-tab" data-cat="arts" data-zh="藝術文化" data-en="Arts & Culture">藝術文化</button>
-        <button class="filter-tab" data-cat="animals" data-zh="動物" data-en="Animals">動物</button>
-      </div>
-      <div class="filter-bar__sep hide-mobile"></div>
-      <div class="filter-bar__group" id="year-filter">
-        <button class="filter-tab active" data-year="all" data-zh="所有年份" data-en="All Years">所有年份</button>
-        <button class="filter-tab" data-year="2026">2026</button>
-        <button class="filter-tab" data-year="2025">2025</button>
-        <button class="filter-tab" data-year="2024">2024</button>
-      </div>
-      <div class="search-box hide-mobile">
-        <span class="search-icon">🔍</span>
-        <input type="text" placeholder="搜尋專案..." id="search-input" />
-      </div>
+    <div class="filter-row" id="cat-filter">
+      <button class="filter-btn active" data-cat="all" data-zh="全部" data-en="All">全部</button>
+      <button class="filter-btn" data-cat="animals" data-zh="動物" data-en="Animals">動物</button>
+      <button class="filter-btn" data-cat="environment" data-zh="環境" data-en="Environment">環境</button>
+      <button class="filter-btn" data-cat="community" data-zh="社區" data-en="Community">社區</button>
+      <button class="filter-btn" data-cat="arts" data-zh="藝術文化" data-en="Arts & Culture">藝術文化</button>
     </div>
   </div>
 </section>
 
 <!-- FEATURED -->
-<section class="section" style="padding-bottom:0;">
-  <div class="container">
-    <div class="label reveal" style="margin-bottom:1.5rem;" data-zh="2026 旗艦專案" data-en="2026 Flagship Project">2026 旗艦專案</div>
-    <a href="projects/stray-aid-map.html" class="featured-project reveal-scale" data-cat="animals" data-year="2026">
-      <div class="featured-project__visual">🐾</div>
-      <div class="featured-project__body">
-        <div class="featured-badge" data-zh="進行中" data-en="Active">進行中</div>
-        <h2 class="featured-project__title" data-zh="Stray Aid Map — 全台流浪動物救援地圖" data-en="Stray Aid Map — Taiwan Stray Animal Rescue Map">
-          Stray Aid Map — 全台流浪動物救援地圖
-        </h2>
-        <p class="featured-project__desc" data-zh="台灣每年有超過10萬隻流浪動物等待救援。Stray Aid Map 是全台第一個由青年主導的開放資料救援平台，整合收容所、動物醫院與餵食站資訊，讓每一隻動物都被看見、每一位愛心人士都找得到資源。" data-en="Taiwan has over 100,000 stray animals awaiting rescue each year. Stray Aid Map is Taiwan's first youth-led open data rescue platform, integrating shelters, veterinary clinics, and feeding station information so every animal is seen and every compassionate person can find resources.">
-          台灣每年有超過10萬隻流浪動物等待救援。Stray Aid Map 是全台第一個由青年主導的開放資料救援平台，整合收容所、動物醫院與餵食站資訊，讓每一隻動物都被看見、每一位愛心人士都找得到資源。
-        </p>
-        <div class="featured-project__meta">
-          <div class="featured-project__meta-item">
-            <strong data-zh="類別" data-en="Category">類別</strong>
-            <span data-zh="動物救援" data-en="Animal Rescue">動物救援</span>
-          </div>
-          <div class="featured-project__meta-item">
-            <strong data-zh="年份" data-en="Year">年份</strong>
-            <span>2026</span>
-          </div>
-          <div class="featured-project__meta-item">
-            <strong data-zh="負責部門" data-en="Dept.">負責部門</strong>
-            <span data-zh="資訊科技 + 研究" data-en="IT + Research">資訊科技 + 研究</span>
+<section class="featured">
+  <div class="featured__inner">
+    <div class="sec-tag lang-zh" style="margin-bottom:1.5rem">2026 旗艦專案</div>
+    <div class="sec-tag lang-en" style="margin-bottom:1.5rem">2026 Flagship Project</div>
+    <div class="featured-card" data-cat="animals" data-year="2026">
+      <div class="featured-card__visual">
+        <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.85">
+          <source src="../assets/StrayAidMap.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="featured-card__body">
+        <div>
+          <div class="live-dot lang-zh">進行中</div>
+          <div class="live-dot lang-en">Active</div>
+          <h2 class="featured-card__title lang-zh">浪浪援助地圖<br><span class="rainbow-text">Stray Aid Map</span></h2>
+          <h2 class="featured-card__title lang-en">Stray Aid Map</h2>
+          <p class="featured-card__desc lang-zh">台灣每年有超過10萬隻流浪動物等待救援。Stray Aid Map 是全台第一個由青年主導的開放資料救援平台，整合收容所、動物醫院與餵食站資訊，讓每一隻動物都被看見、每一位愛心人士都找得到資源。</p>
+          <p class="featured-card__desc lang-en">Taiwan has 100,000+ stray animals awaiting rescue each year. Stray Aid Map is Taiwan's first youth-led open data rescue platform, integrating shelters, veterinary clinics, and feeding stations so every animal is seen and every caring person finds help.</p>
+          <div class="featured-card__meta">
+            <div class="meta-item">
+              <strong class="lang-zh">類別</strong><strong class="lang-en">Category</strong>
+              <span class="lang-zh">動物救援</span><span class="lang-en">Animal Rescue</span>
+            </div>
+            <div class="meta-item">
+              <strong class="lang-zh">年份</strong><strong class="lang-en">Year</strong>
+              <span>2026</span>
+            </div>
+            <div class="meta-item">
+              <strong class="lang-zh">負責部門</strong><strong class="lang-en">Dept.</strong>
+              <span class="lang-zh">資訊科技 + 研究</span><span class="lang-en">IT + Research</span>
+            </div>
           </div>
         </div>
-        <span class="btn btn--primary" data-zh="查看專案地圖 →" data-en="View Project Map →">查看專案地圖 →</span>
+        <a href="projects/stray-aid-map.html" class="btn-fill"><span><span class="lang-zh">查看專案地圖 →</span><span class="lang-en">View Project Map →</span></span></a>
       </div>
-    </a>
+    </div>
   </div>
 </section>
 
 <!-- ALL PROJECTS -->
-<section class="section">
-  <div class="container">
-    <div class="label reveal" style="margin-bottom:2rem;" data-zh="所有專案" data-en="All Projects">所有專案</div>
-    <div class="projects-list stagger-parent" id="projects-grid">
+<section class="projects-sec">
+  <div class="projects-sec__inner">
+    <div class="sec-tag lang-zh">所有專案</div>
+    <div class="sec-tag lang-en">All Projects</div>
+    <div class="projects-grid" id="projects-grid">
 
-      <article class="project-card stagger-child" data-cat="animals" data-year="2026">
-        <div class="project-card__thumb" style="background:linear-gradient(135deg,#0d1a0d,#001a1a);">🐱</div>
-        <div class="project-card__body">
-          <div class="project-card__tags">
-            <span class="badge" data-zh="動物" data-en="Animals">動物</span>
-            <span class="project-card__year">2026</span>
+      <article class="proj-card" data-cat="animals" data-year="2026">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#00180a,#002214)">🐱</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,201,93,.12);color:#00c95d"><span class="lang-zh">動物</span><span class="lang-en">Animals</span>
+            <span class="proj-year">2026</span>
           </div>
-          <h3 class="project-card__title" data-zh="流浪貓咪關懷計畫" data-en="Stray Cat Care Program">流浪貓咪關懷計畫</h3>
-          <p class="project-card__desc" data-zh="在台北市設立標準化的流浪貓餵食站，建立固定志工巡邏路線，並推廣 TNR 結紮回置計畫。" data-en="Establishing standardized stray cat feeding stations in Taipei, creating regular volunteer patrol routes, and promoting TNR (Trap-Neuter-Return) programs.">
-            在台北市設立標準化的流浪貓咪餵食站，建立固定志工巡邏路線，並推廣 TNR 結紮回置計畫。
-          </p>
-          <div class="project-card__footer">
-            <span class="project-card__dept" data-zh="活動部" data-en="Events">活動部</span>
-            <span class="project-card__link" data-zh="了解更多 →" data-en="Learn more →">了解更多 →</span>
+          <h3 class="proj-card__title lang-zh">流浪貓咪關懷計畫</h3>
+          <h3 class="proj-card__title lang-en">Stray Cat Care Program</h3>
+          <p class="proj-card__desc lang-zh">在台北市設立標準化的流浪貓餵食站，建立固定志工巡邏路線，並推廣 TNR 結紮回置計畫。</p>
+          <p class="proj-card__desc lang-en">Establishing standardized stray cat feeding stations in Taipei, creating regular volunteer patrol routes, and promoting TNR programs.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">活動部</span><span class="proj-card__dept lang-en">Events</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
           </div>
         </div>
       </article>
 
-      <article class="project-card stagger-child" data-cat="environment" data-year="2025">
-        <div class="project-card__thumb" style="background:linear-gradient(135deg,#0d1a00,#001400);">🌿</div>
-        <div class="project-card__body">
-          <div class="project-card__tags">
-            <span class="badge" style="background:rgba(127,178,133,0.15);color:#7fb285;border-color:rgba(127,178,133,0.3);" data-zh="環境" data-en="Environment">環境</span>
-            <span class="project-card__year">2025</span>
+      <article class="proj-card" data-cat="environment" data-year="2025">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#001800,#001200)">🌿</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,153,0,.1);color:#008800"><span class="lang-zh">環境</span><span class="lang-en">Environment</span>
+            <span class="proj-year">2025</span>
           </div>
-          <h3 class="project-card__title" data-zh="校園減碳計畫" data-en="Campus Carbon Reduction">校園減碳計畫</h3>
-          <p class="project-card__desc" data-zh="與全台12所高中合作，建立學生環保委員會，推動校園零碳排行動方案，減少整體碳足跡。" data-en="Partnering with 12 high schools nationwide to establish student environmental committees and promote zero-carbon campus action plans.">
-            與全台12所高中合作，建立學生環保委員會，推動校園零碳排行動方案，減少整體碳足跡。
-          </p>
-          <div class="project-card__footer">
-            <span class="project-card__dept" data-zh="研究部" data-en="Research">研究部</span>
-            <span class="project-card__link" data-zh="了解更多 →" data-en="Learn more →">了解更多 →</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="project-card stagger-child" data-cat="community" data-year="2024">
-        <div class="project-card__thumb" style="background:linear-gradient(135deg,#1a0d00,#140a00);">👴</div>
-        <div class="project-card__body">
-          <div class="project-card__tags">
-            <span class="badge" style="background:rgba(91,143,185,0.15);color:#5b8fb9;border-color:rgba(91,143,185,0.3);" data-zh="社區關懷" data-en="Community">社區關懷</span>
-            <span class="project-card__year">2024</span>
-          </div>
-          <h3 class="project-card__title" data-zh="青銀交流計畫" data-en="Youth-Elder Exchange Program">青銀交流計畫</h3>
-          <p class="project-card__desc" data-zh="連結青年志工與台北市獨居長者，透過定期拜訪、技能交流與共餐活動，建立跨代情感連結。" data-en="Connecting youth volunteers with isolated elderly in Taipei through regular visits, skill exchanges, and shared meals to build intergenerational bonds.">
-            連結青年志工與台北市獨居長者，透過定期拜訪、技能交流與共餐活動，建立跨代情感連結。
-          </p>
-          <div class="project-card__footer">
-            <span class="project-card__dept" data-zh="活動部" data-en="Events">活動部</span>
-            <span class="project-card__link" data-zh="了解更多 →" data-en="Learn more →">了解更多 →</span>
+          <h3 class="proj-card__title lang-zh">校園減碳計畫</h3>
+          <h3 class="proj-card__title lang-en">Campus Carbon Reduction</h3>
+          <p class="proj-card__desc lang-zh">與全台12所高中合作，建立學生環保委員會，推動校園零碳排行動方案。</p>
+          <p class="proj-card__desc lang-en">Partnering with 12 high schools to establish student environmental committees and promote zero-carbon campus action plans.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">研究部</span><span class="proj-card__dept lang-en">Research</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
           </div>
         </div>
       </article>
 
-      <article class="project-card stagger-child" data-cat="arts" data-year="2025">
-        <div class="project-card__thumb" style="background:linear-gradient(135deg,#1a001a,#0d000d);">🎭</div>
-        <div class="project-card__body">
-          <div class="project-card__tags">
-            <span class="badge" style="background:rgba(201,169,110,0.15);color:#c9a96e;border-color:rgba(201,169,110,0.3);" data-zh="藝術文化" data-en="Arts">藝術文化</span>
-            <span class="project-card__year">2025</span>
+      <article class="proj-card" data-cat="community" data-year="2024">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#1a0d00,#140800)">👴</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,153,255,.1);color:#0099ff"><span class="lang-zh">社區</span><span class="lang-en">Community</span>
+            <span class="proj-year">2024</span>
           </div>
-          <h3 class="project-card__title" data-zh="社會議題藝術展" data-en="Social Issue Art Exhibition">社會議題藝術展</h3>
-          <p class="project-card__desc" data-zh="以藝術為媒介，邀請20位台灣青年藝術家，展覽台灣當代社會議題的觀察與回應，吸引超過3,000人次參觀。" data-en="Using art as a medium, inviting 20 young Taiwanese artists to exhibit observations and responses to contemporary social issues, drawing over 3,000 visitors.">
-            以藝術為媒介，邀請20位台灣青年藝術家，展覽台灣當代社會議題的觀察與回應，吸引超過3,000人次參觀。
-          </p>
-          <div class="project-card__footer">
-            <span class="project-card__dept" data-zh="設計部" data-en="Design">設計部</span>
-            <span class="project-card__link" data-zh="了解更多 →" data-en="Learn more →">了解更多 →</span>
-          </div>
-        </div>
-      </article>
-
-      <article class="project-card stagger-child" data-cat="environment" data-year="2025">
-        <div class="project-card__thumb" style="background:linear-gradient(135deg,#001a0d,#000d07);">♻️</div>
-        <div class="project-card__body">
-          <div class="project-card__tags">
-            <span class="badge" style="background:rgba(127,178,133,0.15);color:#7fb285;border-color:rgba(127,178,133,0.3);" data-zh="環境" data-en="Environment">環境</span>
-            <span class="project-card__year">2025</span>
-          </div>
-          <h3 class="project-card__title" data-zh="食物浪費議題調查報告" data-en="Food Waste Issue Research Report">食物浪費議題調查報告</h3>
-          <p class="project-card__desc" data-zh="針對台灣食物浪費問題進行實地調查，發布研究報告並提出政策建議，獲媒體廣泛報導。" data-en="Conducting field research on food waste in Taiwan, publishing a research report with policy recommendations that received wide media coverage.">
-            針對台灣食物浪費問題進行實地調查，發布研究報告並提出政策建議，獲媒體廣泛報導。
-          </p>
-          <div class="project-card__footer">
-            <span class="project-card__dept" data-zh="研究部" data-en="Research">研究部</span>
-            <span class="project-card__link" data-zh="了解更多 →" data-en="Learn more →">了解更多 →</span>
+          <h3 class="proj-card__title lang-zh">青銀交流計畫</h3>
+          <h3 class="proj-card__title lang-en">Youth-Elder Exchange Program</h3>
+          <p class="proj-card__desc lang-zh">連結150名青年志工與台北市獨居長者，透過定期拜訪、技能交流，建立跨代情感連結。</p>
+          <p class="proj-card__desc lang-en">Connecting 150 youth volunteers with isolated elderly in Taipei through regular visits and skill exchanges to build intergenerational bonds.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">活動部</span><span class="proj-card__dept lang-en">Events</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
           </div>
         </div>
       </article>
 
-      <article class="project-card stagger-child" data-cat="community" data-year="2024">
-        <div class="project-card__thumb" style="background:linear-gradient(135deg,#001220,#000c18);">📚</div>
-        <div class="project-card__body">
-          <div class="project-card__tags">
-            <span class="badge" style="background:rgba(91,143,185,0.15);color:#5b8fb9;border-color:rgba(91,143,185,0.3);" data-zh="教育" data-en="Education">教育</span>
-            <span class="project-card__year">2024</span>
+      <article class="proj-card" data-cat="arts" data-year="2025">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#1a001a,#0d000d)">🎭</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(124,58,255,.1);color:#7c3aff"><span class="lang-zh">藝術文化</span><span class="lang-en">Arts</span>
+            <span class="proj-year">2025</span>
           </div>
-          <h3 class="project-card__title" data-zh="偏鄉教育支援計畫" data-en="Rural Education Support Program">偏鄉教育支援計畫</h3>
-          <p class="project-card__desc" data-zh="為台灣偏鄉學童提供線上家教服務，招募100名大學生志工，累計完成500小時教學輔導。" data-en="Providing online tutoring for rural school children in Taiwan, recruiting 100 university student volunteers and completing 500 hours of academic support.">
-            為台灣偏鄉學童提供線上家教服務，招募100名大學生志工，累計完成500小時教學輔導。
-          </p>
-          <div class="project-card__footer">
-            <span class="project-card__dept" data-zh="活動部" data-en="Events">活動部</span>
-            <span class="project-card__link" data-zh="了解更多 →" data-en="Learn more →">了解更多 →</span>
+          <h3 class="proj-card__title lang-zh">社會議題藝術展</h3>
+          <h3 class="proj-card__title lang-en">Social Issue Art Exhibition</h3>
+          <p class="proj-card__desc lang-zh">邀請20位台灣青年藝術家，以藝術為媒介展覽台灣當代社會議題，吸引超過3,000人次參觀。</p>
+          <p class="proj-card__desc lang-en">Inviting 20 young Taiwanese artists to exhibit works on contemporary social issues, drawing over 3,000 visitors.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">設計部</span><span class="proj-card__dept lang-en">Design</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
           </div>
         </div>
       </article>
 
-    </div><!-- end projects-list -->
+      <article class="proj-card" data-cat="environment" data-year="2025">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#001a0d,#000d06)">♻️</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,153,0,.1);color:#008800"><span class="lang-zh">環境</span><span class="lang-en">Environment</span>
+            <span class="proj-year">2025</span>
+          </div>
+          <h3 class="proj-card__title lang-zh">食物浪費議題調查報告</h3>
+          <h3 class="proj-card__title lang-en">Food Waste Research Report</h3>
+          <p class="proj-card__desc lang-zh">針對台灣食物浪費問題進行實地調查，發布研究報告並提出政策建議，獲媒體廣泛報導。</p>
+          <p class="proj-card__desc lang-en">Conducting field research on Taiwan's food waste problem, publishing a report with policy recommendations that received wide media coverage.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">研究部</span><span class="proj-card__dept lang-en">Research</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
+          </div>
+        </div>
+      </article>
 
-    <!-- Empty state -->
-    <div id="no-results" style="display:none;text-align:center;padding:5rem 0;color:var(--text-3);">
-      <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
-      <p data-zh="找不到符合條件的專案" data-en="No projects found">找不到符合條件的專案</p>
+      <article class="proj-card" data-cat="community" data-year="2024">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#001220,#000c18)">📚</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,153,255,.1);color:#0099ff"><span class="lang-zh">社區</span><span class="lang-en">Community</span>
+            <span class="proj-year">2024</span>
+          </div>
+          <h3 class="proj-card__title lang-zh">偏鄉教育支援計畫</h3>
+          <h3 class="proj-card__title lang-en">Rural Education Support</h3>
+          <p class="proj-card__desc lang-zh">為台灣偏鄉學童提供線上家教服務，招募100名大學生志工，累計完成500小時教學輔導。</p>
+          <p class="proj-card__desc lang-en">Providing online tutoring for rural school children, recruiting 100 university student volunteers and completing 500+ hours of academic support.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">活動部</span><span class="proj-card__dept lang-en">Events</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card" data-cat="animals" data-year="2026">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#001a08,#001205)">🏥</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,201,93,.12);color:#00c95d"><span class="lang-zh">動物</span><span class="lang-en">Animals</span>
+            <span class="proj-year">2026</span>
+          </div>
+          <h3 class="proj-card__title lang-zh">動物醫院合作網絡</h3>
+          <h3 class="proj-card__title lang-en">Veterinary Partner Network</h3>
+          <p class="proj-card__desc lang-zh">聯繫全台動物醫院加入 Stray Aid Map 地圖，建立低收費緊急救援服務名單，讓救援更即時。</p>
+          <p class="proj-card__desc lang-en">Connecting veterinary clinics across Taiwan to the Stray Aid Map map, building a low-cost emergency rescue service directory for faster response.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">研究部</span><span class="proj-card__dept lang-en">Research</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card" data-cat="arts" data-year="2024">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#0a0010,#040008)">🎵</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(124,58,255,.1);color:#7c3aff"><span class="lang-zh">藝術文化</span><span class="lang-en">Arts</span>
+            <span class="proj-year">2024</span>
+          </div>
+          <h3 class="proj-card__title lang-zh">青年音樂公益演唱會</h3>
+          <h3 class="proj-card__title lang-en">Youth Charity Music Concert</h3>
+          <p class="proj-card__desc lang-zh">結合15個學生樂團，舉辦公益音樂節，門票收益全數捐助台北市弱勢家庭，觸及1,200名觀眾。</p>
+          <p class="proj-card__desc lang-en">Uniting 15 student bands for a charity music festival. All ticket proceeds donated to disadvantaged families in Taipei, reaching 1,200 audience members.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">活動部</span><span class="proj-card__dept lang-en">Events</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="proj-card" data-cat="environment" data-year="2026">
+        <div class="proj-card__thumb" style="background:linear-gradient(135deg,#001500,#000e00)">🌊</div>
+        <div class="proj-card__body">
+          <div class="proj-card__tags">
+            <span class="proj-tag" style="background:rgba(0,153,0,.1);color:#008800"><span class="lang-zh">環境</span><span class="lang-en">Environment</span>
+            <span class="proj-year">2026</span>
+          </div>
+          <h3 class="proj-card__title lang-zh">海洋垃圾調查計畫</h3>
+          <h3 class="proj-card__title lang-en">Marine Debris Survey</h3>
+          <p class="proj-card__desc lang-zh">沿台灣北海岸進行海洋垃圾調查，公佈數據並倡議相關政策改變，凝聚社區清潔行動。</p>
+          <p class="proj-card__desc lang-en">Surveying marine debris along Taiwan's north coast, publishing data and advocating policy change while mobilizing community cleanup actions.</p>
+          <div class="proj-card__footer">
+            <span class="proj-card__dept lang-zh">研究部</span><span class="proj-card__dept lang-en">Research</span>
+            <span class="proj-card__link lang-zh">了解更多 →</span><span class="proj-card__link lang-en">Learn more →</span>
+          </div>
+        </div>
+      </article>
+
     </div>
-
+    <div id="no-results">
+      <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+      <p class="lang-zh">找不到符合條件的專案</p>
+      <p class="lang-en">No projects found matching your filter</p>
+    </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer__grid">
-      <div class="footer__brand">
-        <a href="index.html" class="navbar__logo" style="display:inline-flex;">
-          <img src="assets/logo.svg" alt="TTT" width="32" height="32" />
-          <div><div class="navbar__logo-name">Taiwan Teen Trust</div><div class="navbar__logo-sub">青年公益行動</div></div>
-        </a>
-        <p class="footer__desc" data-zh="學生主導的台灣公益組織。" data-en="A student-led Taiwanese nonprofit.">學生主導的台灣公益組織。</p>
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">
+        <img src="assets/logo-real.png" alt="TTT" style="width:32px;height:32px;border-radius:8px;object-fit:cover;object-position:left center" />
+        <span>Taiwan Teen Trust</span>
       </div>
-      <div>
-        <div class="footer__col-title" data-zh="頁面" data-en="Pages">頁面</div>
-        <ul class="footer__links">
-          <li><a href="about.html"    class="footer__link" data-zh="關於我們" data-en="About">關於我們</a></li>
-          <li><a href="team.html"     class="footer__link" data-zh="團隊"     data-en="Team">團隊</a></li>
-          <li><a href="projects.html" class="footer__link" data-zh="專案"     data-en="Projects">專案</a></li>
-          <li><a href="focus.html"    class="footer__link" data-zh="年度主題" data-en="Annual Focus">年度主題</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="footer__col-title" data-zh="資源" data-en="Resources">資源</div>
-        <ul class="footer__links">
-          <li><a href="blog.html"    class="footer__link" data-zh="部落格" data-en="Blog">部落格</a></li>
-          <li><a href="join.html"    class="footer__link" data-zh="加入我們" data-en="Join Us">加入我們</a></li>
-          <li><a href="contact.html" class="footer__link" data-zh="聯絡" data-en="Contact">聯絡</a></li>
-        </ul>
-      </div>
-      <div>
-        <div class="footer__col-title" data-zh="社群" data-en="Social">社群</div>
-        <ul class="footer__links">
-          <li><a href="#" class="footer__link">Instagram</a></li>
-          <li><a href="#" class="footer__link">Facebook</a></li>
-          <li><a href="#" class="footer__link">YouTube</a></li>
-        </ul>
-      </div>
+      <p class="footer-desc lang-zh">台灣第一個完全由青少年主導的社會創新組織。</p>
+      <p class="footer-desc lang-en">Taiwan's first social innovation org led entirely by teenagers.</p>
     </div>
-    <div class="footer__bottom">
-      <span class="footer__copy">© 2026 Taiwan Teen Trust.</span>
+    <div>
+      <div class="footer-col-title" data-zh="頁面" data-en="Pages">頁面</div>
+      <ul class="footer-links">
+        <li><a href="about.html" data-zh="關於我們" data-en="About Us">關於我們</a></li>
+        <li><a href="team.html" data-zh="團隊成員" data-en="Team">團隊成員</a></li>
+        <li><a href="projects.html" data-zh="專案" data-en="Projects">專案</a></li>
+        <li><a href="focus.html" data-zh="年度主題" data-en="Focus">年度主題</a></li>
+        <li><a href="blog.html" data-zh="部落格" data-en="Blog">部落格</a></li>
+      </ul>
     </div>
+    <div>
+      <div class="footer-col-title" data-zh="聯絡" data-en="Connect">聯絡</div>
+      <ul class="footer-links">
+        <li><a href="mailto:info@taiwanteentrust.org">info@taiwanteentrust.org</a></li>
+        <li><a href="https://www.instagram.com/taiwanteentrust/" target="_blank" rel="noopener">Instagram</a></li>
+        <li><a href="https://www.threads.com/@taiwanteentrust" target="_blank" rel="noopener">Threads</a></li>
+        <li><a href="https://taiwanteentrust.org/2025-fureverfriends-yearbook" target="_blank" rel="noopener" data-zh="活動花絮" data-en="Yearbook">活動花絮</a></li>
+        <li><a href="admin/index.html" data-zh="後台管理" data-en="Admin">後台管理</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">
+      <div style="font-size:.8rem;font-weight:700;color:rgba(255,255,255,.4);margin-bottom:.4rem">TaiwanTeenTrust</div>
+      <div class="lang-zh" style="line-height:1.85">網頁維護：TaiwanTeenTrust 網站維護團隊<br>所屬單位：社團法人台北市 Teen Trust 公益夢想協會<br>立案字號：北市社會字第4927號<br>© 2025 Taiwan Teen Trust. 保留所有權利。</div>
+      <div class="lang-en" style="line-height:1.85">Maintained by: TaiwanTeenTrust Web Team<br>Organization: Teen Trust Public Welfare Dream Association, Taipei<br>Registration No.: 北市社會字第4927號<br>© 2025 Taiwan Teen Trust. All rights reserved.</div>
+    </div>
+    <div class="footer-rainbow"></div>
   </div>
 </footer>
 
-<script src="js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
-// Project filter logic
-document.addEventListener('DOMContentLoaded', () => {
-  const cards   = document.querySelectorAll('.project-card[data-cat]');
-  const noRes   = document.getElementById('no-results');
-  const search  = document.getElementById('search-input');
-  let activeCat  = 'all';
-  let activeYear = 'all';
-  let query      = '';
+gsap.registerPlugin(ScrollTrigger);
+window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40));
+const LANG_KEY = 'ttt-lang';
+let langReady = false;
+function setLang(l) {
+  document.body.classList.toggle('lang-en', l==='en');
+  document.querySelectorAll('.nav__lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang===l));
+  document.querySelectorAll('[data-zh],[data-en]').forEach(el => {
+    if (el.dataset[l]) el.textContent = el.dataset[l];
+  });
+  localStorage.setItem(LANG_KEY, l);
+  if (langReady) {
+    const cls = l==='en' ? '.li.lang-en' : '.li.lang-zh';
+    document.querySelectorAll(cls).forEach(el => el.style.transform = 'translateY(0px)');
+  }
+}
+document.querySelectorAll('.nav__lang-btn').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+setLang(localStorage.getItem(LANG_KEY)||'zh');
+const ham = document.getElementById('hamburger');
+const drawer = document.getElementById('nav-drawer');
+if (ham) ham.addEventListener('click', () => { ham.classList.toggle('open'); drawer.classList.toggle('open'); });
+gsap.utils.toArray('.li').forEach(el => {
+  if (getComputedStyle(el).display === 'none') { el.style.transform = 'translateY(0px)'; return; }
+  gsap.to(el, { y:'0%', duration:1.2, ease:'power4.out',
+    scrollTrigger: { trigger: el.closest('.lw')||el, start:'top 88%', toggleActions:'play none none none' }
+  });
+});
+gsap.utils.toArray('.page-hero .li').forEach(el => {
+  if (getComputedStyle(el).display === 'none') { el.style.transform = 'translateY(0px)'; return; }
+  gsap.to(el, { y:'0%', duration:1.2, ease:'power4.out', delay:.2 });
+});
+langReady = true;
 
-  function filterProjects() {
+// Filter logic
+const featuredSec = document.querySelector('.featured');
+const projectsSec = document.querySelector('.projects-sec');
+const cards = document.querySelectorAll('.proj-card[data-cat]');
+const noRes = document.getElementById('no-results');
+let activeCat = 'all';
+
+function filterProjects() {
+  if (activeCat === 'all') {
+    // 全部：旗艦大卡 + 完整專案網格
+    featuredSec.style.display = '';
+    projectsSec.style.display = '';
+    noRes.style.display = 'none';
+    cards.forEach(card => { card.style.display = ''; card.classList.remove('animating'); });
+  } else {
+    // 分類：隱藏旗艦，僅顯示符合的卡片 + 柔和進場
+    featuredSec.style.display = 'none';
+    projectsSec.style.display = '';
     let visible = 0;
-    cards.forEach(card => {
-      const matchCat  = activeCat  === 'all' || card.dataset.cat  === activeCat;
-      const matchYear = activeYear === 'all' || card.dataset.year === activeYear;
-      const title     = card.querySelector('.project-card__title');
-      const matchQ    = !query || (title && title.textContent.toLowerCase().includes(query.toLowerCase()));
-      const show      = matchCat && matchYear && matchQ;
-      card.style.display = show ? '' : 'none';
-      if (show) visible++;
+    cards.forEach((card, i) => {
+      const show = card.dataset.cat === activeCat;
+      card.classList.remove('animating');
+      if (show) {
+        card.style.display = '';
+        // stagger animation
+        setTimeout(() => card.classList.add('animating'), i * 60);
+        visible++;
+      } else {
+        card.style.display = 'none';
+      }
     });
     noRes.style.display = visible === 0 ? 'block' : 'none';
   }
+}
 
-  document.getElementById('cat-filter').addEventListener('click', e => {
-    const btn = e.target.closest('[data-cat]');
-    if (!btn) return;
-    document.querySelectorAll('#cat-filter .filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeCat = btn.dataset.cat;
-    filterProjects();
-  });
-
-  document.getElementById('year-filter').addEventListener('click', e => {
-    const btn = e.target.closest('[data-year]');
-    if (!btn) return;
-    document.querySelectorAll('#year-filter .filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeYear = btn.dataset.year;
-    filterProjects();
-  });
-
-  if (search) {
-    search.addEventListener('input', () => { query = search.value; filterProjects(); });
-    search.placeholder = currentLang === 'zh' ? '搜尋專案...' : 'Search projects...';
-  }
+document.getElementById('cat-filter').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  document.querySelectorAll('#cat-filter .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  filterProjects();
 });
+
+gsap.utils.toArray('.proj-card').forEach((el, i) => {
+  gsap.from(el, { y:30, opacity:0, duration:.7, ease:'power3.out', delay:(i%3)*.1,
+    scrollTrigger: { trigger: el, start:'top 92%' }
+  });
+});
+</script>
+<script src="js/aurora.js"></script>
+
+<!-- ════════════════════ MAP TRANSITION ════════════════════ -->
+<style>
+.map-trans {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .25s ease;
+}
+.map-trans.active { opacity: 1; visibility: visible; pointer-events: all; }
+#trans-cv { position: absolute; inset: 0; width: 100%; height: 100%; }
+.trans-inner { position: relative; z-index: 1; text-align: center; }
+
+/* Pulsing rings */
+.trans-rings { position: relative; width: 90px; height: 90px; margin: 0 auto 2rem; }
+.trans-paw {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem;
+  animation: paw-drop .7s cubic-bezier(0.34, 1.56, 0.64, 1) .1s both;
+}
+@keyframes paw-drop {
+  from { opacity:0; transform: translateY(-50px) scale(.4); }
+  to   { opacity:1; transform: none; }
+}
+.ring {
+  position: absolute; top: 50%; left: 50%;
+  border-radius: 50%; border: 1px solid;
+  animation: ring-out 2s ease-out infinite;
+  transform-origin: center;
+}
+.ring:nth-child(1) { width:90px; height:90px; margin:-45px; border-color:rgba(46,202,212,.7); animation-delay:0s; }
+.ring:nth-child(2) { width:150px; height:150px; margin:-75px; border-color:rgba(46,202,212,.4); animation-delay:.45s; }
+.ring:nth-child(3) { width:220px; height:220px; margin:-110px; border-color:rgba(46,202,212,.18); animation-delay:.9s; }
+@keyframes ring-out {
+  0%   { transform: scale(.55); opacity: 1; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+.trans-title {
+  font-family: 'Inter', system-ui, monospace;
+  font-size: clamp(1.4rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: .22em;
+  color: #fff; margin-bottom: .4rem;
+  text-shadow: 0 0 40px rgba(46,202,212,.9), 0 0 80px rgba(46,202,212,.4);
+  animation: title-in .5s ease .65s both;
+}
+@keyframes title-in { from { opacity:0; transform: scale(.92); } to { opacity:1; transform: none; } }
+.trans-sub {
+  font-size: .8rem; letter-spacing: .12em; color: rgba(255,255,255,.35);
+  margin-bottom: 2rem;
+  animation: title-in .5s ease .8s both;
+}
+.trans-bar-wrap {
+  width: min(280px, 80vw); height: 3px;
+  background: rgba(255,255,255,.07); border-radius: 2px;
+  margin: 0 auto .75rem; overflow: hidden;
+  animation: title-in .4s ease .9s both;
+}
+.trans-bar-fill {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, #2ECAD4, #00f5ff);
+  box-shadow: 0 0 12px rgba(46,202,212,.9);
+  transition: width .08s linear;
+}
+.trans-status {
+  font-family: 'Courier New', monospace;
+  font-size: .65rem; letter-spacing: .15em;
+  color: rgba(46,202,212,.55);
+  animation: title-in .4s ease 1s both;
+}
+
+/* Glitch */
+.map-trans.glitch .trans-inner { animation: glitch .12s steps(2) infinite; }
+@keyframes glitch {
+  0%   { clip-path: inset(10% 0 60% 0); transform: translate(-4px, 0); }
+  25%  { clip-path: inset(55% 0 5%  0); transform: translate( 4px, 0); }
+  50%  { clip-path: inset(25% 0 40% 0); transform: translate(-2px, 0); }
+  75%  { clip-path: inset(70% 0 2%  0); transform: translate( 2px, 0); }
+  100% { clip-path: inset(5%  0 70% 0); transform: translate(-3px, 0); }
+}
+/* Chromatic aberration on glitch */
+.map-trans.glitch .trans-title {
+  text-shadow: 3px 0 #ff2dca, -3px 0 #2ECAD4, 0 0 40px rgba(46,202,212,.9);
+}
+</style>
+
+<div class="map-trans" id="map-trans" aria-hidden="true">
+  <canvas id="trans-cv"></canvas>
+  <div class="trans-inner">
+    <div class="trans-rings">
+      <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+      <div class="trans-paw">🐾</div>
+    </div>
+    <div class="trans-title">STRAY AID MAP</div>
+    <div class="trans-sub lang-zh">浪浪援助地圖 · 系統載入中</div>
+    <div class="trans-sub lang-en">Loading shelter data...</div>
+    <div class="trans-bar-wrap"><div class="trans-bar-fill" id="trans-fill"></div></div>
+    <div class="trans-status" id="trans-status">INITIALIZING SYSTEM...</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  /* ── Cyberpunk wave on transition canvas ── */
+  const cv = document.getElementById('trans-cv');
+  const cx = cv.getContext('2d');
+  let frame = 0, animId = null;
+  const WAVES = [
+    { amp:120, freq:.00195, spd:.0045, yPct:.22, c1:'#2ECAD4', c2:'#00f5ff' },
+    { amp: 90, freq:.00270, spd:.0062, yPct:.55, c1:'#ff2dca', c2:'#7c3aff' },
+    { amp:140, freq:.00160, spd:.0038, yPct:.82, c1:'#7c3aff', c2:'#2ECAD4' },
+  ];
+  function hexRgb(h){ return [parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)]; }
+  function resizeCv(){ cv.width = window.innerWidth; cv.height = window.innerHeight; }
+  function drawWaves() {
+    const W = cv.width, H = cv.height;
+    cx.clearRect(0,0,W,H);
+    WAVES.forEach(w => {
+      const g = cx.createLinearGradient(0,0,W,0);
+      const r1=hexRgb(w.c1), r2=hexRgb(w.c2);
+      g.addColorStop(0,   `rgba(${r1},0)`);
+      g.addColorStop(.12, `rgba(${r1},.65)`);
+      g.addColorStop(.5,  `rgba(${r2},.8)`);
+      g.addColorStop(.8,  `rgba(${r1},.55)`);
+      g.addColorStop(1,   `rgba(${r1},0)`);
+      cx.beginPath(); cx.strokeStyle=g; cx.lineWidth=1.8; cx.globalAlpha=.2;
+      for(let x=0;x<=W;x+=3){
+        const y = H*w.yPct + Math.sin(x*w.freq+frame*w.spd)*w.amp
+                            + Math.sin(x*w.freq*2.35+frame*w.spd*.58+1.8)*w.amp*.32;
+        x===0 ? cx.moveTo(x,y) : cx.lineTo(x,y);
+      }
+      cx.stroke(); cx.globalAlpha=1;
+    });
+    frame++;
+    animId = requestAnimationFrame(drawWaves);
+  }
+
+  /* ── Status messages ── */
+  const STEPS = [
+    [0,    0,  'INITIALIZING SYSTEM...'],
+    [350,  22, 'LOADING SHELTER DATABASE...'],
+    [750,  48, 'MAPPING COORDINATES...'],
+    [1100, 72, 'RENDERING TILE LAYERS...'],
+    [1450, 90, 'ALMOST THERE...'],
+    [1750, 100,'LAUNCHING MAP →'],
+  ];
+
+  /* ── Start transition ── */
+  function startTransition(href) {
+    const overlay = document.getElementById('map-trans');
+    const fill    = document.getElementById('trans-fill');
+    const status  = document.getElementById('trans-status');
+
+    resizeCv();
+    window.addEventListener('resize', resizeCv);
+    overlay.classList.add('active');
+    drawWaves();
+
+    STEPS.forEach(([delay, pct, msg]) => {
+      setTimeout(() => {
+        fill.style.width  = pct + '%';
+        status.textContent = msg;
+      }, delay);
+    });
+
+    /* Glitch then navigate */
+    setTimeout(() => {
+      overlay.classList.add('glitch');
+      setTimeout(() => {
+        cancelAnimationFrame(animId);
+        sessionStorage.setItem('ttt-map-enter', '1');
+        window.location.href = href;
+      }, 320);
+    }, 1850);
+  }
+
+  /* ── Intercept map button ── */
+  document.querySelectorAll('a[href="projects/stray-aid-map.html"]').forEach(a => {
+    a.addEventListener('click', e => { e.preventDefault(); startTransition(a.href); });
+  });
+})();
 </script>
 </body>
 </html>
