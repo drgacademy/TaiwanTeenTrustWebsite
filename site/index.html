@@ -1116,6 +1116,7 @@ body.lang-is-en span.lang-en { display: inline; }
 <!-- ════ SCRIPTS ════ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
 gsap.registerPlugin(ScrollTrigger);
@@ -1261,41 +1262,51 @@ gsap.utils.toArray('.proj-card').forEach((el, i) => {
 /* ═══════════════════════════════════════════════
    COUNTERS
 ═══════════════════════════════════════════════ */
-// Reach counter: base 10000 + cumulative page views (localStorage)
-const REACH_KEY = 'ttt-reach';
-let reachViews = parseInt(localStorage.getItem(REACH_KEY) || '0') + 1;
-localStorage.setItem(REACH_KEY, reachViews);
+// Reach counter: (real site_stats.reach_count from Supabase) + 10000 base.
+// Every page load calls RPC increment_reach() which atomically +1 and returns
+// the new value. The +10000 base is a display-only vanity offset.
+const REACH_BASE = 10000;
+const REACH_SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
+const REACH_SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
 const reachEl = document.querySelector('.counter[data-target="10000"]');
-let reachCurrent = 10000 + reachViews;
-if (reachEl) reachEl.dataset.target = reachCurrent;
+let reachCurrent = REACH_BASE;  // fallback if RPC fails
 
-document.querySelectorAll('.counter').forEach(el => {
-  const isReach = el === reachEl;
-  ScrollTrigger.create({
-    trigger: el, start: 'top 85%', once: true,
-    onEnter: () => {
-      const target = +el.dataset.target;
-      const obj = { val: isReach ? 9800 : 0 };
-      gsap.to(obj, {
-        val: target, duration: isReach ? 2.2 : 1.8, ease: 'power2.out',
-        onUpdate: () => {
-          el.textContent = target >= 1000
-            ? Math.round(obj.val).toLocaleString()
-            : Math.round(obj.val);
-        },
-        onComplete: () => {
-          if (!isReach) return;
-          // Slow live-tick: +1 every 4 seconds
-          setInterval(() => {
-            reachCurrent++;
-            localStorage.setItem(REACH_KEY, reachCurrent - 10000);
-            el.textContent = reachCurrent.toLocaleString();
-          }, 4000);
-        }
-      });
-    }
+async function fetchReach() {
+  if (!window.supabase || !window.supabase.createClient) return null;
+  const client = window.supabase.createClient(REACH_SUPABASE_URL, REACH_SUPABASE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false }
   });
-});
+  const { data, error } = await client.rpc('increment_reach');
+  if (error) { console.warn('[reach] increment_reach failed:', error.message); return null; }
+  return typeof data === 'number' ? data : Number(data);
+}
+
+(async () => {
+  const real = await fetchReach();
+  if (real != null) {
+    reachCurrent = REACH_BASE + real;
+    if (reachEl) reachEl.dataset.target = reachCurrent;
+  }
+
+  document.querySelectorAll('.counter').forEach(el => {
+    const isReach = el === reachEl;
+    ScrollTrigger.create({
+      trigger: el, start: 'top 85%', once: true,
+      onEnter: () => {
+        const target = +el.dataset.target;
+        const obj = { val: isReach ? Math.max(target - 200, 0) : 0 };
+        gsap.to(obj, {
+          val: target, duration: isReach ? 2.2 : 1.8, ease: 'power2.out',
+          onUpdate: () => {
+            el.textContent = target >= 1000
+              ? Math.round(obj.val).toLocaleString()
+              : Math.round(obj.val);
+          }
+        });
+      }
+    });
+  });
+})();
 
 /* ═══════════════════════════════════════════════
    CUSTOM CURSOR
@@ -1319,7 +1330,6 @@ document.querySelectorAll('a, button, .pillar-card, .proj-card').forEach(el => {
 });
 </script>
 <script src="js/aurora.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/site-content.js?v=1"></script>
 
 </body>
