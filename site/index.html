@@ -184,8 +184,10 @@ img, svg { display: block; max-width: 100%; }
   font-size: clamp(2rem, 7vw, 4rem); font-weight: 800; color: var(--black);
 }
 @media (max-width: 860px) {
-  .nav__links, .nav__actions { display: none; }
+  .nav__links { display: none; }
+  .nav__cta { display: none; }
   .nav__hamburger { display: flex; }
+  .nav__actions { gap: .5rem; }
 }
 
 /* ═══════════════════════════════════════════════
