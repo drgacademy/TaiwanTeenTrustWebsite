@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n-title-key="nav.users">TTT Admin — 管理員帳號</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span>
+      </a>
+      <a href="members.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav.members">團隊成員</span>
+      </a>
+      <a href="projects.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span>
+      </a>
+      <a href="blog.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span>
+      </a>
+      <a href="map-locations.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span>
+      </a>
+      <a href="users.html" class="sidebar-link active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span>
+      </a>
+      <a href="settings.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span>
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="../index.html" target="_blank" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span>
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">A</div>
+        <div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div>
+      </div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-breadcrumb">
+        <a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="users.crumb.current">管理員帳號</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn--primary btn--sm" id="btn-invite-user">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span data-i18n="users.invite">邀請管理員</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="panel">
+        <div class="panel__header">
+          <div>
+            <div class="panel__title" data-i18n="users.title">所有管理員</div>
+            <div style="color:var(--text-3);font-size:.78rem;margin-top:.35rem" data-i18n="users.sub">建立可登入後台的社員帳號；系統會寄發邀請信讓對方設定密碼。</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="users.col.email">電子郵件</th>
+                <th data-i18n="users.col.name">姓名 / 備註</th>
+                <th data-i18n="users.col.role">角色</th>
+                <th data-i18n="users.col.created">建立時間</th>
+                <th style="text-align:right" data-i18n="users.col.actions">操作</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Invite Modal ── -->
+<div class="modal-backdrop" id="invite-modal">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__title" data-i18n="users.invite.title">邀請新管理員</div>
+      <button class="modal__close" data-close-modal>✕</button>
+    </div>
+    <div class="modal__body">
+      <div style="color:var(--text-3);font-size:.82rem;margin-bottom:1rem" data-i18n="users.invite.hint">系統會寄送含設定密碼連結的邀請信到下方信箱。</div>
+      <div class="field">
+        <label class="field-label" data-i18n="users.f.email">電子郵件 *</label>
+        <input class="field-input" id="u-email" type="email" data-i18n-ph="users.f.email.ph" placeholder="name@example.com" required />
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="users.f.name">姓名 / 備註</label>
+        <input class="field-input" id="u-name" data-i18n-ph="users.f.name.ph" placeholder="王小明 / 資訊部部長" />
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--primary" id="btn-send-invite" data-i18n="users.invite">邀請管理員</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=4"></script>
+<script>
+let adminList = [];
+let currentUserId = null;
+
+function fmtCreated(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const lang = getLang();
+  return d.toLocaleDateString(lang === 'en' ? 'en-US' : 'zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
+function renderTable() {
+  const tbody = document.getElementById('users-tbody');
+  if (!adminList.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state__icon">👤</div><div class="empty-state__title">${t('users.empty.title')}</div><div class="empty-state__text">${t('users.empty.text')}</div></div></td></tr>`;
+    return;
+  }
+  const tRemove = t('btn.delete');
+  const tRoleAdmin = t('users.role.admin');
+  const tYou = t('users.badge.you');
+
+  tbody.innerHTML = adminList.map(u => {
+    const isSelf = u.user_id && u.user_id === currentUserId;
+    const youBadge = isSelf ? ` <span class="badge badge--cyan" style="margin-left:.35rem">${tYou}</span>` : '';
+    const removeBtn = isSelf
+      ? ''
+      : `<button class="btn btn--danger-ghost btn--sm" onclick="removeAdmin('${u.id}')">${tRemove}</button>`;
+    return `
+      <tr>
+        <td class="td-mono">${escapeHtml(u.email)}${youBadge}</td>
+        <td>${u.name ? escapeHtml(u.name) : '—'}</td>
+        <td><span class="badge badge--green">${tRoleAdmin}</span></td>
+        <td>${fmtCreated(u.created_at)}</td>
+        <td style="text-align:right"><div class="td-actions" style="justify-content:flex-end">${removeBtn}</div></td>
+      </tr>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+async function loadAdmins() {
+  const { ok, list, error } = await Admins.list();
+  if (!ok) {
+    showToast(t('msg.load_fail') + (error ? ' – ' + error : ''), 'error');
+    return;
+  }
+  adminList = list;
+  renderTable();
+}
+
+function openInviteModal() {
+  document.getElementById('u-email').value = '';
+  document.getElementById('u-name').value = '';
+  openModal('invite-modal');
+  setTimeout(() => document.getElementById('u-email').focus(), 50);
+}
+
+document.getElementById('btn-invite-user').addEventListener('click', openInviteModal);
+
+document.getElementById('btn-send-invite').addEventListener('click', async () => {
+  const email = document.getElementById('u-email').value.trim();
+  const name  = document.getElementById('u-name').value.trim();
+  if (!email) { showToast(t('users.msg.email_required'), 'error'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast(t('users.msg.email_invalid'), 'error'); return; }
+
+  const btn = document.getElementById('btn-send-invite');
+  btn.disabled = true;
+  const { ok, error } = await Admins.invite(email, name);
+  btn.disabled = false;
+
+  if (!ok) {
+    showToast(t('users.msg.invite_fail') + (error ? ' – ' + error : ''), 'error');
+    return;
+  }
+  showToast(t('users.msg.invited'), 'success');
+  closeModal('invite-modal');
+  await loadAdmins();
+});
+
+async function removeAdmin(id) {
+  const admin = adminList.find(a => a.id === id);
+  if (!admin) return;
+  if (admin.user_id === currentUserId) { showToast(t('users.msg.self_remove'), 'error'); return; }
+
+  confirmAction(t('users.remove.title'), `${admin.email} — ${t('users.remove.text')}`, async () => {
+    const { ok, error } = await Admins.remove(id);
+    if (!ok) { showToast(t('msg.save_fail') + (error ? ' – ' + error : ''), 'error'); return; }
+    showToast(t('users.msg.removed'), 'success');
+    await loadAdmins();
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  currentUserId = user.id;
+  await loadAdmins();
+});
+document.addEventListener('admin-lang-changed', () => renderTable());
+</script>
+</body>
+</html>

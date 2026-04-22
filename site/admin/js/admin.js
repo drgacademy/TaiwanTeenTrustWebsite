@@ -124,6 +124,37 @@ const Storage = {
   }
 };
 
+/* ════════════════════ ADMIN USERS (edge function) ════════════════════ */
+const Admins = {
+  async list() {
+    const { data, error } = await sb.functions.invoke('admin-users', { method: 'GET' });
+    if (error) { console.error('[Admins.list]', error); return { ok: false, error: error.message || 'fail', list: [] }; }
+    return { ok: true, list: data?.admins || [] };
+  },
+  async invite(email, name) {
+    const { data, error } = await sb.functions.invoke('admin-users', {
+      method: 'POST',
+      body: { email, name }
+    });
+    if (error) {
+      const msg = data?.error || error.message || 'fail';
+      return { ok: false, error: msg };
+    }
+    return { ok: true, admin: data?.admin };
+  },
+  async remove(id) {
+    const { data, error } = await sb.functions.invoke('admin-users', {
+      method: 'DELETE',
+      body: { id }
+    });
+    if (error) {
+      const msg = data?.error || error.message || 'fail';
+      return { ok: false, error: msg };
+    }
+    return { ok: true };
+  }
+};
+
 /* ════════════════════ UI UTILITIES ════════════════════ */
 
 /* ── Toast notifications ── */
@@ -241,6 +272,7 @@ const I18N = {
     'nav.projects': '專案管理',
     'nav.blog': '部落格文章',
     'nav.map': '地圖資料點',
+    'nav.users': '管理員帳號',
     'nav.settings': '網站設定',
     'nav.preview': '前台預覽',
     'user.role.admin': '管理員',
@@ -398,6 +430,35 @@ const I18N = {
     'map.f.desc': '描述',
     'map.f.photos': '照片',
 
+    /* Admin users */
+    'users.crumb.current': '管理員帳號',
+    'users.title': '所有管理員',
+    'users.sub': '建立可登入後台的社員帳號；系統會寄發邀請信讓對方設定密碼。',
+    'users.invite': '邀請管理員',
+    'users.invite.title': '邀請新管理員',
+    'users.invite.hint': '系統會寄送含設定密碼連結的邀請信到下方信箱。',
+    'users.col.email': '電子郵件',
+    'users.col.name': '姓名 / 備註',
+    'users.col.role': '角色',
+    'users.col.created': '建立時間',
+    'users.col.actions': '操作',
+    'users.f.email': '電子郵件 *',
+    'users.f.name': '姓名 / 備註',
+    'users.f.email.ph': 'name@example.com',
+    'users.f.name.ph': '王小明 / 資訊部部長',
+    'users.role.admin': '管理員',
+    'users.empty.title': '尚無管理員',
+    'users.empty.text': '點擊右上角「邀請管理員」新增第一位。',
+    'users.remove.title': '移除管理員？',
+    'users.remove.text': '此動作將刪除帳號，對方將無法再登入後台。',
+    'users.msg.invited': '已寄出邀請信',
+    'users.msg.invite_fail': '邀請失敗',
+    'users.msg.removed': '已移除管理員',
+    'users.msg.self_remove': '無法移除自己',
+    'users.msg.email_required': '請輸入電子郵件',
+    'users.msg.email_invalid': '電子郵件格式不正確',
+    'users.badge.you': '你',
+
     /* Settings */
     'settings.crumb.current': '網站設定',
     'settings.title': '網站設定',
@@ -469,6 +530,7 @@ const I18N = {
     'nav.projects': 'Projects',
     'nav.blog': 'Blog Posts',
     'nav.map': 'Map Locations',
+    'nav.users': 'Admin Accounts',
     'nav.settings': 'Site Settings',
     'nav.preview': 'View Site',
     'user.role.admin': 'Administrator',
@@ -619,6 +681,34 @@ const I18N = {
     'map.f.lng': 'Longitude',
     'map.f.desc': 'Description',
     'map.f.photos': 'Photos',
+
+    'users.crumb.current': 'Admin Accounts',
+    'users.title': 'All Admins',
+    'users.sub': 'Create accounts that can sign into this admin panel. An invite email will be sent for the recipient to set their password.',
+    'users.invite': 'Invite admin',
+    'users.invite.title': 'Invite a new admin',
+    'users.invite.hint': 'An invite email with a password-setup link will be sent to the address below.',
+    'users.col.email': 'Email',
+    'users.col.name': 'Name / Note',
+    'users.col.role': 'Role',
+    'users.col.created': 'Created',
+    'users.col.actions': 'Actions',
+    'users.f.email': 'Email *',
+    'users.f.name': 'Name / Note',
+    'users.f.email.ph': 'name@example.com',
+    'users.f.name.ph': 'Alice / IT Lead',
+    'users.role.admin': 'Admin',
+    'users.empty.title': 'No admins yet',
+    'users.empty.text': 'Click "Invite admin" in the top-right to add the first one.',
+    'users.remove.title': 'Remove this admin?',
+    'users.remove.text': 'This deletes the account. The person will no longer be able to sign in.',
+    'users.msg.invited': 'Invite email sent',
+    'users.msg.invite_fail': 'Invite failed',
+    'users.msg.removed': 'Admin removed',
+    'users.msg.self_remove': 'You cannot remove yourself',
+    'users.msg.email_required': 'Email is required',
+    'users.msg.email_invalid': 'Invalid email format',
+    'users.badge.you': 'You',
 
     'settings.crumb.current': 'Site Settings',
     'settings.title': 'Site Settings',
