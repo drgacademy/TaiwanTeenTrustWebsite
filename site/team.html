@@ -108,7 +108,7 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 
 <nav class="nav" id="nav">
   <a href="index.html" class="nav__logo" aria-label="Taiwan Teen Trust">
-    <img src="assets/logo-real.png" alt="TTT Logo" style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0" />
+    <img src="assets/logo-real.png" alt="TTT Logo" data-site-logo style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0" />
     <span>Taiwan Teen Trust</span>
   </a>
   <div class="nav__links">
@@ -350,7 +350,7 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
   <div class="footer-inner">
     <div>
       <div class="footer-brand">
-        <img src="assets/logo-real.png" alt="TTT" style="width:32px;height:32px;border-radius:8px;object-fit:cover;object-position:left center" />
+        <img src="assets/logo-real.png" alt="TTT" data-site-logo style="width:32px;height:32px;border-radius:8px;object-fit:cover;object-position:left center" />
         <span>Taiwan Teen Trust</span>
       </div>
       <p class="footer-desc lang-zh">台灣第一個完全由青少年主導的社會創新組織。</p>
@@ -434,5 +434,7 @@ gsap.utils.toArray('.member-card').forEach((el, i) => {
 });
 </script>
 <script src="js/aurora.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/site-content.js?v=1"></script>
 </body>
 </html>

@@ -662,7 +662,7 @@ body.lang-is-en span.lang-en { display: inline; }
 <!-- ════ LOADER ════ -->
 <div class="loader" id="loader">
   <div class="loader__logo">
-    <img src="assets/logo-real.png" alt="TTT Logo" class="loader__icon" />
+    <img src="assets/logo-real.png" alt="TTT Logo" class="loader__icon" data-site-logo />
     <div class="loader__name">Taiwan Teen Trust</div>
   </div>
   <div class="loader__bar"><div class="loader__fill"></div></div>
@@ -675,7 +675,7 @@ body.lang-is-en span.lang-en { display: inline; }
 <!-- ════ NAVBAR ════ -->
 <nav class="nav" id="nav">
   <a href="index.html" class="nav__logo" aria-label="Taiwan Teen Trust">
-    <img src="assets/logo-real.png" alt="TTT Logo" style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0" />
+    <img src="assets/logo-real.png" alt="TTT Logo" data-site-logo style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0" />
     <span>Taiwan Teen Trust</span>
   </a>
 
@@ -1270,11 +1270,11 @@ let reachCurrent = 10000 + reachViews;
 if (reachEl) reachEl.dataset.target = reachCurrent;
 
 document.querySelectorAll('.counter').forEach(el => {
-  const target = +el.dataset.target;
   const isReach = el === reachEl;
   ScrollTrigger.create({
     trigger: el, start: 'top 85%', once: true,
     onEnter: () => {
+      const target = +el.dataset.target;
       const obj = { val: isReach ? 9800 : 0 };
       gsap.to(obj, {
         val: target, duration: isReach ? 2.2 : 1.8, ease: 'power2.out',
