@@ -179,6 +179,11 @@ const Admins = {
     const redirectTo = `${window.location.origin}/admin/index.html`;
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
     return error ? { ok: false, error: error.message } : { ok: true };
+  },
+  /* Set password directly via edge function (requires admin-users function to support setPassword action) */
+  async setPassword(userId, newPassword) {
+    const r = await callAdminFn('POST', { body: { action: 'setPassword', userId, password: newPassword } });
+    return r.ok ? { ok: true } : { ok: false, error: r.error };
   }
 };
 
@@ -520,12 +525,23 @@ const I18N = {
     'users.role.member': '團員',
     'users.f.role': '角色',
     'users.f.role.hint': '管理員可管理所有資料；團員僅能編輯部分內容。',
+    'users.f.password': '新密碼 *',
+    'users.f.password.ph': '輸入新密碼（至少 6 個字元）',
+    'users.f.password.confirm': '確認密碼 *',
+    'users.f.password.confirm.ph': '再輸入一次密碼',
     'users.edit.title': '編輯後台使用者',
     'users.edit': '編輯',
     'users.password.title': '密碼管理',
-    'users.password.hint': '系統會寄送密碼重設連結到該使用者信箱，使用者點擊連結後可自行設定新密碼。',
+    'users.password.hint': '直接在此設定新密碼，或寄送密碼重設信讓使用者自行設定。',
+    'users.password.set': '直接設定密碼',
+    'users.password.setting': '設定中…',
     'users.password.reset': '寄送密碼重設信',
     'users.password.resetting': '寄送中…',
+    'users.msg.password_required': '請輸入新密碼',
+    'users.msg.password_too_short': '密碼至少需要 6 個字元',
+    'users.msg.password_mismatch': '兩次輸入的密碼不一致',
+    'users.msg.password_set': '密碼已設定',
+    'users.msg.password_set_fail': '設定密碼失敗',
     'users.msg.password_sent': '已寄出密碼重設信',
     'users.msg.password_fail': '寄送密碼重設信失敗',
     'users.empty.title': '尚無使用者',
@@ -831,12 +847,23 @@ const I18N = {
     'users.role.member': 'Member',
     'users.f.role': 'Role',
     'users.f.role.hint': 'Admins can manage everything; members have limited access.',
+    'users.f.password': 'New Password *',
+    'users.f.password.ph': 'Enter new password (at least 6 characters)',
+    'users.f.password.confirm': 'Confirm Password *',
+    'users.f.password.confirm.ph': 'Re-enter password',
     'users.edit.title': 'Edit user',
     'users.edit': 'Edit',
     'users.password.title': 'Password',
-    'users.password.hint': "Sends a password-reset link to the user's email. They can then set a new password.",
+    'users.password.hint': 'Set a new password directly here, or send a password reset email for the user to set their own password.',
+    'users.password.set': 'Set Password Directly',
+    'users.password.setting': 'Setting…',
     'users.password.reset': 'Send password-reset email',
     'users.password.resetting': 'Sending…',
+    'users.msg.password_required': 'Please enter a new password',
+    'users.msg.password_too_short': 'Password must be at least 6 characters',
+    'users.msg.password_mismatch': 'Passwords do not match',
+    'users.msg.password_set': 'Password set successfully',
+    'users.msg.password_set_fail': 'Failed to set password',
     'users.msg.password_sent': 'Password-reset email sent',
     'users.msg.password_fail': 'Failed to send password-reset email',
     'users.empty.title': 'No users yet',

@@ -145,6 +145,7 @@
     </div>
     <div class="modal__body">
       <input type="hidden" id="e-id" />
+      <input type="hidden" id="e-user-id" />
       <div class="field">
         <label class="field-label" data-i18n="users.f.email">電子郵件</label>
         <input class="field-input" id="e-email" type="email" disabled style="opacity:.7;cursor:not-allowed" />
@@ -163,8 +164,21 @@
       </div>
       <div class="field" style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
         <label class="field-label" data-i18n="users.password.title">密碼管理</label>
-        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.75rem" data-i18n="users.password.hint">系統會寄送密碼重設連結到該使用者信箱，使用者點擊連結後可自行設定新密碼。</div>
-        <button type="button" class="btn btn--outline btn--sm" id="btn-reset-password" data-i18n="users.password.reset">寄送密碼重設信</button>
+        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.75rem" data-i18n="users.password.hint">直接在此設定新密碼，或寄送密碼重設信讓使用者自行設定。</div>
+        <div style="display:grid;gap:.75rem;margin-bottom:1rem">
+          <div>
+            <label style="display:block;font-size:.8rem;color:var(--text-2);margin-bottom:.35rem" data-i18n="users.f.password">新密碼</label>
+            <input class="field-input" id="e-password" type="password" data-i18n-ph="users.f.password.ph" placeholder="輸入新密碼" />
+          </div>
+          <div>
+            <label style="display:block;font-size:.8rem;color:var(--text-2);margin-bottom:.35rem" data-i18n="users.f.password.confirm">確認密碼</label>
+            <input class="field-input" id="e-password-confirm" type="password" data-i18n-ph="users.f.password.confirm.ph" placeholder="確認密碼" />
+          </div>
+          <button type="button" class="btn btn--primary btn--sm" id="btn-set-password" data-i18n="users.password.set">直接設定密碼</button>
+        </div>
+        <div style="padding-top:.75rem;border-top:1px solid var(--border)">
+          <button type="button" class="btn btn--outline btn--sm" id="btn-reset-password" data-i18n="users.password.reset">寄送密碼重設信</button>
+        </div>
       </div>
     </div>
     <div class="modal__footer">
@@ -247,9 +261,12 @@ function openEditModal(id) {
   const u = adminList.find(a => a.id === id);
   if (!u) return;
   document.getElementById('e-id').value    = u.id;
+  document.getElementById('e-user-id').value = u.user_id || '';
   document.getElementById('e-email').value = u.email || '';
   document.getElementById('e-name').value  = u.name || '';
   document.getElementById('e-role').value  = u.role || 'member';
+  document.getElementById('e-password').value = '';
+  document.getElementById('e-password-confirm').value = '';
   openModal('edit-modal');
 }
 
@@ -292,6 +309,33 @@ document.getElementById('btn-save-edit').addEventListener('click', async () => {
   showToast(t('users.msg.updated'), 'success');
   closeModal('edit-modal');
   await loadAdmins();
+});
+
+document.getElementById('btn-set-password').addEventListener('click', async () => {
+  const userId = document.getElementById('e-user-id').value;
+  const password = document.getElementById('e-password').value.trim();
+  const passwordConfirm = document.getElementById('e-password-confirm').value.trim();
+
+  if (!userId) { showToast(t('users.msg.password_set_fail'), 'error'); return; }
+  if (!password) { showToast(t('users.msg.password_required'), 'error'); return; }
+  if (password.length < 6) { showToast(t('users.msg.password_too_short'), 'error'); return; }
+  if (password !== passwordConfirm) { showToast(t('users.msg.password_mismatch'), 'error'); return; }
+
+  const btn = document.getElementById('btn-set-password');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = t('users.password.setting');
+  const { ok, error } = await Admins.setPassword(userId, password);
+  btn.disabled = false;
+  btn.textContent = original;
+
+  if (!ok) {
+    showToast(t('users.msg.password_set_fail') + (error ? ' – ' + error : ''), 'error');
+    return;
+  }
+  showToast(t('users.msg.password_set'), 'success');
+  document.getElementById('e-password').value = '';
+  document.getElementById('e-password-confirm').value = '';
 });
 
 document.getElementById('btn-reset-password').addEventListener('click', async () => {
