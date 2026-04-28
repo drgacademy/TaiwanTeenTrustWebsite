@@ -77,9 +77,13 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 
 /* Focus year blocks */
 .focus-block{border-bottom:1px solid rgba(0,0,0,.07)}
-.focus-block__inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;min-height:560px}
+.focus-block__inner{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:380px 1fr;min-height:560px}
 .focus-left{border-right:1px solid rgba(0,0,0,.07);padding:4rem 3rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.focus-left__ghost{position:absolute;bottom:-1rem;left:-0.5rem;font-size:9rem;font-weight:900;letter-spacing:-.05em;line-height:1;color:rgba(0,0,0,.04);user-select:none;pointer-events:none}
+.focus-left__ghost{position:absolute;bottom:-1rem;left:-0.5rem;font-size:9rem;font-weight:900;letter-spacing:-.05em;line-height:1;color:rgba(0,0,0,.04);user-select:none;pointer-events:none;z-index:0}
+.focus-left > *{position:relative;z-index:1}
+.focus-left__media{margin:1.25rem 0;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:rgba(0,0,0,.04)}
+.focus-left__media img,.focus-left__media video{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:860px){.focus-block__inner{grid-template-columns:1fr}}
 .focus-left__status{margin-bottom:1rem}
 .focus-status-live{display:inline-flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
 .focus-status-live::before{content:'';width:6px;height:6px;border-radius:50%;animation:pulse 2s ease infinite}
@@ -206,6 +210,11 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
           <span class="focus-status-live lang-en" style="color:var(--r4)">Current Focus</span>
         </div>
         <div class="focus-left__year">2026</div>
+      </div>
+      <div class="focus-left__media">
+        <video autoplay muted loop playsinline>
+          <source src="../assets/StrayAidMap.mp4" type="video/mp4">
+        </video>
       </div>
       <div>
         <div class="focus-left__icon">🐾</div>
@@ -398,11 +407,12 @@ gsap.utils.toArray('.how-item').forEach((el, i) => {
     const color = f.color || '#0099ff';
     const bg = isFirst ? `${color}15` : 'transparent';
     const sl = STATUS_LABEL[f.status] || STATUS_LABEL.completed;
-    let media = '';
+    // 左側媒體（圖片/影片）— 影片優先
+    let leftMedia = '';
     if (f.video_url) {
-      media = `<div style="margin-top:1.5rem;border-radius:12px;overflow:hidden"><video autoplay muted loop playsinline style="width:100%;display:block"><source src="${f.video_url}" type="video/mp4"></video></div>`;
+      leftMedia = `<div class="focus-left__media"><video autoplay muted loop playsinline><source src="${f.video_url}" type="video/mp4"></video></div>`;
     } else if (f.image_url) {
-      media = `<div style="margin-top:1.5rem;border-radius:12px;overflow:hidden"><img src="${f.image_url}" alt="${f.title_zh||''}" style="width:100%;display:block"></div>`;
+      leftMedia = `<div class="focus-left__media"><img src="${f.image_url}" alt="${f.title_zh||''}" /></div>`;
     }
     return `
       <div class="focus-block" style="background:${bg}">
@@ -413,6 +423,7 @@ gsap.utils.toArray('.how-item').forEach((el, i) => {
               <span class="badge-done lang-en" style="background:${color}1a;color:${color};margin-bottom:.75rem;display:inline-block;padding:.2rem .7rem;border-radius:100px;font-size:.68rem;font-weight:700;letter-spacing:.08em">${sl.en}</span>
               <div class="focus-left__year">${f.year || ''}</div>
             </div>
+            ${leftMedia}
             <div>
               ${f.icon ? `<div class="focus-left__icon">${f.icon}</div>` : ''}
               <div class="focus-left__title lang-zh" style="color:${color}">${f.title_zh || ''}</div>
@@ -435,11 +446,15 @@ gsap.utils.toArray('.how-item').forEach((el, i) => {
                 <p class="focus-section-text lang-en">${f.response_en || f.response_zh || ''}</p>
               </div>
             </div>
-            ${media}
           </div>
         </div>
       </div>`;
   }).join('');
+
+  // 重新觸發語系套用
+  if (typeof setLang === 'function') {
+    setLang(localStorage.getItem('ttt-lang') || 'zh');
+  }
 })();
 </script>
 <script src="js/site-content.js?v=1"></script>
