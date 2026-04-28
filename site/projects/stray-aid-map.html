@@ -15,6 +15,15 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://tpolpfulwsfqpghweasl.supabase.co',
+      'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J'
+    );
+  </script>
+
   <style>
     /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -398,10 +407,22 @@
       font-size: .68rem; font-weight: 600; padding: .22rem .65rem; border-radius: .3rem;
       background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
       color: rgba(255,255,255,.75);
+      display: inline-flex; align-items: center; gap: .3rem;
+    }
+    .need-tag::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor;
     }
     .need-tag--urgent {
       background: rgba(239,68,68,.15); border-color: rgba(239,68,68,.4);
       color: #f87171;
+    }
+    .need-tag--moderate {
+      background: rgba(251,146,60,.15); border-color: rgba(251,146,60,.4);
+      color: #fb923c;
+    }
+    .need-tag--slight {
+      background: rgba(250,204,21,.12); border-color: rgba(250,204,21,.35);
+      color: #facc15;
     }
 
     /* Sidebar food legend */
@@ -1071,73 +1092,74 @@ if (hamburger && navDrawer) {
 /* aurora.js auto-injects into body; target the hero section for visual effect */
 
 /* ════════════════════ MAP DATA ════════════════════ */
-const LOCATIONS = [
-  {
-    id: 1,
-    name: { zh: '臺北市動物之家', en: 'Taipei Animal Shelter' },
-    addr: { zh: '台北市北投區立農街二段350號', en: '350 Linong St. Sec.2, Beitou, Taipei' },
-    phone: '02-2858-3700',
-    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
-    lat: 25.1306, lng: 121.4984, url: '#',
-    foodWeeks: 1.5,
-    needs: {
-      zh:  [{ label: '乾飼料', urgent: true }, { label: '罐頭食品', urgent: true }, { label: '醫療費補助', urgent: false }, { label: '志工', urgent: false }],
-      en:  [{ label: 'Dry food', urgent: true }, { label: 'Canned food', urgent: true }, { label: 'Medical funding', urgent: false }, { label: 'Volunteers', urgent: false }]
-    }
-  },
-  {
-    id: 2,
-    name: { zh: '新北市動物之家（新莊）', en: 'New Taipei Animal Shelter (Xinzhuang)' },
-    addr: { zh: '新北市新莊區化成路321巷8號', en: '8 Lane 321 Huacheng Rd., Xinzhuang, New Taipei' },
-    phone: '02-2991-3062',
-    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
-    lat: 25.0353, lng: 121.4397, url: '#',
-    foodWeeks: 3.0,
-    needs: {
-      zh:  [{ label: '乾飼料', urgent: false }, { label: '清潔用品', urgent: false }],
-      en:  [{ label: 'Dry food', urgent: false }, { label: 'Cleaning supplies', urgent: false }]
-    }
-  },
-  {
-    id: 3,
-    name: { zh: '台中市動物之家（北屯）', en: 'Taichung Animal Shelter (Beitun)' },
-    addr: { zh: '台中市北屯區東山路一段201號', en: '201 Dongshan Rd. Sec.1, Beitun, Taichung' },
-    phone: '04-2239-0079',
-    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
-    lat: 24.1830, lng: 120.7025, url: '#',
-    foodWeeks: 5.5,
-    needs: {
-      zh:  [{ label: '長期捐款支持', urgent: false }, { label: '志工', urgent: false }],
-      en:  [{ label: 'Regular donations', urgent: false }, { label: 'Volunteers', urgent: false }]
-    }
-  },
-  {
-    id: 4,
-    name: { zh: '台南市動物之家（楠西）', en: 'Tainan Animal Shelter (Nanxi)' },
-    addr: { zh: '台南市楠西區東勢里6鄰64號', en: '64 Dongshi Village, Nanxi, Tainan' },
-    phone: '06-575-2367',
-    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
-    lat: 23.1968, lng: 120.5058, url: '#',
-    foodWeeks: 2.5,
-    needs: {
-      zh:  [{ label: '乾飼料', urgent: true }, { label: '罐頭食品', urgent: false }, { label: '手術費補助', urgent: false }],
-      en:  [{ label: 'Dry food', urgent: true }, { label: 'Canned food', urgent: false }, { label: 'Surgery funding', urgent: false }]
-    }
-  },
-  {
-    id: 5,
-    name: { zh: '高雄市動物之家（燕巢）', en: 'Kaohsiung Animal Shelter (Yanchao)' },
-    addr: { zh: '高雄市燕巢區角宿里深水路242號', en: '242 Shenshui Rd., Yanchao, Kaohsiung' },
-    phone: '07-616-1161',
-    hours: { zh: '週二–週日 09:00–17:00', en: 'Tue–Sun 09:00–17:00' },
-    lat: 22.7856, lng: 120.3648, url: '#',
-    foodWeeks: 0.8,
-    needs: {
-      zh:  [{ label: '乾飼料', urgent: true }, { label: '罐頭食品', urgent: true }, { label: '清潔用品', urgent: false }, { label: '醫療費補助', urgent: true }, { label: '志工', urgent: false }],
-      en:  [{ label: 'Dry food', urgent: true }, { label: 'Canned food', urgent: true }, { label: 'Cleaning supplies', urgent: false }, { label: 'Medical funding', urgent: true }, { label: 'Volunteers', urgent: false }]
-    }
+let LOCATIONS = [];
+
+// Load from Supabase (with hardcoded fallback in case DB unavailable)
+async function loadLocations() {
+  try {
+    const { data, error } = await supabase
+      .from('map_locations')
+      .select('*')
+      .eq('type', 'shelter')
+      .eq('status', 'active')
+      .order('name', { ascending: true });
+
+    if (error || !data) throw error;
+
+    // Map DB fields to frontend format
+    LOCATIONS = data.map(loc => ({
+      id: loc.id,
+      name: { zh: loc.name, en: loc.name_en || loc.name },
+      addr: { zh: loc.address, en: loc.address_en || loc.address },
+      phone: loc.phone || '',
+      hours: { zh: loc.hours || '—', en: loc.hours_en || '—' },
+      lat: parseFloat(loc.lat),
+      lng: parseFloat(loc.lng),
+      url: '#',
+      foodWeeks: parseFloat(loc.food_weeks) || 0,
+      needs: convertNeeds(loc.needs)
+    }));
+
+    return true;
+  } catch (err) {
+    console.warn('[stray-aid-map] Failed to load from DB, using fallback:', err);
+    // Fallback: hardcoded minimal data
+    LOCATIONS = [];
+    return false;
   }
-];
+}
+
+function convertNeeds(needs) {
+  if (!Array.isArray(needs) || needs.length === 0) return { zh: [], en: [] };
+
+  const needsMap = {
+    dry_food:   { zh: '乾飼料',     en: 'Dry food' },
+    canned:     { zh: '罐頭食品',   en: 'Canned food' },
+    deworming:  { zh: '驅蟲藥',     en: 'Deworming meds' },
+    medical:    { zh: '醫療費補助', en: 'Medical funding' },
+    surgery:    { zh: '手術費補助', en: 'Surgery funding' },
+    neutering:  { zh: '結紮費',     en: 'Neutering funds' },
+    cleaning:   { zh: '清潔用品',   en: 'Cleaning supplies' },
+    cages:      { zh: '籠子',       en: 'Cages' },
+    beds:       { zh: '寵物床',     en: 'Pet beds' },
+    toys:       { zh: '玩具',       en: 'Toys' },
+    volunteers: { zh: '志工',       en: 'Volunteers' },
+    donations:  { zh: '長期捐款支持', en: 'Regular donations' }
+  };
+
+  const zh = [];
+  const en = [];
+  needs.forEach(n => {
+    // Backwards-compat: old 'normal' level → treat as 'moderate'
+    const level = n.level === 'normal' ? 'moderate' : n.level;
+    if (level !== 'urgent' && level !== 'moderate' && level !== 'slight') return;
+    const labels = needsMap[n.key] || { zh: n.label_zh || n.key, en: n.label_en || n.key };
+    zh.push({ label: labels.zh, level });
+    en.push({ label: labels.en, level });
+  });
+
+  return { zh, en };
+}
 
 /* ════════════════════ MAP INIT ════════════════════ */
 const map = L.map('map', { center: [23.8, 121.0], zoom: 7, zoomControl: true });
@@ -1186,13 +1208,13 @@ function makePopupHTML(loc, lang, showNeeds) {
     <div class="popup-needs">
       <div class="popup-needs__title">🆘 ${needsTitle}</div>
       <div class="popup-needs__tags">
-        ${needs.map(n => `<span class="need-tag${n.urgent ? ' need-tag--urgent' : ''}">${n.label}</span>`).join('')}
+        ${needs.map(n => `<span class="need-tag need-tag--${n.level || 'moderate'}">${n.label}</span>`).join('')}
       </div>
     </div>` : '';
 
   const infoBtn = showNeeds
     ? `<span class="popup-btn popup-btn--outline" style="opacity:.45;cursor:default">${infoLabel}</span>`
-    : `<button class="popup-btn popup-btn--outline" onclick="expandNeeds(${loc.id})">${infoLabel}</button>`;
+    : `<button class="popup-btn popup-btn--outline" onclick="expandNeeds('${loc.id}')">${infoLabel}</button>`;
 
   return `
     <div class="popup-inner">
@@ -1281,7 +1303,7 @@ function renderList() {
     const fs    = foodStatus(loc.foodWeeks);
     const foodLabel = `${fs.label[lang]} ${loc.foodWeeks}${lang === 'zh' ? '週' : 'wks'}`;
     return `
-      <div class="location-card ${fs.cls}${loc.id === activeCardId ? ' active' : ''}" data-id="${loc.id}" onclick="onCardClick(${loc.id})">
+      <div class="location-card ${fs.cls}${loc.id === activeCardId ? ' active' : ''}" data-id="${loc.id}" onclick="onCardClick('${loc.id}')">
         <div class="location-card__name">${name}</div>
         <div class="location-card__addr">${addr}</div>
         <div class="card-food-row" style="color:${fs.color}">
@@ -1310,7 +1332,7 @@ function onCardClick(id) {
 function activateCard(id) {
   activeCardId = id;
   document.querySelectorAll('.location-card').forEach(el => {
-    el.classList.toggle('active', +el.dataset.id === id);
+    el.classList.toggle('active', el.dataset.id === String(id));
   });
 }
 function scrollToCard(id) {
@@ -1369,7 +1391,8 @@ document.getElementById('modal-thankyou').addEventListener('click', e => {
 });
 
 /* ════════════════════ INIT ════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadLocations();
   updateStats();
   renderMarkers();
   renderList();

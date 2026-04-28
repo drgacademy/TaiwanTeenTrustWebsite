@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n-title-key="nav.map">TTT Admin — 地圖資料點</title>
+  <title data-i18n-title-key="nav.map">TTT Admin — 流浪動物中心</title>
   <link rel="icon" href="../assets/favicon.png" type="image/png" />
   <link rel="stylesheet" href="css/admin.css?v=5" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -12,6 +12,67 @@
     .leaflet-tile-pane { filter: brightness(.75) saturate(.6) hue-rotate(180deg) invert(1); }
     .leaflet-container { background: #111; }
     .leaflet-control-zoom a { background: #1a1a1a !important; color: #f0f0f0 !important; border-color: rgba(255,255,255,.1) !important; }
+    .needs-section { border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: 1.25rem; }
+
+    /* 預設物資按鈕（點擊加入清單） */
+    .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .4rem; margin-bottom: 1rem; }
+    .preset-btn {
+      padding: .5rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: .35rem;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: .8rem;
+      transition: all .15s;
+    }
+    .preset-btn:hover { background: rgba(255,255,255,.05); border-color: var(--accent); }
+    .preset-btn.selected { background: rgba(46,202,212,.15); border-color: var(--accent); color: var(--accent); }
+    .preset-btn .plus { color: var(--accent); margin-right: .25rem; font-weight: 600; }
+
+    /* 已選擇的物資清單 */
+    .selected-list {
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      padding: .5rem;
+      min-height: 60px;
+      background: rgba(255,255,255,.02);
+    }
+    .selected-empty { color: var(--text-3); font-size: .85rem; text-align: center; padding: 1rem; }
+    .selected-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .65rem;
+      border-radius: .3rem;
+    }
+    .selected-row + .selected-row { border-top: 1px solid var(--border); margin-top: .25rem; padding-top: .8rem; }
+    .selected-row .name { flex: 1; font-size: .9rem; }
+    .selected-row .levels { display: flex; gap: .25rem; }
+    .selected-row .level-btn {
+      padding: .25rem .55rem;
+      border: 1px solid var(--border);
+      border-radius: .25rem;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: .72rem;
+      transition: all .15s;
+    }
+    .selected-row .level-btn:hover { background: rgba(255,255,255,.05); }
+    .selected-row .level-btn.active.urgent   { background: #fecaca; color: #7f1d1d; border-color: #dc2626; }
+    .selected-row .level-btn.active.moderate { background: #fed7aa; color: #7c2d12; border-color: #ea580c; }
+    .selected-row .level-btn.active.slight   { background: #fef3c7; color: #78350f; border-color: #ca8a04; }
+    .selected-row .remove-btn {
+      padding: .2rem .45rem;
+      border: 1px solid var(--border);
+      border-radius: .25rem;
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      font-size: .9rem;
+    }
+    .selected-row .remove-btn:hover { color: #ef4444; border-color: #ef4444; }
   </style>
 </head>
 <body>
@@ -30,7 +91,7 @@
       <a href="categories.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span></a>
       <a href="focus.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
       <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
-      <a href="map-locations.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
+      <a href="map-locations.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">流浪動物中心</span></a>
       <a href="users.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span></a>
       <a href="settings.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
     </div>
@@ -47,53 +108,36 @@
 
   <div class="admin-main">
     <div class="admin-topbar">
-      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.map">地圖資料點</span></div>
+      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.map">流浪動物中心</span></div>
       <div class="topbar-actions">
         <a href="../projects/stray-aid-map.html" target="_blank" class="btn btn--outline btn--sm">Stray Aid Map</a>
         <button class="btn btn--primary btn--sm" id="btn-new-loc">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span data-i18n="map.new">新增資料點</span>
+          <span>新增中心</span>
         </button>
       </div>
     </div>
 
     <div class="admin-content">
-      <div class="stats-grid" id="loc-stats" style="grid-template-columns:repeat(4,1fr);margin-bottom:1.25rem"></div>
-
       <div class="panel">
         <div class="panel__header">
-          <div class="panel__title" data-i18n="map.title">所有資料點</div>
+          <div class="panel__title">流浪動物收容中心</div>
           <div class="panel__toolbar">
             <div class="search-input">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-              <input type="text" id="search-locs" data-i18n-ph="map.search.ph" placeholder="搜尋名稱、地址…" />
+              <input type="text" id="search-locs" placeholder="搜尋中心名稱…" />
             </div>
-            <select class="select-input" id="filter-loctype">
-              <option value="" data-i18n="map.filter.type">所有類型</option>
-              <option value="shelter" data-i18n="map.type.shelter">收容所</option>
-              <option value="vet" data-i18n="map.type.vet">動物醫院</option>
-              <option value="feed" data-i18n="map.type.feed">餵食點</option>
-              <option value="rescue" data-i18n="map.type.rescue">救援站</option>
-            </select>
-            <select class="select-input" id="filter-locstatus">
-              <option value="">—</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
           </div>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th data-i18n="map.col.name">名稱</th>
-                <th data-i18n="map.col.type">類型</th>
-                <th data-i18n="map.f.address">地址</th>
-                <th data-i18n="map.f.phone">電話</th>
-                <th data-i18n="map.col.coord">座標</th>
-                <th>Photos</th>
-                <th>Status</th>
-                <th style="text-align:right" data-i18n="map.col.actions">操作</th>
+                <th>名稱</th>
+                <th>地址</th>
+                <th>電話</th>
+                <th>飼料存量</th>
+                <th style="text-align:right">操作</th>
               </tr>
             </thead>
             <tbody id="locs-tbody"></tbody>
@@ -112,92 +156,92 @@
 <div class="modal-backdrop" id="loc-modal">
   <div class="modal modal--lg">
     <div class="modal__header">
-      <div class="modal__title" id="loc-modal-title" data-i18n="map.new">新增資料點</div>
+      <div class="modal__title" id="loc-modal-title">新增中心</div>
       <button class="modal__close" data-close-modal>✕</button>
     </div>
     <div class="modal__body">
       <input type="hidden" id="loc-id" />
       <div class="field-row">
         <div class="field">
-          <label class="field-label" data-i18n="map.f.name">名稱 *</label>
+          <label class="field-label">中文名稱 *</label>
           <input class="field-input" id="l-name" placeholder="臺北市動物之家" required />
         </div>
         <div class="field">
-          <label class="field-label">Name (EN)</label>
+          <label class="field-label">英文名稱</label>
           <input class="field-input" id="l-name-en" placeholder="Taipei Animal Shelter" />
         </div>
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label" data-i18n="map.f.type">類型 *</label>
-          <select class="field-select" id="l-type">
-            <option value="">—</option>
-            <option value="shelter" data-i18n="map.type.shelter">收容所</option>
-            <option value="vet" data-i18n="map.type.vet">動物醫院</option>
-            <option value="feed" data-i18n="map.type.feed">餵食點</option>
-            <option value="rescue" data-i18n="map.type.rescue">救援站</option>
-          </select>
+          <label class="field-label">地址（中）*</label>
+          <input class="field-input" id="l-address" placeholder="台北市北投區立農街二段350號" required />
         </div>
         <div class="field">
-          <label class="field-label">Status</label>
-          <select class="field-select" id="l-status">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+          <label class="field-label">地址（英）</label>
+          <input class="field-input" id="l-address-en" placeholder="350 Linong St. Sec.2, Beitou, Taipei" />
         </div>
-      </div>
-      <div class="field">
-        <label class="field-label" data-i18n="map.f.address">地址</label>
-        <input class="field-input" id="l-address" placeholder="台北市北投區立農街二段350號" />
-      </div>
-      <div class="field">
-        <label class="field-label">Address (EN)</label>
-        <input class="field-input" id="l-address-en" placeholder="350 Linong St. Sec.2, Beitou, Taipei" />
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label" data-i18n="map.f.phone">電話</label>
+          <label class="field-label">電話</label>
           <input class="field-input" id="l-phone" placeholder="02-2858-3700" />
         </div>
         <div class="field">
-          <select class="field-select" id="l-status2" style="display:none"></select>
+          <label class="field-label">營業時間（中）</label>
+          <input class="field-input" id="l-hours" placeholder="週二–週日 09:00–17:00" />
         </div>
       </div>
       <div class="field">
-        <label class="field-label">Hours (中)</label>
-        <input class="field-input" id="l-hours" placeholder="週二–週日 09:00–17:00" />
-      </div>
-      <div class="field">
-        <label class="field-label">Hours (EN)</label>
+        <label class="field-label">營業時間（英）</label>
         <input class="field-input" id="l-hours-en" placeholder="Tue–Sun 09:00–17:00" />
       </div>
       <div class="field-row">
         <div class="field">
-          <label class="field-label" data-i18n="map.f.lat">緯度</label>
-          <input class="field-input" id="l-lat" placeholder="25.1306" oninput="updatePreviewMap()" />
+          <label class="field-label">緯度（Lat） *</label>
+          <input class="field-input" id="l-lat" placeholder="25.1306" type="number" step="0.0001" oninput="updatePreviewMap()" required />
         </div>
         <div class="field">
-          <label class="field-label" data-i18n="map.f.lng">經度</label>
-          <input class="field-input" id="l-lng" placeholder="121.4984" oninput="updatePreviewMap()" />
+          <label class="field-label">經度（Lng） *</label>
+          <input class="field-input" id="l-lng" placeholder="121.4984" type="number" step="0.0001" oninput="updatePreviewMap()" required />
         </div>
       </div>
       <div class="field">
-        <label class="field-label">Map preview</label>
+        <label class="field-label">地圖預覽</label>
         <div id="preview-map"></div>
         <div class="field-hint">→ <a href="https://www.google.com/maps" target="_blank" style="color:var(--accent)">Google Maps</a></div>
       </div>
 
       <div class="field">
-        <label class="field-label" data-i18n="map.f.photos">照片</label>
-        <div class="photo-upload-section">
-          <div class="photo-gallery" id="loc-photo-gallery"></div>
+        <label class="field-label">中心主圖</label>
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="flex:1">
+            <input type="file" id="loc-image-input" accept="image/*" style="display:none" />
+            <button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('loc-image-input').click()">選擇圖片</button>
+            <div id="loc-image-preview" style="margin-top:.5rem;border-radius:.3rem;overflow:hidden;max-width:200px;max-height:150px"></div>
+          </div>
         </div>
-        <input type="file" id="loc-photo-input" accept="image/*" multiple style="display:none" />
+        <input type="hidden" id="l-image-url" />
+      </div>
+
+      <div class="needs-section">
+        <label class="field-label">飼料存量（週） *</label>
+        <input class="field-input" id="l-food-weeks" type="number" step="0.1" placeholder="1.5" required />
+        <div class="field-hint">數字越大 = 糧食充足；2-4週 = 偏低；2週以下 = 緊急缺糧</div>
+
+        <label class="field-label" style="margin-top:1.5rem;display:block">缺乏物資／資金</label>
+        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.5rem">① 點選下方按鈕加入物資清單</div>
+        <div class="preset-grid" id="preset-buttons"></div>
+
+        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.5rem">② 在下方清單中選擇缺乏程度（緊急 / 適度 / 微量）</div>
+        <div class="selected-list" id="selected-list"></div>
+
+        <label class="field-label" style="margin-top:1.25rem;display:block">其他物資／說明（自由輸入）</label>
+        <textarea class="field-input" id="l-custom-needs" placeholder="例：尋求短期志工支援、醫療器材捐贈…" style="min-height:80px;resize:vertical"></textarea>
       </div>
     </div>
     <div class="modal__footer">
-      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
-      <button class="btn btn--primary" id="btn-save-loc" data-i18n="btn.save">儲存</button>
+      <button class="btn btn--outline" data-close-modal>取消</button>
+      <button class="btn btn--primary" id="btn-save-loc">儲存</button>
     </div>
   </div>
 </div>
@@ -206,109 +250,132 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/admin.js?v=6"></script>
 <script>
-const TYPE_BADGE  = { shelter:'badge--shelter', vet:'badge--vet', feed:'badge--feed', rescue:'badge--rescue' };
-const TYPE_COLOR  = { shelter:'#2ECAD4', vet:'#7fb285', feed:'#c9a96e', rescue:'#e07070' };
-const TYPE_ICON   = { shelter:'🏠', vet:'🏥', feed:'🍽️', rescue:'🚑' };
-
 let allLocs = [], filteredLocs = [];
 const PAGE_SIZE = 10;
 let currentPage = 1;
 let previewMap, previewMarker;
-let locPhotos = [];
-const MAX_LOC_PHOTOS = 6;
 
-function getTypeLabels() {
-  return {
-    shelter: t('map.type.shelter'),
-    vet: t('map.type.vet'),
-    feed: t('map.type.feed'),
-    rescue: t('map.type.rescue'),
-  };
+// 預設物資清單（後台 + 前台共用 key 對照）
+const PRESET_NEEDS = [
+  { key: 'dry_food',   label_zh: '乾飼料',     label_en: 'Dry food' },
+  { key: 'canned',     label_zh: '罐頭食品',   label_en: 'Canned food' },
+  { key: 'deworming',  label_zh: '驅蟲藥',     label_en: 'Deworming meds' },
+  { key: 'medical',    label_zh: '醫療費補助', label_en: 'Medical funding' },
+  { key: 'surgery',    label_zh: '手術費補助', label_en: 'Surgery funding' },
+  { key: 'neutering',  label_zh: '結紮費',     label_en: 'Neutering funds' },
+  { key: 'cleaning',   label_zh: '清潔用品',   label_en: 'Cleaning supplies' },
+  { key: 'cages',      label_zh: '籠子',       label_en: 'Cages' },
+  { key: 'beds',       label_zh: '寵物床',     label_en: 'Pet beds' },
+  { key: 'toys',       label_zh: '玩具',       label_en: 'Toys' },
+  { key: 'volunteers', label_zh: '志工',       label_en: 'Volunteers' },
+  { key: 'donations',  label_zh: '長期捐款',   label_en: 'Regular donations' }
+];
+
+const LEVEL_OPTIONS = [
+  { value: 'urgent',   label: '緊急' },
+  { value: 'moderate', label: '適度' },
+  { value: 'slight',   label: '微量' }
+];
+
+let currentNeeds = []; // [{ key, level }]
+
+function findPreset(key) {
+  return PRESET_NEEDS.find(p => p.key === key);
 }
 
-function renderLocPhotos() {
-  const gallery = document.getElementById('loc-photo-gallery');
-  if (!gallery) return;
-  let html = locPhotos.map((src, i) => `
-    <div class="photo-thumb">
-      <img src="${src}" alt="photo ${i+1}">
-      <button class="photo-thumb__del" onclick="removeLocPhoto(${i})">✕</button>
-    </div>`).join('');
-  if (locPhotos.length < MAX_LOC_PHOTOS) {
-    html += `
-      <div class="photo-add-tile" id="photo-add-tile">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        ${t('btn.upload')}
-      </div>`;
+function renderPresetButtons() {
+  const html = PRESET_NEEDS.map(p => {
+    const isSel = currentNeeds.some(n => n.key === p.key);
+    return `<button type="button" class="preset-btn${isSel ? ' selected' : ''}" onclick="togglePreset('${p.key}')">${isSel ? '' : '<span class="plus">+</span>'}${p.label_zh}</button>`;
+  }).join('');
+  document.getElementById('preset-buttons').innerHTML = html;
+}
+
+function renderSelectedList() {
+  const list = document.getElementById('selected-list');
+  if (!currentNeeds.length) {
+    list.innerHTML = '<div class="selected-empty">尚未選擇任何物資</div>';
+    return;
   }
-  gallery.innerHTML = html;
-  const tile = document.getElementById('photo-add-tile');
-  if (tile) tile.addEventListener('click', () => document.getElementById('loc-photo-input').click());
+  list.innerHTML = currentNeeds.map(n => {
+    const preset = findPreset(n.key);
+    const label = preset ? preset.label_zh : n.key;
+    const levels = LEVEL_OPTIONS.map(opt => `
+      <button type="button" class="level-btn${n.level === opt.value ? ' active ' + opt.value : ''}"
+              onclick="setNeedLevel('${n.key}', '${opt.value}')">${opt.label}</button>
+    `).join('');
+    return `
+      <div class="selected-row">
+        <div class="name">${label}</div>
+        <div class="levels">${levels}</div>
+        <button type="button" class="remove-btn" onclick="removeNeed('${n.key}')" title="移除">✕</button>
+      </div>
+    `;
+  }).join('');
 }
 
-function removeLocPhoto(idx) {
-  locPhotos.splice(idx, 1);
-  renderLocPhotos();
+function renderNeedsAll() {
+  renderPresetButtons();
+  renderSelectedList();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const input = document.getElementById('loc-photo-input');
-  input.addEventListener('change', async () => {
-    const files = [...input.files].slice(0, MAX_LOC_PHOTOS - locPhotos.length);
-    for (const f of files) {
-      const url = await uploadToMedia(f, 'map_locations', { maxW: 900, maxH: 675, quality: 0.82 });
-      if (url) locPhotos.push(url);
-    }
-    input.value = '';
-    renderLocPhotos();
-  });
-});
+function togglePreset(key) {
+  const idx = currentNeeds.findIndex(n => n.key === key);
+  if (idx === -1) {
+    currentNeeds.push({ key, level: 'moderate' });
+  } else {
+    currentNeeds.splice(idx, 1);
+  }
+  renderNeedsAll();
+}
 
-function renderStats() {
-  const labels = getTypeLabels();
-  const counts = { shelter:0, vet:0, feed:0, rescue:0 };
-  allLocs.forEach(l => { if (counts[l.type] !== undefined) counts[l.type]++; });
-  document.getElementById('loc-stats').innerHTML = Object.entries(counts).map(([type, n]) => `
-    <div class="stat-card">
-      <div class="stat-card__icon">${TYPE_ICON[type]}</div>
-      <div class="stat-card__value">${n}</div>
-      <div class="stat-card__label">${labels[type]}</div>
-    </div>`).join('');
+function setNeedLevel(key, level) {
+  const item = currentNeeds.find(n => n.key === key);
+  if (item) item.level = level;
+  renderNeedsAll();
+}
+
+function removeNeed(key) {
+  currentNeeds = currentNeeds.filter(n => n.key !== key);
+  renderNeedsAll();
+}
+
+// 舊版資料相容：把 normal → moderate
+function normalizeLevels(needs) {
+  if (!Array.isArray(needs)) return [];
+  return needs.map(n => ({
+    key: n.key,
+    level: (n.level === 'normal') ? 'moderate' : (n.level || 'moderate')
+  })).filter(n => n.key);
 }
 
 function renderTable() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = filteredLocs.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('locs-tbody');
-  const labels = getTypeLabels();
-  const tEdit = t('btn.edit');
-  const tDel = t('btn.delete');
+  const tEdit = '編輯';
+  const tDel = '刪除';
 
   if (filteredLocs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon">📍</div><div class="empty-state__title">—</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state__icon">🏠</div><div class="empty-state__title">尚無中心</div></div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = page.map(l => `
     <tr>
-      <td class="td-name">${l.name}</td>
-      <td>${l.type ? `<span class="badge ${TYPE_BADGE[l.type]||'badge--gray'}">${labels[l.type]||l.type}</span>` : '—'}</td>
-      <td style="font-size:.78rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.address || '—'}</td>
+      <td><strong>${l.name}</strong><br><span style="font-size:.75rem;color:var(--text-3)">${l.name_en || '—'}</span></td>
+      <td style="font-size:.8rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.address || '—'}</td>
       <td class="td-mono">${l.phone || '—'}</td>
-      <td class="td-mono" style="font-size:.7rem;color:var(--text-3)">${l.lat && l.lng ? `${l.lat}, ${l.lng}` : '—'}</td>
       <td>
-        ${l.photos && l.photos.length
-          ? `<span class="photo-count-badge">📷 ${l.photos.length}</span>`
-          : `<span style="color:var(--text-3);font-size:.72rem">—</span>`}
+        <span style="font-size:.85rem;color:${l.food_weeks < 2 ? '#ef4444' : l.food_weeks < 4 ? '#f59e0b' : '#22c55e'}">${l.food_weeks || '—'} 週</span>
       </td>
-      <td><span class="badge ${l.status==='active'?'badge--green':'badge--gray'}">${l.status||'—'}</span></td>
       <td><div class="td-actions">
         <button class="btn btn--ghost btn--sm" onclick="editLoc('${l.id}')">${tEdit}</button>
         <button class="btn btn--danger-ghost btn--sm" onclick="deleteLoc('${l.id}')">${tDel}</button>
       </div></td>
     </tr>`).join('');
 
-  document.getElementById('locs-count').textContent = `${filteredLocs.length}`;
+  document.getElementById('locs-count').textContent = `${filteredLocs.length} 個中心`;
   const total = Math.ceil(filteredLocs.length / PAGE_SIZE);
   document.getElementById('locs-pages').innerHTML = total <= 1 ? '' :
     Array.from({length:total},(_,i)=>`<button class="page-btn${i+1===currentPage?' active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
@@ -317,18 +384,17 @@ function renderTable() {
 function goPage(n) { currentPage = n; renderTable(); }
 
 function applyFilter() {
-  const q  = document.getElementById('search-locs').value.trim().toLowerCase();
-  const tp = document.getElementById('filter-loctype').value;
-  const st = document.getElementById('filter-locstatus').value;
+  const q = document.getElementById('search-locs').value.trim().toLowerCase();
   filteredLocs = allLocs.filter(l => {
     const text = !q || [l.name, l.name_en, l.address].some(f => (f||'').toLowerCase().includes(q));
-    return text && (!tp || l.type === tp) && (!st || l.status === st);
+    return text;
   });
   currentPage = 1;
   renderTable();
 }
 
 function initPreviewMap() {
+  if (previewMap) return;
   previewMap = L.map('preview-map', { zoomControl: true, attributionControl: false });
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(previewMap);
   previewMap.setView([23.8, 121.0], 7);
@@ -346,17 +412,17 @@ function updatePreviewMap() {
 
 function openNewModal() {
   document.getElementById('loc-id').value = '';
-  document.getElementById('loc-modal-title').textContent = t('map.new');
-  ['name','name-en','address','address-en','phone','hours','hours-en','lat','lng'].forEach(f => {
+  document.getElementById('loc-modal-title').textContent = '新增中心';
+  ['name','name-en','address','address-en','phone','hours','hours-en','lat','lng','food-weeks','custom-needs'].forEach(f => {
     const el = document.getElementById('l-'+f); if (el) el.value = '';
   });
-  document.getElementById('l-type').value   = '';
-  document.getElementById('l-status').value = 'active';
-  locPhotos = [];
-  renderLocPhotos();
+  document.getElementById('l-image-url').value = '';
+  document.getElementById('loc-image-preview').innerHTML = '';
+  currentNeeds = [];
+  renderNeedsAll();
   openModal('loc-modal');
   setTimeout(() => {
-    if (!previewMap) initPreviewMap();
+    initPreviewMap();
     previewMap.invalidateSize();
     previewMap.setView([23.8, 121.0], 7);
     if (previewMarker) { previewMarker.remove(); previewMarker = null; }
@@ -366,24 +432,30 @@ function openNewModal() {
 async function editLoc(id) {
   const l = await DB.getById('map_locations', id);
   if (!l) return;
-  document.getElementById('loc-id').value       = l.id;
-  document.getElementById('loc-modal-title').textContent = t('map.edit');
-  document.getElementById('l-name').value       = l.name || '';
-  document.getElementById('l-name-en').value    = l.name_en || '';
-  document.getElementById('l-type').value       = l.type || '';
-  document.getElementById('l-status').value     = l.status || 'active';
-  document.getElementById('l-address').value    = l.address || '';
+  document.getElementById('loc-id').value = l.id;
+  document.getElementById('loc-modal-title').textContent = '編輯中心';
+  document.getElementById('l-name').value = l.name || '';
+  document.getElementById('l-name-en').value = l.name_en || '';
+  document.getElementById('l-address').value = l.address || '';
   document.getElementById('l-address-en').value = l.address_en || '';
-  document.getElementById('l-phone').value      = l.phone || '';
-  document.getElementById('l-hours').value      = l.hours || '';
-  document.getElementById('l-hours-en').value   = l.hours_en || '';
-  document.getElementById('l-lat').value        = l.lat || '';
-  document.getElementById('l-lng').value        = l.lng || '';
-  locPhotos = Array.isArray(l.photos) ? [...l.photos] : [];
-  renderLocPhotos();
+  document.getElementById('l-phone').value = l.phone || '';
+  document.getElementById('l-hours').value = l.hours || '';
+  document.getElementById('l-hours-en').value = l.hours_en || '';
+  document.getElementById('l-lat').value = l.lat || '';
+  document.getElementById('l-lng').value = l.lng || '';
+  document.getElementById('l-food-weeks').value = l.food_weeks || '';
+  document.getElementById('l-image-url').value = l.image_url || '';
+  document.getElementById('l-custom-needs').value = l.custom_needs || '';
+  if (l.image_url) {
+    document.getElementById('loc-image-preview').innerHTML = `<img src="${l.image_url}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    document.getElementById('loc-image-preview').innerHTML = '';
+  }
+  currentNeeds = normalizeLevels(Array.isArray(l.needs) ? JSON.parse(JSON.stringify(l.needs)) : []);
+  renderNeedsAll();
   openModal('loc-modal');
   setTimeout(() => {
-    if (!previewMap) initPreviewMap();
+    initPreviewMap();
     previewMap.invalidateSize();
     updatePreviewMap();
   }, 100);
@@ -392,34 +464,49 @@ async function editLoc(id) {
 async function deleteLoc(id) {
   const l = await DB.getById('map_locations', id);
   if (!l) return;
-  confirmAction(t('msg.confirm_del_title'), `${l.name} — ${t('msg.confirm_del_text')}`, async () => {
+  if (confirm(`確認刪除「${l.name}」？此動作無法復原。`)) {
     const ok = await DB.delete('map_locations', id);
     if (!ok) return;
-    allLocs = await DB.getAll('map_locations');
-    renderStats();
+    allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
     applyFilter();
-    showToast(t('msg.deleted'), 'success');
-  });
+    showToast('已刪除', 'success');
+  }
 }
+
+document.getElementById('loc-image-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = await uploadToMedia(file, 'map_locations', { maxW: 800, maxH: 600, quality: 0.85 });
+  if (url) {
+    document.getElementById('l-image-url').value = url;
+    document.getElementById('loc-image-preview').innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  e.target.value = '';
+});
 
 document.getElementById('btn-save-loc').addEventListener('click', async () => {
   const id = document.getElementById('loc-id').value || null;
   const data = {
-    name:       document.getElementById('l-name').value.trim(),
-    name_en:    document.getElementById('l-name-en').value.trim(),
-    type:       document.getElementById('l-type').value,
-    status:     document.getElementById('l-status').value,
-    address:    document.getElementById('l-address').value.trim(),
-    address_en: document.getElementById('l-address-en').value.trim(),
-    phone:      document.getElementById('l-phone').value.trim(),
-    hours:      document.getElementById('l-hours').value.trim(),
-    hours_en:   document.getElementById('l-hours-en').value.trim(),
-    lat:        parseFloat(document.getElementById('l-lat').value) || null,
-    lng:        parseFloat(document.getElementById('l-lng').value) || null,
-    photos:     [...locPhotos],
+    name:        document.getElementById('l-name').value.trim(),
+    name_en:     document.getElementById('l-name-en').value.trim(),
+    type:        'shelter',
+    status:      'active',
+    address:     document.getElementById('l-address').value.trim(),
+    address_en:  document.getElementById('l-address-en').value.trim(),
+    phone:       document.getElementById('l-phone').value.trim(),
+    hours:       document.getElementById('l-hours').value.trim(),
+    hours_en:    document.getElementById('l-hours-en').value.trim(),
+    lat:         parseFloat(document.getElementById('l-lat').value) || null,
+    lng:         parseFloat(document.getElementById('l-lng').value) || null,
+    image_url:   document.getElementById('l-image-url').value || null,
+    food_weeks:  parseFloat(document.getElementById('l-food-weeks').value) || null,
+    needs:       currentNeeds,
+    custom_needs:document.getElementById('l-custom-needs').value.trim() || null
   };
-  if (!data.name) { showToast(t('msg.save_fail'), 'error'); return; }
-  if (!data.type) { showToast(t('msg.save_fail'), 'error'); return; }
+  if (!data.name || !data.address || isNaN(data.lat) || isNaN(data.lng) || !data.food_weeks) {
+    showToast('請填入必填欄位：名稱、地址、座標、飼料週數', 'error');
+    return;
+  }
   const btn = document.getElementById('btn-save-loc');
   btn.disabled = true;
   const result = id
@@ -427,28 +514,23 @@ document.getElementById('btn-save-loc').addEventListener('click', async () => {
     : await DB.insert('map_locations', data);
   btn.disabled = false;
   if (!result) return;
-  showToast(id ? t('msg.updated') : t('msg.created'), 'success');
+  showToast(id ? '已更新' : '已新增', 'success');
   closeModal('loc-modal');
-  allLocs = await DB.getAll('map_locations');
-  renderStats();
+  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
   applyFilter();
 });
 
 document.getElementById('btn-new-loc').addEventListener('click', openNewModal);
 document.getElementById('search-locs').addEventListener('input', applyFilter);
-document.getElementById('filter-loctype').addEventListener('change', applyFilter);
-document.getElementById('filter-locstatus').addEventListener('change', applyFilter);
 
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
-  allLocs = await DB.getAll('map_locations');
+  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
   filteredLocs = allLocs;
-  renderStats();
   renderTable();
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();
 });
-document.addEventListener('admin-lang-changed', () => { renderStats(); renderTable(); });
 </script>
 </body>
 </html>
