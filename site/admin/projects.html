@@ -59,6 +59,9 @@
             <select class="select-input" id="filter-cat">
               <option value="" data-i18n="projects.filter.cat">所有類別</option>
               <option value="animals">動物</option>
+              <option value="environment">環境</option>
+              <option value="community">社區</option>
+              <option value="arts">藝術文化</option>
               <option value="advocacy">倡議</option>
               <option value="research">研究</option>
               <option value="education">教育</option>
@@ -123,13 +126,8 @@
       <div class="field-row">
         <div class="field">
           <label class="field-label" data-i18n="projects.f.category">分類 *</label>
-          <select class="field-select" id="p-category">
-            <option value="">—</option>
-            <option value="animals">動物</option>
-            <option value="advocacy">倡議</option>
-            <option value="research">研究</option>
-            <option value="education">教育</option>
-          </select>
+          <input class="field-input" id="p-category" placeholder="animals, environment, community, arts, advocacy, research, education" />
+          <div class="field-hint">可選值: animals（動物）、environment（環境）、community（社區）、arts（藝術文化）、advocacy（倡議）、research（研究）、education（教育）</div>
         </div>
         <div class="field">
           <label class="field-label" data-i18n="projects.f.status">狀態</label>
@@ -204,7 +202,7 @@ function renderTable() {
   const page  = filteredProjects.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('projects-tbody');
 
-  const CAT_LABEL = { animals:'動物', advocacy:'倡議', research:'研究', education:'教育' };
+  const CAT_LABEL = { animals:'動物', environment:'環境', community:'社區', arts:'藝術文化', advocacy:'倡議', research:'研究', education:'教育' };
   const STATUS_LABEL = {
     active: t('projects.status.active'),
     completed: '已完成',
