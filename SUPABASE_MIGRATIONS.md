@@ -92,11 +92,12 @@ VALUES (
 後台會將圖片/影片上傳至 `media` bucket 下的 `posts/`、`projects/`、`focus/` 子資料夾。
 若尚未建立 bucket，請至 Supabase → Storage → New bucket 建立 `media` 並設為 public。
 
-## 6. `members` 表新增 `photo` 欄位（團隊成員大頭照）
+## 6. `members` 表新增 `photo` 與 `is_lead` 欄位
 
 ```sql
 ALTER TABLE members
-  ADD COLUMN IF NOT EXISTS photo text;
+  ADD COLUMN IF NOT EXISTS photo text,
+  ADD COLUMN IF NOT EXISTS is_lead boolean DEFAULT false;
 ```
 
 ## 7. 新增 `project_categories` 表（專案分類管理）

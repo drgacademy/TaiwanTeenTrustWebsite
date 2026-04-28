@@ -154,56 +154,15 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
   </div>
 </section>
 
-<!-- LEADERSHIP -->
-<section class="section">
+<!-- LEADERSHIP (動態載入) -->
+<section class="section" id="leadership-section" style="display:none">
   <div style="max-width:1400px;margin:0 auto">
     <div class="sec-tag lang-zh">領導核心</div>
     <div class="sec-tag lang-en">Leadership</div>
     <h2 class="sec-title" style="margin-top:.5rem">
       <span class="lw"><span class="li lang-zh">帶領組織前進的人</span><span class="li lang-en">Those who lead us forward</span></span>
     </h2>
-    <div class="lead-grid">
-      <div class="lead-card">
-        <div class="lead-card__avatar" style="background:linear-gradient(135deg,#ff3b3b22,#ff8c0022)">🌟</div>
-        <div>
-          <div class="lead-card__name lang-zh">陳宇航</div>
-          <div class="lead-card__name lang-en">Yu-Hang Chen</div>
-          <div class="lead-card__role" style="color:var(--r1)"><span class="lang-zh">共同創辦人 / 執行長</span><span class="lang-en">Co-Founder / CEO</span></div>
-          <div class="lead-card__bio lang-zh">致力於青年社會參與，相信每個行動都能帶來影響。</div>
-          <div class="lead-card__bio lang-en">Committed to youth civic engagement, believing every action creates impact.</div>
-        </div>
-      </div>
-      <div class="lead-card">
-        <div class="lead-card__avatar" style="background:linear-gradient(135deg,#ff8c0022,#ffd60022)">⚡</div>
-        <div>
-          <div class="lead-card__name lang-zh">林思婷</div>
-          <div class="lead-card__name lang-en">Si-Ting Lin</div>
-          <div class="lead-card__role" style="color:var(--r2)"><span class="lang-zh">共同創辦人 / 營運長</span><span class="lang-en">Co-Founder / COO</span></div>
-          <div class="lead-card__bio lang-zh">擅長組織管理與跨部門協作，讓團隊效能最大化。</div>
-          <div class="lead-card__bio lang-en">Expert in organizational management and cross-departmental collaboration.</div>
-        </div>
-      </div>
-      <div class="lead-card">
-        <div class="lead-card__avatar" style="background:linear-gradient(135deg,#00c95d22,#0099ff22)">🎯</div>
-        <div>
-          <div class="lead-card__name lang-zh">王建豪</div>
-          <div class="lead-card__name lang-en">Jian-Hao Wang</div>
-          <div class="lead-card__role" style="color:var(--r4)"><span class="lang-zh">策略總監</span><span class="lang-en">Director of Strategy</span></div>
-          <div class="lead-card__bio lang-zh">負責年度主題研究與長期發展規劃。</div>
-          <div class="lead-card__bio lang-en">Responsible for annual theme research and long-term development planning.</div>
-        </div>
-      </div>
-      <div class="lead-card">
-        <div class="lead-card__avatar" style="background:linear-gradient(135deg,#0099ff22,#7c3aff22)">🌐</div>
-        <div>
-          <div class="lead-card__name lang-zh">黃雅琳</div>
-          <div class="lead-card__name lang-en">Ya-Lin Huang</div>
-          <div class="lead-card__role" style="color:var(--r5)"><span class="lang-zh">對外關係總監</span><span class="lang-en">Director of External Relations</span></div>
-          <div class="lead-card__bio lang-zh">負責媒體關係、夥伴合作與公共傳播策略。</div>
-          <div class="lead-card__bio lang-en">Overseeing media relations, partnerships, and public communications strategy.</div>
-        </div>
-      </div>
-    </div>
+    <div class="lead-grid" id="leadership-grid"></div>
   </div>
 </section>
 
@@ -337,9 +296,35 @@ async function loadTeamMembers() {
       return;
     }
 
-    // 將成員依 dept 分組
+    // 渲染領導核心
+    const leads = memList.filter(m => m.is_lead);
+    const leadSection = document.getElementById('leadership-section');
+    const leadGrid    = document.getElementById('leadership-grid');
+    if (leads.length && leadSection && leadGrid) {
+      const palette = ['var(--r1)','var(--r2)','var(--r4)','var(--r5)','var(--r6)','var(--r7)'];
+      leadGrid.innerHTML = leads.map((m, i) => {
+        const c = palette[i % palette.length];
+        const avatar = m.photo
+          ? `<img src="${m.photo}" alt="${m.name}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+          : `<div class="lead-card__avatar" style="background:linear-gradient(135deg,${c.replace('var(','').replace(')','')}22,${c.replace('var(','').replace(')','')}22)">⭐</div>`;
+        return `
+          <div class="lead-card">
+            ${avatar}
+            <div>
+              <div class="lead-card__name lang-zh">${m.name || ''}</div>
+              <div class="lead-card__name lang-en">${m.name_en || m.name || ''}</div>
+              <div class="lead-card__role" style="color:${c}"><span class="lang-zh">${m.role || ''}</span><span class="lang-en">${m.role || ''}</span></div>
+              ${m.bio ? `<div class="lead-card__bio lang-zh">${m.bio}</div>` : ''}
+              ${m.bio_en || m.bio ? `<div class="lead-card__bio lang-en">${m.bio_en || m.bio}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+      leadSection.style.display = '';
+    }
+
+    // 將「非領導核心」成員依 dept 分組
     const byDept = {};
-    memList.forEach(m => {
+    memList.filter(m => !m.is_lead).forEach(m => {
       const k = m.dept || '其他';
       (byDept[k] = byDept[k] || []).push(m);
     });
