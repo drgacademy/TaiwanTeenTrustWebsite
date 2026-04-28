@@ -57,7 +57,6 @@
             </div>
             <select class="select-input" id="filter-postcat">
               <option value="">—</option>
-              <option>觀點</option><option>故事</option><option>報告</option><option>動態</option>
             </select>
             <select class="select-input" id="filter-poststatus">
               <option value="" data-i18n="blog.filter.status">所有狀態</option>
@@ -115,10 +114,7 @@
       <div class="field-row">
         <div class="field">
           <label class="field-label">Category</label>
-          <select class="field-select" id="po-category">
-            <option value="">—</option>
-            <option>觀點</option><option>故事</option><option>報告</option><option>動態</option>
-          </select>
+          <input class="field-input" id="po-category" placeholder="分類（如：觀點、故事、報告、動態）" />
         </div>
         <div class="field">
           <label class="field-label" data-i18n="blog.f.status">狀態</label>
@@ -126,6 +122,19 @@
             <option value="draft" data-i18n="blog.status.draft">草稿</option>
             <option value="published" data-i18n="blog.status.published">已發布</option>
           </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">特色圖片</label>
+        <div class="upload-zone" id="po-image-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+          <div style="font-size:2.5rem;margin-bottom:.5rem">🖼️</div>
+          <div style="font-weight:500">點擊或拖曳上傳圖片</div>
+          <div style="font-size:.8rem;color:var(--text-3);margin-top:.5rem">建議尺寸 16:10，JPG/PNG</div>
+          <input type="hidden" id="po-image-url" />
+        </div>
+        <div id="po-image-preview" style="margin-top:1rem;display:none">
+          <img id="po-image-thumb" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid rgba(0,0,0,.1)" />
+          <button type="button" class="btn btn--danger-ghost btn--sm" id="po-image-clear" style="margin-top:.5rem">移除</button>
         </div>
       </div>
       <div class="field-row">
@@ -161,6 +170,7 @@
 const CAT_BADGE = { '觀點':'badge--cyan', '故事':'badge--gold', '報告':'badge--green', '動態':'badge--gray' };
 
 let allPosts = [], filteredPosts = [];
+let allCategories = new Set(['觀點', '故事', '報告', '動態']);
 const PAGE_SIZE = 10;
 let currentPage = 1;
 
@@ -201,6 +211,21 @@ function renderTable() {
 
 function goPage(n) { currentPage = n; renderTable(); }
 
+function updateCategoryFilter() {
+  const select = document.getElementById('filter-postcat');
+  const current = select.value;
+  const options = Array.from(select.querySelectorAll('option'));
+  const fixedOption = options[0];
+  options.slice(1).forEach(opt => opt.remove());
+  Array.from(allCategories).sort().forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    select.appendChild(opt);
+  });
+  select.value = current;
+}
+
 function applyFilter() {
   const q   = document.getElementById('search-posts').value.trim().toLowerCase();
   const cat = document.getElementById('filter-postcat').value;
@@ -220,6 +245,8 @@ function openNewModal() {
   document.getElementById('po-category').value = '';
   document.getElementById('po-status').value = 'draft';
   document.getElementById('po-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('po-image-url').value = '';
+  document.getElementById('po-image-preview').style.display = 'none';
   openModal('post-modal');
 }
 
@@ -237,6 +264,14 @@ async function editPost(id) {
   document.getElementById('po-date').value      = p.date || '';
   document.getElementById('po-summary').value   = p.summary || '';
   document.getElementById('po-summary-en').value= p.summary_en || '';
+  document.getElementById('po-image-url').value = p.image_url || '';
+  const preview = document.getElementById('po-image-preview');
+  if (p.image_url) {
+    document.getElementById('po-image-thumb').src = p.image_url;
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
   openModal('post-modal');
 }
 
@@ -254,11 +289,18 @@ async function deletePost(id) {
 
 async function savePost(status) {
   const id = document.getElementById('post-id').value || null;
+  const imageUrl = document.getElementById('po-image-url').value || null;
+  const category = document.getElementById('po-category').value.trim();
+  if (category && !allCategories.has(category)) {
+    allCategories.add(category);
+    updateCategoryFilter();
+  }
   const data = {
     title:      document.getElementById('po-title').value.trim(),
     title_en:   document.getElementById('po-title-en').value.trim(),
     slug:       document.getElementById('po-slug').value.trim(),
-    category:   document.getElementById('po-category').value,
+    category:   category,
+    image_url:  imageUrl,
     status:     status || document.getElementById('po-status').value,
     author:     document.getElementById('po-author').value.trim(),
     date:       document.getElementById('po-date').value,
@@ -277,6 +319,8 @@ async function savePost(status) {
   showToast(id ? t('msg.updated') : t('msg.created'), 'success');
   closeModal('post-modal');
   allPosts = await DB.getAll('posts');
+  allPosts.forEach(p => { if (p.category && !allCategories.has(p.category)) allCategories.add(p.category); });
+  updateCategoryFilter();
   applyFilter();
 }
 
@@ -290,9 +334,40 @@ document.getElementById('filter-poststatus').addEventListener('change', applyFil
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
+
   allPosts = await DB.getAll('posts');
+  allPosts.forEach(p => { if (p.category && !allCategories.has(p.category)) allCategories.add(p.category); });
   filteredPosts = allPosts;
+  updateCategoryFilter();
   renderTable();
+
+  const imageZone = document.getElementById('po-image-zone');
+  const imageInput = document.createElement('input');
+  imageInput.type = 'file';
+  imageInput.accept = 'image/*';
+  imageInput.style.display = 'none';
+  document.body.appendChild(imageInput);
+
+  bindUploadZone(imageZone, imageInput, async files => {
+    if (files.length === 0) return;
+    const file = files[0];
+    if (!file.type.startsWith('image/')) { showToast(t('msg.upload_invalid'), 'error'); return; }
+    showToast(t('msg.uploading'), 'info');
+    const url = await uploadToMedia(file, 'posts', { maxW: 1920, maxH: 1200 });
+    if (!url) return;
+    document.getElementById('po-image-url').value = url;
+    document.getElementById('po-image-thumb').src = url;
+    document.getElementById('po-image-preview').style.display = 'block';
+    imageZone.style.opacity = '0.5';
+  });
+
+  document.getElementById('po-image-clear').addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('po-image-url').value = '';
+    document.getElementById('po-image-preview').style.display = 'none';
+    imageZone.style.opacity = '1';
+  });
+
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();
 });
 document.addEventListener('admin-lang-changed', () => renderTable());

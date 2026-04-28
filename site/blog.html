@@ -193,35 +193,11 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 </section>
 
 <!-- FEATURED POST -->
-<section class="featured-sec">
+<section class="featured-sec" id="featured-sec" style="display:none">
   <div style="max-width:1400px;margin:0 auto">
     <div class="sec-tag lang-zh" style="margin-bottom:1.5rem">最新文章</div>
     <div class="sec-tag lang-en" style="margin-bottom:1.5rem">Latest Post</div>
-    <a href="blog/stray-animals-taiwan.html" class="featured-post" data-cat="report">
-      <div class="featured-post__thumb" style="background:linear-gradient(135deg,#00180a,#000e06)">🐾</div>
-      <div class="featured-post__body">
-        <div>
-          <div class="featured-post__meta">
-            <span class="post-tag" style="background:rgba(0,153,255,.1);color:var(--r5)"><span class="lang-zh">報告</span><span class="lang-en">Report</span></span>
-            <span class="post-date">2026.04.10</span>
-            <span class="post-date">· 8 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-          </div>
-          <h2 class="featured-post__title lang-zh">台灣流浪動物問題的真相：數字背後的故事</h2>
-          <h2 class="featured-post__title lang-en">The Truth About Taiwan's Stray Animal Problem: The Story Behind the Numbers</h2>
-          <p class="featured-post__excerpt lang-zh">每年超過10萬隻流浪動物，公立收容所超載、安樂死率居高不下。我們深入調查台灣流浪動物議題的根本原因，並探討青年組織如何透過科技與行動帶來改變。</p>
-          <p class="featured-post__excerpt lang-en">Over 100,000 stray animals per year, overloaded public shelters, high euthanasia rates. We investigate the root causes of Taiwan's stray animal issue and how youth organizations can bring change through technology and action.</p>
-        </div>
-        <div class="featured-post__author">
-          <div class="author-icon">🔬</div>
-          <div>
-            <div class="author-name lang-zh">林奕廷</div>
-            <div class="author-name lang-en">Yi-Ting Lin</div>
-            <div class="author-role lang-zh">研究總監</div>
-            <div class="author-role lang-en">Research Director</div>
-          </div>
-        </div>
-      </div>
-    </a>
+    <div id="featured-post-container"></div>
   </div>
 </section>
 
@@ -230,171 +206,7 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
   <div style="max-width:1400px;margin:0 auto">
     <div class="sec-tag lang-zh">所有文章</div>
     <div class="sec-tag lang-en">All Articles</div>
-    <div class="posts-grid" id="post-grid">
-
-      <a href="blog/youth-power-change.html" class="post-card" data-cat="insight">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0a0a1a,#060612)">💡</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(124,58,255,.1);color:var(--r6)"><span class="lang-zh">觀點</span><span class="lang-en">Insight</span></span>
-            <span class="post-date">2026.03.22</span>
-          </div>
-          <h3 class="post-card__title lang-zh">為什麼青年的力量比我們想像的更強大？</h3>
-          <h3 class="post-card__title lang-en">Why Youth Power is Stronger Than We Think</h3>
-          <p class="post-card__excerpt lang-zh">從全球到台灣，歷史告訴我們：每一場重大的社會變革，背後都有青年的身影。</p>
-          <p class="post-card__excerpt lang-en">From global to local, history tells us: behind every major social transformation is the presence of youth.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">5 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/stray-aid-map-behind.html" class="post-card" data-cat="story">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0d1a0d,#060e06)">🗺️</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(0,201,93,.1);color:var(--r4)"><span class="lang-zh">故事</span><span class="lang-en">Story</span></span>
-            <span class="post-date">2026.03.15</span>
-          </div>
-          <h3 class="post-card__title lang-zh">浪浪援助地圖背後的故事：從想法到現實的 60 天</h3>
-          <h3 class="post-card__title lang-en">Behind Stray Aid Map: 60 Days from Idea to Reality</h3>
-          <p class="post-card__excerpt lang-zh">一個深夜的討論、一張白板上的草稿、三個部門的協作——我們如何在60天內打造出台灣第一個流浪動物救援地圖。</p>
-          <p class="post-card__excerpt lang-en">A late-night discussion, a whiteboard draft, three departments collaborating — how we built Taiwan's first stray animal rescue map in 60 days.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">7 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/climate-campus.html" class="post-card" data-cat="report">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#001a08,#000d04)">🌿</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(0,153,255,.1);color:var(--r5)"><span class="lang-zh">報告</span><span class="lang-en">Report</span></span>
-            <span class="post-date">2025.12.08</span>
-          </div>
-          <h3 class="post-card__title lang-zh">2025 台灣校園碳排放調查報告</h3>
-          <h3 class="post-card__title lang-en">2025 Taiwan Campus Carbon Emissions Survey</h3>
-          <p class="post-card__excerpt lang-zh">我們對12所高中進行為期6個月的碳足跡調查，發現校園碳排放的三大主要來源以及可立即改善的行動方案。</p>
-          <p class="post-card__excerpt lang-en">A 6-month carbon footprint investigation across 12 high schools, revealing the three main sources of campus emissions and actionable improvement plans.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">12 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/elder-exchange.html" class="post-card" data-cat="story">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#1a0d00,#100800)">🤝</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(0,201,93,.1);color:var(--r4)"><span class="lang-zh">故事</span><span class="lang-en">Story</span></span>
-            <span class="post-date">2025.11.20</span>
-          </div>
-          <h3 class="post-card__title lang-zh">一個90歲阿嬤教會我的事</h3>
-          <h3 class="post-card__title lang-en">What a 90-Year-Old Grandma Taught Me</h3>
-          <p class="post-card__excerpt lang-zh">在青銀交流計畫的最後一次拜訪，陳阿嬤拉著我的手說了一句話，讓我重新思考「志工」的意義。</p>
-          <p class="post-card__excerpt lang-en">On the final visit of the Youth-Elder Exchange Program, Grandma Chen took my hand and said something that made me rethink what "volunteering" truly means.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">6 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/join-ttt.html" class="post-card" data-cat="news">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#001220,#000c18)">📣</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(255,60,0,.1);color:var(--r1)"><span class="lang-zh">動態</span><span class="lang-en">News</span></span>
-            <span class="post-date">2026.03.01</span>
-          </div>
-          <h3 class="post-card__title lang-zh">2026 年度招募正式開始！</h3>
-          <h3 class="post-card__title lang-en">2026 Annual Recruitment Now Open!</h3>
-          <p class="post-card__excerpt lang-zh">TTT 2026 年度招募正式開跑！我們正在尋找對設計、影片、研究、行銷、IT 有熱情的你。</p>
-          <p class="post-card__excerpt lang-en">TTT 2026 annual recruitment is officially underway! We're looking for passionate people in design, video, research, marketing, and IT.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">3 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/art-exhibition-recap.html" class="post-card" data-cat="news">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#1a001a,#0d000d)">🎭</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(255,60,0,.1);color:var(--r1)"><span class="lang-zh">動態</span><span class="lang-en">News</span></span>
-            <span class="post-date">2025.10.05</span>
-          </div>
-          <h3 class="post-card__title lang-zh">社會議題藝術展圓滿落幕：3,000人參與</h3>
-          <h3 class="post-card__title lang-en">Social Issue Art Exhibition Concludes: 3,000 Visitors</h3>
-          <p class="post-card__excerpt lang-zh">為期兩週的展覽吸引超過3,000位民眾參觀，20位青年藝術家用創作傳遞台灣當代社會議題。</p>
-          <p class="post-card__excerpt lang-en">The two-week exhibition attracted over 3,000 visitors, with 20 young artists communicating contemporary social issues through creative works.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">5 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/what-is-social-impact.html" class="post-card" data-cat="insight">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0a0a0a,#141414)">🌏</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(124,58,255,.1);color:var(--r6)"><span class="lang-zh">觀點</span><span class="lang-en">Insight</span></span>
-            <span class="post-date">2025.09.18</span>
-          </div>
-          <h3 class="post-card__title lang-zh">什麼是真正的「社會影響力」？</h3>
-          <h3 class="post-card__title lang-en">What Is Real "Social Impact"?</h3>
-          <p class="post-card__excerpt lang-zh">「社會影響力」這個詞被過度使用了。我們來談談如何分辨真正有影響力的行動，以及那些只是看起來有影響力的行動。</p>
-          <p class="post-card__excerpt lang-en">The term "social impact" is overused. Let's talk about how to distinguish truly impactful actions from those that merely appear impactful.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">9 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/tnr-program.html" class="post-card" data-cat="report">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#0d1a0d,#061006)">🐈</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(0,153,255,.1);color:var(--r5)"><span class="lang-zh">報告</span><span class="lang-en">Report</span></span>
-            <span class="post-date">2026.02.14</span>
-          </div>
-          <h3 class="post-card__title lang-zh">TNR 結紮回置計畫：台灣推廣現況與挑戰</h3>
-          <h3 class="post-card__title lang-en">TNR Programs in Taiwan: Status and Challenges</h3>
-          <p class="post-card__excerpt lang-zh">TNR（誘捕、結紮、回置）是國際公認最人道有效的流浪動物控制方式，但在台灣的推廣面臨哪些困難？</p>
-          <p class="post-card__excerpt lang-en">TNR (Trap-Neuter-Return) is the most humane and effective stray animal control method — but what challenges does it face in Taiwan?</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">10 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-      <a href="blog/first-year-reflection.html" class="post-card" data-cat="story">
-        <div class="post-card__thumb" style="background:linear-gradient(135deg,#1a1a00,#101000)">✨</div>
-        <div class="post-card__body">
-          <div class="post-card__meta">
-            <span class="post-tag" style="background:rgba(0,201,93,.1);color:var(--r4)"><span class="lang-zh">故事</span><span class="lang-en">Story</span></span>
-            <span class="post-date">2025.01.10</span>
-          </div>
-          <h3 class="post-card__title lang-zh">TTT 成立一年：我們學到了什麼？</h3>
-          <h3 class="post-card__title lang-en">TTT's First Year: What Did We Learn?</h3>
-          <p class="post-card__excerpt lang-zh">從零到500人、從一個想法到30個專案，TTT 的第一年充滿了挑戰、失敗與成長。我們誠實地分享這一年的所有收穫。</p>
-          <p class="post-card__excerpt lang-en">From zero to 500 people, from one idea to 30 projects — TTT's first year was full of challenges, failures, and growth. We share honestly everything we learned.</p>
-          <div class="post-card__footer">
-            <span class="post-card__read-time">11 <span class="lang-zh">分鐘閱讀</span><span class="lang-en">min read</span></span>
-            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
-          </div>
-        </div>
-      </a>
-
-    </div>
+    <div class="posts-grid" id="post-grid"></div>
     <div id="no-results">
       <div style="font-size:3rem;margin-bottom:1rem">📭</div>
       <p class="lang-zh">此分類暫無文章</p>
@@ -496,30 +308,123 @@ gsap.utils.toArray('.page-hero .li').forEach(el => {
 });
 langReady = true;
 
-// Filter
-const cards = document.querySelectorAll('.post-card[data-cat]');
-const noRes = document.getElementById('no-results');
+const SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
+let allPostsData = [];
 let activeCat = 'all';
-document.getElementById('blog-cat-filter').addEventListener('click', e => {
+const noRes = document.getElementById('no-results');
+const CAT_COLORS = { '觀點': 'rgba(124,58,255,.1)', '故事': 'rgba(0,201,93,.1)', '報告': 'rgba(0,153,255,.1)', '動態': 'rgba(255,60,0,.1)' };
+const CAT_COLORS_TEXT = { '觀點': 'var(--r6)', '故事': 'var(--r4)', '報告': 'var(--r5)', '動態': 'var(--r1)' };
+
+async function loadPosts() {
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } });
+  const { data, error } = await sb.from('posts').select('*').eq('status', 'published').order('date', { ascending: false });
+  if (error) { console.error('[Blog] Load posts failed:', error); return; }
+
+  allPostsData = data || [];
+  const heroCount = document.querySelector('.page-hero__count-num');
+  if (heroCount) heroCount.textContent = allPostsData.length;
+
+  renderPosts();
+  renderFeatured();
+}
+
+function renderFeatured() {
+  const sec = document.getElementById('featured-sec');
+  const container = document.getElementById('featured-post-container');
+  if (!allPostsData.length) {
+    sec.style.display = 'none';
+    return;
+  }
+  const p = allPostsData[0];
+  const catColor = CAT_COLORS[p.category] || 'rgba(0,0,0,.05)';
+  const catColorText = CAT_COLORS_TEXT[p.category] || '#666';
+  const dateStr = p.date ? new Date(p.date).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.') : '—';
+  const thumb = p.image_url
+    ? `<img src="${p.image_url}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover">`
+    : `<div style="background:linear-gradient(135deg,#0a0a1a,#060612);display:flex;align-items:center;justify-content:center;font-size:6rem">📰</div>`;
+
+  container.innerHTML = `
+    <div class="featured-post">
+      <div class="featured-post__thumb">${thumb}</div>
+      <div class="featured-post__body">
+        <div>
+          <div class="featured-post__meta">
+            <span class="post-tag" style="background:${catColor};color:${catColorText}">${p.category || '—'}</span>
+            <span class="post-date">${dateStr}</span>
+          </div>
+          <h2 class="featured-post__title">${p.title || p.title_en || '—'}</h2>
+          <p class="featured-post__excerpt">${p.summary || p.summary_en || '—'}</p>
+        </div>
+        <div class="featured-post__author">
+          <div class="author-icon">✍️</div>
+          <div>
+            <div class="author-name">${p.author || '—'}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  sec.style.display = 'block';
+}
+
+function renderPosts() {
+  const filtered = activeCat === 'all'
+    ? allPostsData
+    : allPostsData.filter(p => p.category === activeCat);
+
+  const grid = document.getElementById('post-grid');
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    noRes.style.display = 'block';
+    document.querySelectorAll('.post-card').forEach(el => { el.remove(); });
+    return;
+  }
+  noRes.style.display = 'none';
+
+  grid.innerHTML = filtered.map((p, i) => {
+    const catColor = CAT_COLORS[p.category] || 'rgba(0,0,0,.05)';
+    const catColorText = CAT_COLORS_TEXT[p.category] || '#666';
+    const dateStr = p.date ? new Date(p.date).toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.') : '—';
+    const thumb = p.image_url
+      ? `<img src="${p.image_url}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover">`
+      : `<div style="background:linear-gradient(135deg,#0a0a1a,#060612);display:flex;align-items:center;justify-content:center;font-size:3rem">📰</div>`;
+
+    return `
+      <div class="post-card" data-cat="${p.category||'other'}">
+        <div class="post-card__thumb">${thumb}</div>
+        <div class="post-card__body">
+          <div class="post-card__meta">
+            <span class="post-tag" style="background:${catColor};color:${catColorText}">${p.category || '—'}</span>
+            <span class="post-date">${dateStr}</span>
+          </div>
+          <h3 class="post-card__title">${p.title || p.title_en || '—'}</h3>
+          <p class="post-card__excerpt">${p.summary || p.summary_en || '—'}</p>
+          <div class="post-card__footer">
+            <span class="post-card__read-time">—</span>
+            <span class="post-card__link"><span class="lang-zh">閱讀全文 →</span><span class="lang-en">Read more →</span></span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  gsap.utils.toArray('.post-card').forEach((el, i) => {
+    gsap.from(el, { y:30, opacity:0, duration:.7, ease:'power3.out', delay:(i%3)*.1,
+      scrollTrigger: { trigger: el, start:'top 92%' }
+    });
+  });
+}
+
+const filterBtns = document.getElementById('blog-cat-filter');
+filterBtns.addEventListener('click', e => {
   const btn = e.target.closest('[data-cat]');
   if (!btn) return;
   document.querySelectorAll('#blog-cat-filter .filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   activeCat = btn.dataset.cat;
-  let visible = 0;
-  cards.forEach(card => {
-    const show = activeCat === 'all' || card.dataset.cat === activeCat;
-    card.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-  noRes.style.display = visible === 0 ? 'block' : 'none';
+  renderPosts();
 });
 
-gsap.utils.toArray('.post-card').forEach((el, i) => {
-  gsap.from(el, { y:30, opacity:0, duration:.7, ease:'power3.out', delay:(i%3)*.1,
-    scrollTrigger: { trigger: el, start:'top 92%' }
-  });
-});
+window.addEventListener('load', loadPosts);
 </script>
 <script src="js/aurora.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
