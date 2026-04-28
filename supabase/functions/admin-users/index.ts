@@ -90,13 +90,25 @@ async function handleList(supabase: SupabaseClient): Promise<Response> {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) return jsonResponse({ error: error.message }, 400);
+  if (error) {
+    console.error('[admin-users] list query failed:', error);
+    return jsonResponse({ error: error.message }, 400);
+  }
 
   const enriched = await Promise.all(
     (admins || []).map(async (a: any) => {
       if (a.email || !a.user_id) return a;
-      const { data } = await supabase.auth.admin.getUserById(a.user_id);
-      return { ...a, email: data?.user?.email || a.email };
+      try {
+        const { data, error: getErr } = await supabase.auth.admin.getUserById(a.user_id);
+        if (getErr) {
+          console.warn('[admin-users] getUserById failed for', a.user_id, getErr.message);
+          return a;
+        }
+        return { ...a, email: data?.user?.email || a.email };
+      } catch (e) {
+        console.warn('[admin-users] getUserById threw for', a.user_id, e);
+        return a;
+      }
     })
   );
 

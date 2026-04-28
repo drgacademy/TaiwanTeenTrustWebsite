@@ -231,3 +231,99 @@ if (body.action === 'setPassword') {
 若前端是傳 `admin_users.id`，需要先在 edge function 內查表轉換，
 或改成在前端傳入 `user_id`。
 
+## 13. `map_locations` 重整為流浪動物中心專用 + 預載 5 個中心
+
+### 13.1 新增欄位
+
+```sql
+ALTER TABLE map_locations
+  ADD COLUMN IF NOT EXISTS image_url    text,                    -- 中心主圖（前台展示用）
+  ADD COLUMN IF NOT EXISTS food_weeks   numeric,                 -- 飼料存量（週）
+  ADD COLUMN IF NOT EXISTS needs        jsonb DEFAULT '[]'::jsonb, -- 缺乏物資清單
+  ADD COLUMN IF NOT EXISTS custom_needs text;                    -- 自由輸入的其他物資/說明
+```
+
+`needs` 欄位的格式（陣列，每個項目代表一種物資）：
+
+```json
+[
+  { "key": "dry_food",  "label_zh": "乾飼料",     "label_en": "Dry food",         "level": "urgent" },
+  { "key": "canned",    "label_zh": "罐頭食品",   "label_en": "Canned food",      "level": "normal" },
+  { "key": "medical",   "label_zh": "醫療費補助", "label_en": "Medical funding",  "level": "urgent" }
+]
+```
+
+`level` 可以是：
+- `"urgent"` — 急需（紅色標籤）
+- `"normal"` — 缺乏（一般標籤）
+- `"none"` 或不存在 — 不缺（不會顯示）
+
+### 13.2 清除舊類型資料（如果 vet/feed/rescue 沒在用）
+
+```sql
+-- 確認後再執行：刪除非收容所類型的資料點
+DELETE FROM map_locations WHERE type IS NULL OR type IN ('vet','feed','rescue');
+
+-- 也可以把 type 全部統一成 shelter（保險做法）
+UPDATE map_locations SET type = 'shelter' WHERE type IS NULL OR type <> 'shelter';
+```
+
+### 13.3 預載 5 個流浪動物中心
+
+```sql
+-- 注意：執行前確認 map_locations 沒有同名資料，避免重複
+INSERT INTO map_locations
+  (name, name_en, type, status, address, address_en, phone, hours, hours_en, lat, lng, food_weeks, needs)
+VALUES
+  ('臺北市動物之家', 'Taipei Animal Shelter', 'shelter', 'active',
+   '台北市北投區立農街二段350號', '350 Linong St. Sec.2, Beitou, Taipei',
+   '02-2858-3700', '週二–週日 09:00–17:00', 'Tue–Sun 09:00–17:00',
+   25.1306, 121.4984, 1.5,
+   '[
+     {"key":"dry_food","label_zh":"乾飼料","label_en":"Dry food","level":"urgent"},
+     {"key":"canned","label_zh":"罐頭食品","label_en":"Canned food","level":"urgent"},
+     {"key":"medical","label_zh":"醫療費補助","label_en":"Medical funding","level":"normal"},
+     {"key":"volunteers","label_zh":"志工","label_en":"Volunteers","level":"normal"}
+   ]'::jsonb),
+
+  ('新北市動物之家（新莊）', 'New Taipei Animal Shelter (Xinzhuang)', 'shelter', 'active',
+   '新北市新莊區化成路321巷8號', '8 Lane 321 Huacheng Rd., Xinzhuang, New Taipei',
+   '02-2991-3062', '週二–週日 09:00–17:00', 'Tue–Sun 09:00–17:00',
+   25.0353, 121.4397, 3.0,
+   '[
+     {"key":"dry_food","label_zh":"乾飼料","label_en":"Dry food","level":"normal"},
+     {"key":"cleaning","label_zh":"清潔用品","label_en":"Cleaning supplies","level":"normal"}
+   ]'::jsonb),
+
+  ('台中市動物之家（北屯）', 'Taichung Animal Shelter (Beitun)', 'shelter', 'active',
+   '台中市北屯區東山路一段201號', '201 Dongshan Rd. Sec.1, Beitun, Taichung',
+   '04-2239-0079', '週二–週日 09:00–17:00', 'Tue–Sun 09:00–17:00',
+   24.1830, 120.7025, 5.5,
+   '[
+     {"key":"donations","label_zh":"長期捐款支持","label_en":"Regular donations","level":"normal"},
+     {"key":"volunteers","label_zh":"志工","label_en":"Volunteers","level":"normal"}
+   ]'::jsonb),
+
+  ('台南市動物之家（楠西）', 'Tainan Animal Shelter (Nanxi)', 'shelter', 'active',
+   '台南市楠西區東勢里6鄰64號', '64 Dongshi Village, Nanxi, Tainan',
+   '06-575-2367', '週二–週日 09:00–17:00', 'Tue–Sun 09:00–17:00',
+   23.1968, 120.5058, 2.5,
+   '[
+     {"key":"dry_food","label_zh":"乾飼料","label_en":"Dry food","level":"urgent"},
+     {"key":"canned","label_zh":"罐頭食品","label_en":"Canned food","level":"normal"},
+     {"key":"surgery","label_zh":"手術費補助","label_en":"Surgery funding","level":"normal"}
+   ]'::jsonb),
+
+  ('高雄市動物之家（燕巢）', 'Kaohsiung Animal Shelter (Yanchao)', 'shelter', 'active',
+   '高雄市燕巢區角宿里深水路242號', '242 Shenshui Rd., Yanchao, Kaohsiung',
+   '07-616-1161', '週二–週日 09:00–17:00', 'Tue–Sun 09:00–17:00',
+   22.7856, 120.3648, 0.8,
+   '[
+     {"key":"dry_food","label_zh":"乾飼料","label_en":"Dry food","level":"urgent"},
+     {"key":"canned","label_zh":"罐頭食品","label_en":"Canned food","level":"urgent"},
+     {"key":"cleaning","label_zh":"清潔用品","label_en":"Cleaning supplies","level":"normal"},
+     {"key":"medical","label_zh":"醫療費補助","label_en":"Medical funding","level":"urgent"},
+     {"key":"volunteers","label_zh":"志工","label_en":"Volunteers","level":"normal"}
+   ]'::jsonb);
+```
+
