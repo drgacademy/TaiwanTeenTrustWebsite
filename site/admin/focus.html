@@ -112,8 +112,21 @@
           <input class="field-input" id="f-icon" placeholder="🐾" maxlength="4" />
         </div>
         <div class="field">
-          <label class="field-label" data-i18n="focus.f.color">主色 (HEX)</label>
-          <input class="field-input" id="f-color" placeholder="#00c95d" />
+          <label class="field-label" data-i18n="focus.f.color">主色</label>
+          <div style="display:flex;gap:.5rem;align-items:center">
+            <input type="color" id="f-color-picker" value="#00c95d" style="width:48px;height:42px;border:1px solid rgba(0,0,0,.1);border-radius:6px;cursor:pointer;padding:2px;background:transparent" />
+            <input class="field-input" id="f-color" placeholder="#00c95d" style="flex:1" />
+          </div>
+          <div class="field-hint" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem">
+            <button type="button" class="color-swatch" data-color="#00c95d" style="width:22px;height:22px;border-radius:50%;background:#00c95d;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="動物綠"></button>
+            <button type="button" class="color-swatch" data-color="#008800" style="width:22px;height:22px;border-radius:50%;background:#008800;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="環境綠"></button>
+            <button type="button" class="color-swatch" data-color="#0099ff" style="width:22px;height:22px;border-radius:50%;background:#0099ff;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="天空藍"></button>
+            <button type="button" class="color-swatch" data-color="#7c3aff" style="width:22px;height:22px;border-radius:50%;background:#7c3aff;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="紫"></button>
+            <button type="button" class="color-swatch" data-color="#ff2dca" style="width:22px;height:22px;border-radius:50%;background:#ff2dca;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="桃紅"></button>
+            <button type="button" class="color-swatch" data-color="#ff3b3b" style="width:22px;height:22px;border-radius:50%;background:#ff3b3b;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="紅"></button>
+            <button type="button" class="color-swatch" data-color="#ff8c00" style="width:22px;height:22px;border-radius:50%;background:#ff8c00;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="橘"></button>
+            <button type="button" class="color-swatch" data-color="#ffd600" style="width:22px;height:22px;border-radius:50%;background:#ffd600;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="黃"></button>
+          </div>
         </div>
       </div>
       <div class="field">
@@ -229,6 +242,17 @@ function setFocusVideo(url) {
   else { preview.style.display = 'none'; document.getElementById('f-video-thumb').removeAttribute('src'); zone.style.opacity = '1'; }
 }
 
+function setFocusColor(hex) {
+  const v = (hex || '').trim();
+  document.getElementById('f-color').value = v;
+  // type="color" 需要合法的 #RRGGBB 格式才能正確顯示
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+    document.getElementById('f-color-picker').value = v;
+  } else if (!v) {
+    document.getElementById('f-color-picker').value = '#0099ff';
+  }
+}
+
 function openNewModal() {
   document.getElementById('focus-id').value = '';
   document.getElementById('focus-modal-title').textContent = t('focus.new');
@@ -236,6 +260,7 @@ function openNewModal() {
     const el = document.getElementById('f-'+f); if (el) el.value = '';
   });
   document.getElementById('f-status').value = 'active';
+  setFocusColor('');
   setFocusImage(''); setFocusVideo('');
   openModal('focus-modal');
 }
@@ -250,7 +275,7 @@ async function editFocus(id) {
   document.getElementById('f-title-zh').value        = f.title_zh || '';
   document.getElementById('f-title-en').value        = f.title_en || '';
   document.getElementById('f-icon').value            = f.icon || '';
-  document.getElementById('f-color').value           = f.color || '';
+  setFocusColor(f.color || '');
   document.getElementById('f-why-zh').value          = f.why_zh || '';
   document.getElementById('f-why-en').value          = f.why_en || '';
   document.getElementById('f-response-zh').value     = f.response_zh || '';
@@ -334,12 +359,29 @@ function bindFocusMedia() {
   document.getElementById('f-video-clear').addEventListener('click', e => { e.preventDefault(); setFocusVideo(''); });
 }
 
+function bindColorControls() {
+  const picker = document.getElementById('f-color-picker');
+  const input  = document.getElementById('f-color');
+  picker.addEventListener('input', e => { input.value = e.target.value; });
+  input.addEventListener('input', e => {
+    const v = e.target.value.trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(v)) picker.value = v;
+  });
+  document.querySelectorAll('.color-swatch').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      setFocusColor(btn.dataset.color);
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
   allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
   renderTable();
   bindFocusMedia();
+  bindColorControls();
 });
 document.addEventListener('admin-lang-changed', () => renderTable());
 </script>
