@@ -175,3 +175,59 @@ CREATE POLICY "departments_write_authenticated"
 目前邀請流程透過 edge function `admin-users` 寫入 auth users + admin_users。
 若希望邀請時直接寫入指定 role，可於 edge function 中將 POST body 的 `role` 欄位寫入 admin_users。
 若 edge function 暫不支援 role，`Admins.invite` 仍可正常運作，僅是新邀請的 user role 會等於資料庫預設值（`member`）。
+
+## 10. 修正 `admin_users` 缺少 UPDATE 政策（重要）
+
+若編輯後台使用者時出現 "Cannot coerce the result to a single JSON object" 錯誤，
+代表 RLS 缺少 UPDATE 政策，請執行：
+
+```sql
+-- 加入 UPDATE 政策（is_admin() 才可更新）
+CREATE POLICY "admin_users_update"
+  ON admin_users FOR UPDATE
+  USING (is_admin())
+  WITH CHECK (is_admin());
+```
+
+## 11. `posts` 表新增 `date` 欄位（部落格發布日期）
+
+若新增 / 編輯部落格文章時出現 "Could not find the 'date' column of 'posts'" 錯誤，
+代表表格缺少此欄位，請執行：
+
+```sql
+ALTER TABLE posts
+  ADD COLUMN IF NOT EXISTS date date;
+
+-- （選用）將既有資料的 created_at 填入 date
+UPDATE posts SET date = created_at::date WHERE date IS NULL;
+```
+
+## 12. admin-users Edge Function 支援 setPassword 動作（直接設定密碼）
+
+若希望可以在後台直接輸入新密碼（不寄信），需要在 edge function 中加入 `setPassword` 處理：
+
+```typescript
+// 在 admin-users edge function 的 POST handler 中加入：
+if (body.action === 'setPassword') {
+  const { userId, password } = body;
+  if (!userId || !password) {
+    return new Response(JSON.stringify({ error: 'userId and password required' }), { status: 400 });
+  }
+  if (password.length < 6) {
+    return new Response(JSON.stringify({ error: 'Password must be at least 6 characters' }), { status: 400 });
+  }
+  // 使用 service role key 建立的 admin client
+  const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, { password });
+  if (error) {
+    return new Response(JSON.stringify({ error: error.message }), { status: 400 });
+  }
+  return new Response(JSON.stringify({ ok: true }), { status: 200 });
+}
+```
+
+呼叫端送入 body 為：`{ "action": "setPassword", "userId": "<auth user id>", "password": "<新密碼>" }`。
+
+⚠️ 注意：`Admins.setPassword(userId, ...)` 是傳入 `admin_users.user_id` (= auth user id)，
+若前端是傳 `admin_users.id`，需要先在 edge function 內查表轉換，
+或改成在前端傳入 `user_id`。
+

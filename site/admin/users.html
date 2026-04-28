@@ -145,6 +145,7 @@
     </div>
     <div class="modal__body">
       <input type="hidden" id="e-id" />
+      <input type="hidden" id="e-user-id" />
       <div class="field">
         <label class="field-label" data-i18n="users.f.email">電子郵件</label>
         <input class="field-input" id="e-email" type="email" disabled style="opacity:.7;cursor:not-allowed" />
@@ -260,6 +261,7 @@ function openEditModal(id) {
   const u = adminList.find(a => a.id === id);
   if (!u) return;
   document.getElementById('e-id').value    = u.id;
+  document.getElementById('e-user-id').value = u.user_id || '';
   document.getElementById('e-email').value = u.email || '';
   document.getElementById('e-name').value  = u.name || '';
   document.getElementById('e-role').value  = u.role || 'member';
@@ -310,10 +312,11 @@ document.getElementById('btn-save-edit').addEventListener('click', async () => {
 });
 
 document.getElementById('btn-set-password').addEventListener('click', async () => {
-  const userId = document.getElementById('e-id').value;
+  const userId = document.getElementById('e-user-id').value;
   const password = document.getElementById('e-password').value.trim();
   const passwordConfirm = document.getElementById('e-password-confirm').value.trim();
 
+  if (!userId) { showToast(t('users.msg.password_set_fail'), 'error'); return; }
   if (!password) { showToast(t('users.msg.password_required'), 'error'); return; }
   if (password.length < 6) { showToast(t('users.msg.password_too_short'), 'error'); return; }
   if (password !== passwordConfirm) { showToast(t('users.msg.password_mismatch'), 'error'); return; }
