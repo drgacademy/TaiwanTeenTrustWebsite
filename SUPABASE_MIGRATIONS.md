@@ -84,7 +84,77 @@ ALTER TABLE members
   ADD COLUMN IF NOT EXISTS photo text;
 ```
 
-## 7. （選用）admin-users Edge Function 支援 role 欄位
+## 7. 新增 `project_categories` 表（專案分類管理）
+
+```sql
+CREATE TABLE IF NOT EXISTS project_categories (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  key text UNIQUE NOT NULL,
+  label_zh text NOT NULL,
+  label_en text,
+  color text,
+  icon text,
+  sort_order int DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- 預設分類資料
+INSERT INTO project_categories (key, label_zh, label_en, color, icon, sort_order) VALUES
+  ('animals', '動物', 'Animals', '#00c95d', '🐾', 1),
+  ('environment', '環境', 'Environment', '#008800', '🌿', 2),
+  ('community', '社區', 'Community', '#0099ff', '🤝', 3),
+  ('arts', '藝術文化', 'Arts', '#7c3aff', '🎭', 4),
+  ('advocacy', '倡議', 'Advocacy', '#ff8c00', '📣', 5),
+  ('research', '研究', 'Research', '#0099ff', '🔬', 6),
+  ('education', '教育', 'Education', '#ff3b3b', '📚', 7)
+ON CONFLICT (key) DO NOTHING;
+
+ALTER TABLE project_categories ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "project_categories_select_all"
+  ON project_categories FOR SELECT USING (true);
+CREATE POLICY "project_categories_write_authenticated"
+  ON project_categories FOR ALL TO authenticated
+  USING (true) WITH CHECK (true);
+```
+
+## 8. 新增 `departments` 表（團隊部門管理）
+
+```sql
+CREATE TABLE IF NOT EXISTS departments (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  key text UNIQUE NOT NULL,
+  label_zh text NOT NULL,
+  label_en text,
+  color text,
+  icon text,
+  sort_order int DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- 預設部門資料（key 用中文以對應現有 members.dept 欄位資料）
+INSERT INTO departments (key, label_zh, label_en, color, icon, sort_order) VALUES
+  ('資訊科技', '資訊科技', 'Information Technology', '#0099ff', '🖥️', 1),
+  ('設計', '設計', 'Design', '#ff2dca', '🎨', 2),
+  ('行銷', '行銷', 'Marketing', '#ff8c00', '📣', 3),
+  ('影像', '影像', 'Video & Media', '#ff3b3b', '🎬', 4),
+  ('研究', '研究', 'Research', '#00c95d', '🔬', 5),
+  ('活動', '活動', 'Events', '#7c3aff', '🗓️', 6),
+  ('財務', '財務', 'Finance', '#ffd600', '💰', 7)
+ON CONFLICT (key) DO NOTHING;
+
+ALTER TABLE departments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "departments_select_all"
+  ON departments FOR SELECT USING (true);
+CREATE POLICY "departments_write_authenticated"
+  ON departments FOR ALL TO authenticated
+  USING (true) WITH CHECK (true);
+```
+
+## 9. （選用）admin-users Edge Function 支援 role 欄位
 
 目前邀請流程透過 edge function `admin-users` 寫入 auth users + admin_users。
 若希望邀請時直接寫入指定 role，可於 edge function 中將 POST body 的 `role` 欄位寫入 admin_users。

@@ -326,35 +326,44 @@ const noRes = document.getElementById('no-results');
 const grid = document.getElementById('projects-grid');
 let activeCat = 'all';
 let allProjectsData = [];
+let allCategoriesData = [];
 
-const CAT_STYLE = {
-  'animals':       { zh:'動物',     en:'Animals',     bg:'rgba(0,201,93,.12)',  color:'#00c95d', thumb:'linear-gradient(135deg,#00180a,#002214)', icon:'🐾' },
-  'environment':   { zh:'環境',     en:'Environment', bg:'rgba(0,153,0,.10)',   color:'#008800', thumb:'linear-gradient(135deg,#001800,#001200)', icon:'🌿' },
-  'community':     { zh:'社區',     en:'Community',   bg:'rgba(0,153,255,.10)', color:'#0099ff', thumb:'linear-gradient(135deg,#001220,#000c18)', icon:'🤝' },
-  'arts':          { zh:'藝術文化', en:'Arts',        bg:'rgba(124,58,255,.10)',color:'#7c3aff', thumb:'linear-gradient(135deg,#1a001a,#0d000d)', icon:'🎭' },
-  'advocacy':      { zh:'倡議',     en:'Advocacy',    bg:'rgba(255,140,0,.10)', color:'#ff8c00', thumb:'linear-gradient(135deg,#1a0d00,#100800)', icon:'📣' },
-  'research':      { zh:'研究',     en:'Research',    bg:'rgba(0,153,255,.10)', color:'#0099ff', thumb:'linear-gradient(135deg,#001220,#000c18)', icon:'🔬' },
-  'education':     { zh:'教育',     en:'Education',   bg:'rgba(255,60,0,.10)',  color:'#ff3b3b', thumb:'linear-gradient(135deg,#1a0a0a,#0d0505)', icon:'📚' }
-};
+function hexToRgba(hex, a) {
+  if (!hex) return `rgba(0,0,0,${a})`;
+  const m = hex.replace('#','');
+  const r = parseInt(m.substring(0,2),16);
+  const g = parseInt(m.substring(2,4),16);
+  const b = parseInt(m.substring(4,6),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
 
 function getCatStyle(cat) {
-  if (CAT_STYLE[cat]) return CAT_STYLE[cat];
+  const c = allCategoriesData.find(x => x.key === cat);
+  if (c) {
+    const color = c.color || '#666';
+    return {
+      zh: c.label_zh || cat,
+      en: c.label_en || c.label_zh || cat,
+      bg: hexToRgba(color, 0.12),
+      color,
+      thumb: `linear-gradient(135deg,${hexToRgba(color,0.15)},${hexToRgba(color,0.05)})`,
+      icon: c.icon || '📁'
+    };
+  }
   return { zh: cat || '其他', en: cat || 'Other', bg:'rgba(0,0,0,.06)', color:'#666', thumb:'linear-gradient(135deg,#0a0a0a,#141414)', icon:'📁' };
 }
 
 function renderFilters() {
-  const cats = Array.from(new Set(allProjectsData.map(p => p.category).filter(Boolean)));
+  // 從 categories 表顯示所有分類（不只有資料的）
   const filterEl = document.getElementById('cat-filter');
-  // 保留「全部」按鈕
   filterEl.innerHTML = '<button class="filter-btn active" data-cat="all" data-zh="全部" data-en="All">全部</button>';
-  cats.forEach(cat => {
-    const s = getCatStyle(cat);
+  allCategoriesData.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
-    btn.dataset.cat = cat;
-    btn.dataset.zh = s.zh;
-    btn.dataset.en = s.en;
-    btn.textContent = document.body.classList.contains('lang-en') ? s.en : s.zh;
+    btn.dataset.cat = c.key;
+    btn.dataset.zh = c.label_zh || c.key;
+    btn.dataset.en = c.label_en || c.label_zh || c.key;
+    btn.textContent = document.body.classList.contains('lang-en') ? btn.dataset.en : btn.dataset.zh;
     filterEl.appendChild(btn);
   });
 }
@@ -433,9 +442,18 @@ document.getElementById('cat-filter').addEventListener('click', e => {
 
 async function loadProjects() {
   const sb = window.supabase.createClient(PROJ_SUPABASE_URL, PROJ_SUPABASE_KEY, { auth:{ persistSession:false } });
-  const { data, error } = await sb.from('projects').select('*').neq('status', 'draft').order('year', { ascending: false });
-  if (error) { console.warn('[projects]', error.message); return; }
-  allProjectsData = data || [];
+
+  // 同時載入分類清單和專案
+  const [catsResp, projResp] = await Promise.all([
+    sb.from('project_categories').select('*').order('sort_order', { ascending: true }),
+    sb.from('projects').select('*').neq('status', 'draft').order('year', { ascending: false }),
+  ]);
+
+  if (catsResp.error) console.warn('[categories]', catsResp.error.message);
+  if (projResp.error) console.warn('[projects]', projResp.error.message);
+
+  allCategoriesData = catsResp.data || [];
+  allProjectsData   = projResp.data || [];
 
   // 動態統計專案數
   const heroCount = document.querySelector('.page-hero__count');

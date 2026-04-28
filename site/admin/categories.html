@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n-title-key="nav.categories">TTT Admin — 分類管理</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
+      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
+      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="categories.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span></a>
+      <a href="focus.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
+      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
+      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
+      <a href="users.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span></a>
+      <a href="settings.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg><span data-i18n="nav.settings">網站設定</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.categories">分類管理</span></div>
+    </div>
+
+    <div class="admin-content">
+      <!-- 專案分類 -->
+      <div class="panel" style="margin-bottom:1.5rem">
+        <div class="panel__header">
+          <div class="panel__title">📁 <span data-i18n="cats.proj.title">專案分類</span></div>
+          <button class="btn btn--primary btn--sm" id="btn-new-cat">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span data-i18n="cats.proj.new">新增分類</span>
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:60px" data-i18n="cats.col.icon">圖示</th>
+                <th data-i18n="cats.col.key">識別碼 (key)</th>
+                <th data-i18n="cats.col.label_zh">中文名稱</th>
+                <th data-i18n="cats.col.label_en">英文名稱</th>
+                <th data-i18n="cats.col.color">顏色</th>
+                <th style="width:90px" data-i18n="cats.col.order">排序</th>
+                <th style="text-align:right" data-i18n="cats.col.actions">操作</th>
+              </tr>
+            </thead>
+            <tbody id="cats-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 團隊部門 -->
+      <div class="panel">
+        <div class="panel__header">
+          <div class="panel__title">👥 <span data-i18n="cats.dept.title">團隊部門</span></div>
+          <button class="btn btn--primary btn--sm" id="btn-new-dept">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span data-i18n="cats.dept.new">新增部門</span>
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:60px" data-i18n="cats.col.icon">圖示</th>
+                <th data-i18n="cats.col.key">識別碼 (key)</th>
+                <th data-i18n="cats.col.label_zh">中文名稱</th>
+                <th data-i18n="cats.col.label_en">英文名稱</th>
+                <th data-i18n="cats.col.color">顏色</th>
+                <th style="width:90px" data-i18n="cats.col.order">排序</th>
+                <th style="text-align:right" data-i18n="cats.col.actions">操作</th>
+              </tr>
+            </thead>
+            <tbody id="depts-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 編輯/新增分類項目（共用） -->
+<div class="modal-backdrop" id="cat-modal">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__title" id="cat-modal-title">新增分類</div>
+      <button class="modal__close" data-close-modal>✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="cat-id" />
+      <input type="hidden" id="cat-table" />
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="cats.f.key">識別碼 (key) *</label>
+          <input class="field-input" id="cat-key" placeholder="animals" required />
+          <div class="field-hint" data-i18n="cats.f.key_hint">小寫英文，建立後不建議變更</div>
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="cats.f.icon">圖示 (emoji)</label>
+          <input class="field-input" id="cat-icon" placeholder="🐾" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="cats.f.label_zh">中文名稱 *</label>
+          <input class="field-input" id="cat-label-zh" placeholder="動物" required />
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="cats.f.label_en">英文名稱</label>
+          <input class="field-input" id="cat-label-en" placeholder="Animals" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="cats.f.color">顏色 (HEX)</label>
+          <input class="field-input" id="cat-color" type="color" value="#00c95d" style="height:42px" />
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="cats.f.order">排序</label>
+          <input class="field-input" id="cat-order" type="number" placeholder="1" />
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--primary" id="btn-save-cat" data-i18n="btn.save">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=6"></script>
+<script>
+let allCats = [], allDepts = [];
+
+function renderRows(items, tbodyId, table) {
+  const tbody = document.getElementById(tbodyId);
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state__icon">📁</div><div class="empty-state__title">—</div></div></td></tr>`;
+    return;
+  }
+  const tEdit = t('btn.edit'), tDel = t('btn.delete');
+  tbody.innerHTML = items.map(c => `
+    <tr>
+      <td style="font-size:1.4rem">${c.icon || '—'}</td>
+      <td class="td-mono" style="font-size:.78rem">${c.key}</td>
+      <td>${c.label_zh}</td>
+      <td>${c.label_en || '—'}</td>
+      <td>${c.color ? `<span style="display:inline-flex;align-items:center;gap:.4rem"><span style="width:14px;height:14px;border-radius:3px;background:${c.color};border:1px solid rgba(0,0,0,.1)"></span><span class="td-mono" style="font-size:.72rem">${c.color}</span></span>` : '—'}</td>
+      <td>${c.sort_order || 0}</td>
+      <td><div class="td-actions">
+        <button class="btn btn--ghost btn--sm" onclick="editCat('${table}','${c.id}')">${tEdit}</button>
+        <button class="btn btn--danger-ghost btn--sm" onclick="deleteCat('${table}','${c.id}')">${tDel}</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+async function loadAll() {
+  const [cats, depts] = await Promise.all([
+    DB.getAll('project_categories'),
+    DB.getAll('departments'),
+  ]);
+  allCats  = (cats  || []).slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+  allDepts = (depts || []).slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+  renderRows(allCats,  'cats-tbody',  'project_categories');
+  renderRows(allDepts, 'depts-tbody', 'departments');
+}
+
+function openNewModal(table) {
+  document.getElementById('cat-id').value = '';
+  document.getElementById('cat-table').value = table;
+  document.getElementById('cat-modal-title').textContent =
+    table === 'project_categories' ? t('cats.proj.new') : t('cats.dept.new');
+  ['key','icon','label-zh','label-en','order'].forEach(f => {
+    const el = document.getElementById('cat-'+f);
+    if (el) el.value = '';
+  });
+  document.getElementById('cat-color').value = '#0099ff';
+  openModal('cat-modal');
+}
+
+window.editCat = async function(table, id) {
+  const c = await DB.getById(table, id);
+  if (!c) return;
+  document.getElementById('cat-id').value = c.id;
+  document.getElementById('cat-table').value = table;
+  document.getElementById('cat-modal-title').textContent = t('btn.edit') + ' — ' + (c.label_zh||'');
+  document.getElementById('cat-key').value      = c.key || '';
+  document.getElementById('cat-icon').value     = c.icon || '';
+  document.getElementById('cat-label-zh').value = c.label_zh || '';
+  document.getElementById('cat-label-en').value = c.label_en || '';
+  document.getElementById('cat-color').value    = c.color || '#0099ff';
+  document.getElementById('cat-order').value    = c.sort_order || '';
+  openModal('cat-modal');
+};
+
+window.deleteCat = async function(table, id) {
+  const c = await DB.getById(table, id);
+  if (!c) return;
+  confirmAction(t('msg.confirm_del_title'), `${c.label_zh} — ${t('msg.confirm_del_text')}`, async () => {
+    const ok = await DB.delete(table, id);
+    if (!ok) return;
+    showToast(t('msg.deleted'), 'success');
+    loadAll();
+  });
+};
+
+document.getElementById('btn-new-cat').addEventListener('click', () => openNewModal('project_categories'));
+document.getElementById('btn-new-dept').addEventListener('click', () => openNewModal('departments'));
+
+document.getElementById('btn-save-cat').addEventListener('click', async () => {
+  const id    = document.getElementById('cat-id').value || null;
+  const table = document.getElementById('cat-table').value;
+  const data = {
+    key:        document.getElementById('cat-key').value.trim(),
+    icon:       document.getElementById('cat-icon').value.trim() || null,
+    label_zh:   document.getElementById('cat-label-zh').value.trim(),
+    label_en:   document.getElementById('cat-label-en').value.trim() || null,
+    color:      document.getElementById('cat-color').value || null,
+    sort_order: parseInt(document.getElementById('cat-order').value) || 0,
+  };
+  if (!data.key || !data.label_zh) { showToast(t('msg.save_fail'), 'error'); return; }
+  const btn = document.getElementById('btn-save-cat');
+  btn.disabled = true;
+  const result = id ? await DB.update(table, id, data) : await DB.insert(table, data);
+  btn.disabled = false;
+  if (!result) return;
+  showToast(id ? t('msg.updated') : t('msg.created'), 'success');
+  closeModal('cat-modal');
+  loadAll();
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  loadAll();
+});
+document.addEventListener('admin-lang-changed', () => loadAll());
+</script>
+</body>
+</html>

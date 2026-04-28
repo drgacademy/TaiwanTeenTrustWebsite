@@ -28,6 +28,9 @@
       <a href="projects.html" class="sidebar-link">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span>
       </a>
+      <a href="categories.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span>
+      </a>
       <a href="focus.html" class="sidebar-link">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span>
       </a>
@@ -84,13 +87,6 @@
             </div>
             <select class="select-input" id="filter-dept">
               <option value="" data-i18n="members.filter.dept">所有部門</option>
-              <option value="資訊科技">資訊科技</option>
-              <option value="設計">設計</option>
-              <option value="行銷">行銷</option>
-              <option value="影像">影像</option>
-              <option value="研究">研究</option>
-              <option value="活動">活動</option>
-              <option value="財務">財務</option>
             </select>
             <select class="select-input" id="filter-status">
               <option value="" data-i18n="members.filter.status">所有狀態</option>
@@ -162,8 +158,10 @@
       <div class="field-row">
         <div class="field">
           <label class="field-label" data-i18n="members.f.dept">部門 *</label>
-          <input class="field-input" id="m-dept" placeholder="資訊科技、設計、行銷、影像、研究、活動、財務" />
-          <div class="field-hint">可選值: 資訊科技、設計、行銷、影像、研究、活動、財務</div>
+          <select class="field-select" id="m-dept">
+            <option value="">—</option>
+          </select>
+          <div class="field-hint"><a href="categories.html" style="color:var(--accent)">→ 編輯部門項目</a></div>
         </div>
         <div class="field">
           <label class="field-label" data-i18n="members.f.role">職稱</label>
@@ -209,9 +207,21 @@
 /* ── State ── */
 let allMembers = [];
 let filteredMembers = [];
+let allDepts = [];
 const PAGE_SIZE = 10;
 let currentPage = 1;
 let memberPhoto = null;   // public URL or null
+
+async function loadDepartments() {
+  allDepts = (await DB.getAll('departments') || [])
+    .slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+  const filterDept = document.getElementById('filter-dept');
+  const formDept   = document.getElementById('m-dept');
+  filterDept.innerHTML = `<option value="" data-i18n="members.filter.dept">${t('members.filter.dept')}</option>` +
+    allDepts.map(d => `<option value="${d.key}">${d.label_zh}</option>`).join('');
+  formDept.innerHTML = `<option value="">—</option>` +
+    allDepts.map(d => `<option value="${d.key}">${d.label_zh}</option>`).join('');
+}
 
 /* ── Photo upload wiring ── */
 function setAvatarPreview(url) {
@@ -387,6 +397,7 @@ document.getElementById('filter-status').addEventListener('change', applyFilter)
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
+  await loadDepartments();
   allMembers = await DB.getAll('members');
   filteredMembers = allMembers;
   renderTable();

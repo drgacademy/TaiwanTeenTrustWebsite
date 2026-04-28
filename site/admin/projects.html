@@ -20,6 +20,7 @@
       <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
       <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
       <a href="projects.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="categories.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span></a>
       <a href="focus.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
       <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
       <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
@@ -58,13 +59,6 @@
             </div>
             <select class="select-input" id="filter-cat">
               <option value="" data-i18n="projects.filter.cat">所有類別</option>
-              <option value="animals">動物</option>
-              <option value="environment">環境</option>
-              <option value="community">社區</option>
-              <option value="arts">藝術文化</option>
-              <option value="advocacy">倡議</option>
-              <option value="research">研究</option>
-              <option value="education">教育</option>
             </select>
             <select class="select-input" id="filter-pstatus">
               <option value="" data-i18n="projects.filter.status">所有狀態</option>
@@ -126,8 +120,10 @@
       <div class="field-row">
         <div class="field">
           <label class="field-label" data-i18n="projects.f.category">分類 *</label>
-          <input class="field-input" id="p-category" placeholder="animals, environment, community, arts, advocacy, research, education" />
-          <div class="field-hint">可選值: animals（動物）、environment（環境）、community（社區）、arts（藝術文化）、advocacy（倡議）、research（研究）、education（教育）</div>
+          <select class="field-select" id="p-category">
+            <option value="">—</option>
+          </select>
+          <div class="field-hint"><a href="categories.html" style="color:var(--accent)">→ 編輯分類項目</a></div>
         </div>
         <div class="field">
           <label class="field-label" data-i18n="projects.f.status">狀態</label>
@@ -194,15 +190,32 @@
 <script src="js/admin.js?v=6"></script>
 <script>
 let allProjects = [], filteredProjects = [];
+let allCategories = [];
 const PAGE_SIZE = 10;
 let currentPage = 1;
+
+async function loadCategories() {
+  allCategories = (await DB.getAll('project_categories') || [])
+    .slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
+  // 填入篩選選單
+  const filterCat = document.getElementById('filter-cat');
+  const formCat   = document.getElementById('p-category');
+  filterCat.innerHTML = `<option value="" data-i18n="projects.filter.cat">${t('projects.filter.cat')}</option>` +
+    allCategories.map(c => `<option value="${c.key}">${c.label_zh}${c.icon?(' '+c.icon):''}</option>`).join('');
+  formCat.innerHTML = `<option value="">—</option>` +
+    allCategories.map(c => `<option value="${c.key}">${c.label_zh}${c.icon?(' '+c.icon):''}</option>`).join('');
+}
+
+function getCatLabel(key) {
+  const c = allCategories.find(x => x.key === key);
+  return c ? c.label_zh : key;
+}
 
 function renderTable() {
   const start = (currentPage - 1) * PAGE_SIZE;
   const page  = filteredProjects.slice(start, start + PAGE_SIZE);
   const tbody = document.getElementById('projects-tbody');
 
-  const CAT_LABEL = { animals:'動物', environment:'環境', community:'社區', arts:'藝術文化', advocacy:'倡議', research:'研究', education:'教育' };
   const STATUS_LABEL = {
     active: t('projects.status.active'),
     completed: '已完成',
@@ -221,7 +234,7 @@ function renderTable() {
     <tr>
       <td class="td-name">${p.title}</td>
       <td class="td-mono" style="font-size:.72rem;color:var(--text-3)">${p.slug || '—'}</td>
-      <td>${p.category ? `<span class="badge badge--cyan">${CAT_LABEL[p.category]||p.category}</span>` : '—'}</td>
+      <td>${p.category ? `<span class="badge badge--cyan">${getCatLabel(p.category)}</span>` : '—'}</td>
       <td><span class="badge ${STATUS_BADGE[p.status]||'badge--gray'}">${STATUS_LABEL[p.status]||p.status}</span></td>
       <td>${p.year || '—'}</td>
       <td style="color:var(--text-3);font-size:.75rem">${fmtDate(p.updated_at)}</td>
@@ -375,6 +388,7 @@ function bindProjectMedia() {
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
+  await loadCategories();
   allProjects = await DB.getAll('projects');
   filteredProjects = allProjects;
   renderTable();
