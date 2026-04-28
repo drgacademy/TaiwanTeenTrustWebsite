@@ -84,8 +84,13 @@
             </div>
             <select class="select-input" id="filter-dept">
               <option value="" data-i18n="members.filter.dept">所有部門</option>
-              <option>資訊科技</option><option>設計</option><option>行銷</option>
-              <option>影像</option><option>研究</option><option>活動</option><option>財務</option>
+              <option value="資訊科技">資訊科技</option>
+              <option value="設計">設計</option>
+              <option value="行銷">行銷</option>
+              <option value="影像">影像</option>
+              <option value="研究">研究</option>
+              <option value="活動">活動</option>
+              <option value="財務">財務</option>
             </select>
             <select class="select-input" id="filter-status">
               <option value="" data-i18n="members.filter.status">所有狀態</option>
@@ -157,11 +162,8 @@
       <div class="field-row">
         <div class="field">
           <label class="field-label" data-i18n="members.f.dept">部門 *</label>
-          <select class="field-select" id="m-dept">
-            <option value="">—</option>
-            <option>資訊科技</option><option>設計</option><option>行銷</option>
-            <option>影像</option><option>研究</option><option>活動</option><option>財務</option>
-          </select>
+          <input class="field-input" id="m-dept" placeholder="資訊科技、設計、行銷、影像、研究、活動、財務" />
+          <div class="field-hint">可選值: 資訊科技、設計、行銷、影像、研究、活動、財務</div>
         </div>
         <div class="field">
           <label class="field-label" data-i18n="members.f.role">職稱</label>

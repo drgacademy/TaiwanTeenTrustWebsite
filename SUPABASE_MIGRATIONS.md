@@ -77,7 +77,14 @@ CREATE POLICY "focus_themes_write_authenticated"
 後台會將圖片/影片上傳至 `media` bucket 下的 `posts/`、`projects/`、`focus/` 子資料夾。
 若尚未建立 bucket，請至 Supabase → Storage → New bucket 建立 `media` 並設為 public。
 
-## 6. （選用）admin-users Edge Function 支援 role 欄位
+## 6. `members` 表新增 `photo` 欄位（團隊成員大頭照）
+
+```sql
+ALTER TABLE members
+  ADD COLUMN IF NOT EXISTS photo text;
+```
+
+## 7. （選用）admin-users Edge Function 支援 role 欄位
 
 目前邀請流程透過 edge function `admin-users` 寫入 auth users + admin_users。
 若希望邀請時直接寫入指定 role，可於 edge function 中將 POST body 的 `role` 欄位寫入 admin_users。
