@@ -20,6 +20,7 @@
       <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
       <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
       <a href="projects.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="focus.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
       <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
       <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
       <a href="users.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span></a>
@@ -151,6 +152,38 @@
         <label class="field-label" data-i18n="projects.f.summary_en">簡介（英）</label>
         <textarea class="field-textarea" id="p-summary-en" placeholder="Project summary…"></textarea>
       </div>
+
+      <!-- 媒體：圖片 -->
+      <div class="field">
+        <label class="field-label">封面圖片</label>
+        <div class="upload-zone" id="p-image-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+          <div style="font-size:2rem;margin-bottom:.4rem">🖼️</div>
+          <div style="font-weight:500">點擊或拖曳上傳圖片</div>
+          <div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">建議尺寸 16:9，JPG/PNG</div>
+          <input type="hidden" id="p-image-url" />
+        </div>
+        <div id="p-image-preview" style="margin-top:.75rem;display:none">
+          <img id="p-image-thumb" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid rgba(0,0,0,.1)" />
+          <button type="button" class="btn btn--danger-ghost btn--sm" id="p-image-clear" style="margin-top:.5rem">移除圖片</button>
+        </div>
+      </div>
+
+      <!-- 媒體：影片 -->
+      <div class="field">
+        <label class="field-label">封面影片</label>
+        <div class="upload-zone" id="p-video-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+          <div style="font-size:2rem;margin-bottom:.4rem">🎬</div>
+          <div style="font-weight:500">點擊或拖曳上傳影片</div>
+          <div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">建議格式 MP4，時長控制在 30 秒內以加快載入</div>
+          <input type="hidden" id="p-video-url" />
+        </div>
+        <div id="p-video-preview" style="margin-top:.75rem;display:none">
+          <video id="p-video-thumb" controls style="max-width:100%;max-height:240px;border-radius:8px;border:1px solid rgba(0,0,0,.1)"></video>
+          <button type="button" class="btn btn--danger-ghost btn--sm" id="p-video-clear" style="margin-top:.5rem">移除影片</button>
+        </div>
+        <div class="field-hint" style="margin-top:.5rem;font-size:.75rem;color:var(--text-3)">若同時上傳圖片與影片，前台優先顯示影片。</div>
+      </div>
+
     </div>
     <div class="modal__footer">
       <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
@@ -221,12 +254,30 @@ function applyFilter() {
   renderTable();
 }
 
+function setProjectImage(url) {
+  document.getElementById('p-image-url').value = url || '';
+  const preview = document.getElementById('p-image-preview');
+  const zone = document.getElementById('p-image-zone');
+  if (url) { document.getElementById('p-image-thumb').src = url; preview.style.display = 'block'; zone.style.opacity = '0.5'; }
+  else { preview.style.display = 'none'; zone.style.opacity = '1'; }
+}
+
+function setProjectVideo(url) {
+  document.getElementById('p-video-url').value = url || '';
+  const preview = document.getElementById('p-video-preview');
+  const zone = document.getElementById('p-video-zone');
+  if (url) { document.getElementById('p-video-thumb').src = url; preview.style.display = 'block'; zone.style.opacity = '0.5'; }
+  else { preview.style.display = 'none'; document.getElementById('p-video-thumb').removeAttribute('src'); zone.style.opacity = '1'; }
+}
+
 function openNewModal() {
   document.getElementById('project-id').value = '';
   document.getElementById('project-modal-title').textContent = t('projects.new');
   ['title','title-en','slug','year','summary','summary-en'].forEach(f => { const el = document.getElementById('p-'+f); if (el) el.value = ''; });
   document.getElementById('p-category').value = '';
   document.getElementById('p-status').value = 'active';
+  setProjectImage('');
+  setProjectVideo('');
   openModal('project-modal');
 }
 
@@ -243,6 +294,8 @@ async function editProject(id) {
   document.getElementById('p-year').value       = p.year || '';
   document.getElementById('p-summary').value    = p.summary || '';
   document.getElementById('p-summary-en').value = p.summary_en || '';
+  setProjectImage(p.image_url || '');
+  setProjectVideo(p.video_url || '');
   openModal('project-modal');
 }
 
@@ -269,6 +322,8 @@ document.getElementById('btn-save-project').addEventListener('click', async () =
     year:       document.getElementById('p-year').value.trim(),
     summary:    document.getElementById('p-summary').value.trim(),
     summary_en: document.getElementById('p-summary-en').value.trim(),
+    image_url:  document.getElementById('p-image-url').value || null,
+    video_url:  document.getElementById('p-video-url').value || null,
   };
   if (!data.title) { showToast(t('msg.save_fail'), 'error'); return; }
   const btn = document.getElementById('btn-save-project');
@@ -289,12 +344,43 @@ document.getElementById('search-projects').addEventListener('input', applyFilter
 document.getElementById('filter-cat').addEventListener('change', applyFilter);
 document.getElementById('filter-pstatus').addEventListener('change', applyFilter);
 
+function bindProjectMedia() {
+  const imgZone  = document.getElementById('p-image-zone');
+  const imgInput = document.createElement('input');
+  imgInput.type = 'file'; imgInput.accept = 'image/*'; imgInput.style.display = 'none';
+  document.body.appendChild(imgInput);
+  bindUploadZone(imgZone, imgInput, async files => {
+    if (!files.length) return;
+    const file = files[0];
+    if (!file.type.startsWith('image/')) { showToast(t('msg.upload_invalid'), 'error'); return; }
+    showToast(t('msg.uploading'), 'info');
+    const url = await uploadToMedia(file, 'projects', { maxW: 1920, maxH: 1080 });
+    if (url) setProjectImage(url);
+  });
+  document.getElementById('p-image-clear').addEventListener('click', e => { e.preventDefault(); setProjectImage(''); });
+
+  const vidZone  = document.getElementById('p-video-zone');
+  const vidInput = document.createElement('input');
+  vidInput.type = 'file'; vidInput.accept = 'video/*'; vidInput.style.display = 'none';
+  document.body.appendChild(vidInput);
+  bindUploadZone(vidZone, vidInput, async files => {
+    if (!files.length) return;
+    const file = files[0];
+    if (!file.type.startsWith('video/')) { showToast('請選擇影片檔案', 'error'); return; }
+    showToast(t('msg.uploading'), 'info');
+    const url = await uploadToMedia(file, 'projects', { compress:false });
+    if (url) setProjectVideo(url);
+  });
+  document.getElementById('p-video-clear').addEventListener('click', e => { e.preventDefault(); setProjectVideo(''); });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
   allProjects = await DB.getAll('projects');
   filteredProjects = allProjects;
   renderTable();
+  bindProjectMedia();
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();
 });
 document.addEventListener('admin-lang-changed', () => renderTable());

@@ -193,6 +193,10 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 </section>
 
 <!-- 2026 CURRENT -->
+<!-- 動態載入容器：若資料庫有 focus_themes 資料則填入，並隱藏硬編碼 blocks -->
+<div id="dynamic-focus-container"></div>
+
+<div class="static-focus-blocks">
 <div class="focus-block" style="background:rgba(0,201,93,.02)">
   <div class="focus-block__inner" style="padding:0 var(--gutter)">
     <div class="focus-left">
@@ -329,6 +333,7 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
     </div>
   </div>
 </div>
+</div><!-- /static-focus-blocks -->
 
 <!-- HOW WE CHOOSE -->
 <section class="how-sec">
@@ -459,6 +464,73 @@ gsap.utils.toArray('.how-item').forEach((el, i) => {
 </script>
 <script src="js/aurora.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function loadFocusThemes() {
+  if (!window.supabase || !window.supabase.createClient) return;
+  const sb = window.supabase.createClient(
+    'https://tpolpfulwsfqpghweasl.supabase.co',
+    'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J',
+    { auth:{ persistSession:false } }
+  );
+  const { data, error } = await sb.from('focus_themes').select('*').order('year', { ascending:false });
+  if (error || !data || !data.length) return; // 沒資料時保留靜態 blocks
+
+  // 有資料：隱藏靜態 blocks，動態渲染
+  const staticBlocks = document.querySelector('.static-focus-blocks');
+  if (staticBlocks) staticBlocks.style.display = 'none';
+
+  const container = document.getElementById('dynamic-focus-container');
+  const STATUS_LABEL = { active:{zh:'當前主題',en:'Current Focus'}, completed:{zh:'已完成',en:'Completed'}, planned:{zh:'規劃中',en:'Planned'} };
+
+  container.innerHTML = data.map((f, idx) => {
+    const isFirst = idx === 0;
+    const color = f.color || '#0099ff';
+    const bg = isFirst ? `${color}15` : 'transparent';
+    const sl = STATUS_LABEL[f.status] || STATUS_LABEL.completed;
+    let media = '';
+    if (f.video_url) {
+      media = `<div style="margin-top:1.5rem;border-radius:12px;overflow:hidden"><video autoplay muted loop playsinline style="width:100%;display:block"><source src="${f.video_url}" type="video/mp4"></video></div>`;
+    } else if (f.image_url) {
+      media = `<div style="margin-top:1.5rem;border-radius:12px;overflow:hidden"><img src="${f.image_url}" alt="${f.title_zh||''}" style="width:100%;display:block"></div>`;
+    }
+    return `
+      <div class="focus-block" style="background:${bg}">
+        <div class="focus-block__inner" style="padding:0 var(--gutter)">
+          <div class="focus-left" ${isFirst?'':'style="background:#fafafa"'}>
+            <div>
+              <span class="badge-done lang-zh" style="background:${color}1a;color:${color};margin-bottom:.75rem;display:inline-block;padding:.2rem .7rem;border-radius:100px;font-size:.68rem;font-weight:700;letter-spacing:.08em">${sl.zh}</span>
+              <span class="badge-done lang-en" style="background:${color}1a;color:${color};margin-bottom:.75rem;display:inline-block;padding:.2rem .7rem;border-radius:100px;font-size:.68rem;font-weight:700;letter-spacing:.08em">${sl.en}</span>
+              <div class="focus-left__year">${f.year || ''}</div>
+            </div>
+            <div>
+              ${f.icon ? `<div class="focus-left__icon">${f.icon}</div>` : ''}
+              <div class="focus-left__title lang-zh" style="color:${color}">${f.title_zh || ''}</div>
+              <div class="focus-left__title lang-en" style="color:${color}">${f.title_en || f.title_zh || ''}</div>
+            </div>
+            <div class="focus-left__ghost">${f.year || ''}</div>
+          </div>
+          <div class="focus-right">
+            <div class="focus-right__content">
+              <div>
+                <div class="focus-section-label lang-zh" style="color:${color}">為什麼是這個議題？</div>
+                <div class="focus-section-label lang-en" style="color:${color}">Why This Issue?</div>
+                <p class="focus-section-text lang-zh">${f.why_zh || ''}</p>
+                <p class="focus-section-text lang-en">${f.why_en || f.why_zh || ''}</p>
+              </div>
+              <div>
+                <div class="focus-section-label lang-zh" style="color:${color}">${f.status==='active'?'我們的回應':'我們的成果'}</div>
+                <div class="focus-section-label lang-en" style="color:${color}">${f.status==='active'?'Our Response':'Our Impact'}</div>
+                <p class="focus-section-text lang-zh">${f.response_zh || ''}</p>
+                <p class="focus-section-text lang-en">${f.response_en || f.response_zh || ''}</p>
+              </div>
+            </div>
+            ${media}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+})();
+</script>
 <script src="js/site-content.js?v=1"></script>
 </body>
 </html>

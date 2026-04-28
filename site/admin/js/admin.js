@@ -160,13 +160,25 @@ const Admins = {
     const r = await callAdminFn('GET');
     return r.ok ? { ok: true, list: r.data?.admins || [] } : { ok: false, error: r.error, list: [] };
   },
-  async invite(email, name) {
-    const r = await callAdminFn('POST', { body: { email, name } });
+  async invite(email, name, role = 'member') {
+    const r = await callAdminFn('POST', { body: { email, name, role } });
     return r.ok ? { ok: true, admin: r.data?.admin } : { ok: false, error: r.error };
   },
   async remove(id) {
     const r = await callAdminFn('DELETE', { query: { id } });
     return r.ok ? { ok: true } : { ok: false, error: r.error };
+  },
+  /* Update name / role on the admin_users row directly via DB.
+     Edge function needed only for auth-side actions (invite/delete). */
+  async update(id, patch) {
+    const data = await DB.update('admin_users', id, patch);
+    return data ? { ok: true, admin: data } : { ok: false, error: 'update failed' };
+  },
+  /* Send a password-reset email to the user's email address. */
+  async resetPassword(email) {
+    const redirectTo = `${window.location.origin}/admin/index.html`;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+    return error ? { ok: false, error: error.message } : { ok: true };
   }
 };
 
@@ -286,8 +298,9 @@ const I18N = {
     'nav.members': '團隊成員',
     'nav.projects': '專案管理',
     'nav.blog': '部落格文章',
+    'nav.focus': '年度主題',
     'nav.map': '地圖資料點',
-    'nav.users': '管理員帳號',
+    'nav.users': '後台使用者',
     'nav.settings': '網站設定',
     'nav.preview': '前台預覽',
     'user.role.admin': '管理員',
@@ -420,6 +433,29 @@ const I18N = {
     'blog.f.body_zh': '內文（中）',
     'blog.f.body_en': '內文（英）',
 
+    /* Focus themes */
+    'focus.title': '所有年度主題',
+    'focus.new': '新增年度主題',
+    'focus.edit': '編輯年度主題',
+    'focus.empty': '尚無年度主題',
+    'focus.col.year': '年份',
+    'focus.col.title': '主題',
+    'focus.col.status': '狀態',
+    'focus.col.media': '媒體',
+    'focus.status.active': '當前主題',
+    'focus.status.completed': '已完成',
+    'focus.status.planned': '規劃中',
+    'focus.f.year': '年份 *',
+    'focus.f.status': '狀態',
+    'focus.f.title_zh': '中文標題 *',
+    'focus.f.title_en': '英文標題',
+    'focus.f.icon': '圖示 (emoji)',
+    'focus.f.color': '主色 (HEX)',
+    'focus.f.why_zh': '為什麼是這個議題？（中）',
+    'focus.f.why_en': '為什麼是這個議題？（英）',
+    'focus.f.response_zh': '我們的回應 / 成果（中）',
+    'focus.f.response_en': '我們的回應 / 成果（英）',
+
     /* Map locations */
     'map.title': '所有資料點',
     'map.new': '新增資料點',
@@ -462,13 +498,30 @@ const I18N = {
     'users.f.email.ph': 'name@example.com',
     'users.f.name.ph': '王小明 / 資訊部部長',
     'users.role.admin': '管理員',
-    'users.empty.title': '尚無管理員',
-    'users.empty.text': '點擊右上角「邀請管理員」新增第一位。',
-    'users.remove.title': '移除管理員？',
+    'users.role.member': '團員',
+    'users.f.role': '角色',
+    'users.f.role.hint': '管理員可管理所有資料；團員僅能編輯部分內容。',
+    'users.edit.title': '編輯後台使用者',
+    'users.edit': '編輯',
+    'users.password.title': '密碼管理',
+    'users.password.hint': '系統會寄送密碼重設連結到該使用者信箱，使用者點擊連結後可自行設定新密碼。',
+    'users.password.reset': '寄送密碼重設信',
+    'users.password.resetting': '寄送中…',
+    'users.msg.password_sent': '已寄出密碼重設信',
+    'users.msg.password_fail': '寄送密碼重設信失敗',
+    'users.empty.title': '尚無使用者',
+    'users.empty.text': '點擊右上角「邀請使用者」新增第一位。',
+    'users.remove.title': '移除使用者？',
     'users.remove.text': '此動作將刪除帳號，對方將無法再登入後台。',
+    'users.invite': '邀請使用者',
+    'users.invite.title': '邀請新使用者',
+    'users.invite.hint': '系統會寄送含設定密碼連結的邀請信到下方信箱。預設角色為「團員」。',
+    'users.title': '所有後台使用者',
+    'users.sub': '建立可登入後台的帳號；可以指定角色為管理員或團員。系統會寄發邀請信讓對方設定密碼。',
     'users.msg.invited': '已寄出邀請信',
     'users.msg.invite_fail': '邀請失敗',
-    'users.msg.removed': '已移除管理員',
+    'users.msg.removed': '已移除使用者',
+    'users.msg.updated': '已更新',
     'users.msg.self_remove': '無法移除自己',
     'users.msg.email_required': '請輸入電子郵件',
     'users.msg.email_invalid': '電子郵件格式不正確',
@@ -544,8 +597,9 @@ const I18N = {
     'nav.members': 'Team Members',
     'nav.projects': 'Projects',
     'nav.blog': 'Blog Posts',
+    'nav.focus': 'Annual Focus',
     'nav.map': 'Map Locations',
-    'nav.users': 'Admin Accounts',
+    'nav.users': 'Backend Users',
     'nav.settings': 'Site Settings',
     'nav.preview': 'View Site',
     'user.role.admin': 'Administrator',
@@ -673,6 +727,29 @@ const I18N = {
     'blog.f.body_zh': 'Body (ZH)',
     'blog.f.body_en': 'Body (EN)',
 
+    /* Focus themes */
+    'focus.title': 'All Annual Focus Themes',
+    'focus.new': 'New Focus Theme',
+    'focus.edit': 'Edit Focus Theme',
+    'focus.empty': 'No focus themes yet',
+    'focus.col.year': 'Year',
+    'focus.col.title': 'Theme',
+    'focus.col.status': 'Status',
+    'focus.col.media': 'Media',
+    'focus.status.active': 'Current Focus',
+    'focus.status.completed': 'Completed',
+    'focus.status.planned': 'Planned',
+    'focus.f.year': 'Year *',
+    'focus.f.status': 'Status',
+    'focus.f.title_zh': 'Chinese Title *',
+    'focus.f.title_en': 'English Title',
+    'focus.f.icon': 'Icon (emoji)',
+    'focus.f.color': 'Theme Color (HEX)',
+    'focus.f.why_zh': 'Why this issue? (ZH)',
+    'focus.f.why_en': 'Why this issue? (EN)',
+    'focus.f.response_zh': 'Our Response / Impact (ZH)',
+    'focus.f.response_en': 'Our Response / Impact (EN)',
+
     'map.title': 'All Locations',
     'map.new': 'Add Location',
     'map.edit': 'Edit Location',
@@ -713,13 +790,30 @@ const I18N = {
     'users.f.email.ph': 'name@example.com',
     'users.f.name.ph': 'Alice / IT Lead',
     'users.role.admin': 'Admin',
-    'users.empty.title': 'No admins yet',
-    'users.empty.text': 'Click "Invite admin" in the top-right to add the first one.',
-    'users.remove.title': 'Remove this admin?',
+    'users.role.member': 'Member',
+    'users.f.role': 'Role',
+    'users.f.role.hint': 'Admins can manage everything; members have limited access.',
+    'users.edit.title': 'Edit user',
+    'users.edit': 'Edit',
+    'users.password.title': 'Password',
+    'users.password.hint': "Sends a password-reset link to the user's email. They can then set a new password.",
+    'users.password.reset': 'Send password-reset email',
+    'users.password.resetting': 'Sending…',
+    'users.msg.password_sent': 'Password-reset email sent',
+    'users.msg.password_fail': 'Failed to send password-reset email',
+    'users.empty.title': 'No users yet',
+    'users.empty.text': 'Click "Invite user" in the top-right to add the first one.',
+    'users.remove.title': 'Remove this user?',
     'users.remove.text': 'This deletes the account. The person will no longer be able to sign in.',
+    'users.invite': 'Invite user',
+    'users.invite.title': 'Invite a new user',
+    'users.invite.hint': 'An invite email with a password-setup link will be sent to the address below. Default role is Member.',
+    'users.title': 'All Backend Users',
+    'users.sub': 'Create accounts that can sign into this admin panel. Roles can be Admin or Member. An invite email will be sent for the recipient to set their password.',
     'users.msg.invited': 'Invite email sent',
     'users.msg.invite_fail': 'Invite failed',
-    'users.msg.removed': 'Admin removed',
+    'users.msg.removed': 'User removed',
+    'users.msg.updated': 'Updated',
     'users.msg.self_remove': 'You cannot remove yourself',
     'users.msg.email_required': 'Email is required',
     'users.msg.email_invalid': 'Invalid email format',

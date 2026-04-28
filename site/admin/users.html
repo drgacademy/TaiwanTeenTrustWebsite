@@ -28,6 +28,9 @@
       <a href="projects.html" class="sidebar-link">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span>
       </a>
+      <a href="focus.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span>
+      </a>
       <a href="blog.html" class="sidebar-link">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span>
       </a>
@@ -60,12 +63,12 @@
   <div class="admin-main">
     <div class="admin-topbar">
       <div class="topbar-breadcrumb">
-        <a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="users.crumb.current">管理員帳號</span>
+        <a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="users.crumb.current">後台使用者</span>
       </div>
       <div class="topbar-actions">
         <button class="btn btn--primary btn--sm" id="btn-invite-user">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          <span data-i18n="users.invite">邀請管理員</span>
+          <span data-i18n="users.invite">邀請使用者</span>
         </button>
       </div>
     </div>
@@ -74,8 +77,8 @@
       <div class="panel">
         <div class="panel__header">
           <div>
-            <div class="panel__title" data-i18n="users.title">所有管理員</div>
-            <div style="color:var(--text-3);font-size:.78rem;margin-top:.35rem" data-i18n="users.sub">建立可登入後台的社員帳號；系統會寄發邀請信讓對方設定密碼。</div>
+            <div class="panel__title" data-i18n="users.title">所有後台使用者</div>
+            <div style="color:var(--text-3);font-size:.78rem;margin-top:.35rem" data-i18n="users.sub">建立可登入後台的帳號；可以指定角色為管理員或團員。系統會寄發邀請信讓對方設定密碼。</div>
           </div>
         </div>
         <div class="table-wrap">
@@ -101,11 +104,11 @@
 <div class="modal-backdrop" id="invite-modal">
   <div class="modal">
     <div class="modal__header">
-      <div class="modal__title" data-i18n="users.invite.title">邀請新管理員</div>
+      <div class="modal__title" data-i18n="users.invite.title">邀請新使用者</div>
       <button class="modal__close" data-close-modal>✕</button>
     </div>
     <div class="modal__body">
-      <div style="color:var(--text-3);font-size:.82rem;margin-bottom:1rem" data-i18n="users.invite.hint">系統會寄送含設定密碼連結的邀請信到下方信箱。</div>
+      <div style="color:var(--text-3);font-size:.82rem;margin-bottom:1rem" data-i18n="users.invite.hint">系統會寄送含設定密碼連結的邀請信到下方信箱。預設角色為「團員」。</div>
       <div class="field">
         <label class="field-label" data-i18n="users.f.email">電子郵件 *</label>
         <input class="field-input" id="u-email" type="email" data-i18n-ph="users.f.email.ph" placeholder="name@example.com" required />
@@ -114,10 +117,56 @@
         <label class="field-label" data-i18n="users.f.name">姓名 / 備註</label>
         <input class="field-input" id="u-name" data-i18n-ph="users.f.name.ph" placeholder="王小明 / 資訊部部長" />
       </div>
+      <div class="field">
+        <label class="field-label" data-i18n="users.f.role">角色</label>
+        <select class="field-select" id="u-role">
+          <option value="member" data-i18n="users.role.member">團員</option>
+          <option value="admin" data-i18n="users.role.admin">管理員</option>
+        </select>
+        <div style="color:var(--text-3);font-size:.72rem;margin-top:.35rem" data-i18n="users.f.role.hint">管理員可管理所有資料；團員僅能編輯部分內容。</div>
+      </div>
     </div>
     <div class="modal__footer">
       <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
-      <button class="btn btn--primary" id="btn-send-invite" data-i18n="users.invite">邀請管理員</button>
+      <button class="btn btn--primary" id="btn-send-invite" data-i18n="users.invite">邀請使用者</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Edit Modal ── -->
+<div class="modal-backdrop" id="edit-modal">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__title" data-i18n="users.edit.title">編輯後台使用者</div>
+      <button class="modal__close" data-close-modal>✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="e-id" />
+      <div class="field">
+        <label class="field-label" data-i18n="users.f.email">電子郵件</label>
+        <input class="field-input" id="e-email" type="email" disabled style="opacity:.7;cursor:not-allowed" />
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="users.f.name">姓名 / 備註</label>
+        <input class="field-input" id="e-name" data-i18n-ph="users.f.name.ph" placeholder="王小明 / 資訊部部長" />
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="users.f.role">角色</label>
+        <select class="field-select" id="e-role">
+          <option value="member" data-i18n="users.role.member">團員</option>
+          <option value="admin" data-i18n="users.role.admin">管理員</option>
+        </select>
+        <div style="color:var(--text-3);font-size:.72rem;margin-top:.35rem" data-i18n="users.f.role.hint">管理員可管理所有資料；團員僅能編輯部分內容。</div>
+      </div>
+      <div class="field" style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+        <label class="field-label" data-i18n="users.password.title">密碼管理</label>
+        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.75rem" data-i18n="users.password.hint">系統會寄送密碼重設連結到該使用者信箱，使用者點擊連結後可自行設定新密碼。</div>
+        <button type="button" class="btn btn--outline btn--sm" id="btn-reset-password" data-i18n="users.password.reset">寄送密碼重設信</button>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--primary" id="btn-save-edit" data-i18n="btn.save">儲存</button>
     </div>
   </div>
 </div>
@@ -142,12 +191,19 @@ function renderTable() {
     return;
   }
   const tRemove = t('btn.delete');
+  const tEdit = t('users.edit');
   const tRoleAdmin = t('users.role.admin');
+  const tRoleMember = t('users.role.member');
   const tYou = t('users.badge.you');
 
   tbody.innerHTML = adminList.map(u => {
     const isSelf = u.user_id && u.user_id === currentUserId;
     const youBadge = isSelf ? ` <span class="badge badge--cyan" style="margin-left:.35rem">${tYou}</span>` : '';
+    const role = u.role || 'member';
+    const roleBadge = role === 'admin'
+      ? `<span class="badge badge--green">${tRoleAdmin}</span>`
+      : `<span class="badge badge--gray">${tRoleMember}</span>`;
+    const editBtn = `<button class="btn btn--ghost btn--sm" onclick="openEditModal('${u.id}')">${tEdit}</button>`;
     const removeBtn = isSelf
       ? ''
       : `<button class="btn btn--danger-ghost btn--sm" onclick="removeAdmin('${u.id}')">${tRemove}</button>`;
@@ -155,9 +211,9 @@ function renderTable() {
       <tr>
         <td class="td-mono">${escapeHtml(u.email)}${youBadge}</td>
         <td>${u.name ? escapeHtml(u.name) : '—'}</td>
-        <td><span class="badge badge--green">${tRoleAdmin}</span></td>
+        <td>${roleBadge}</td>
         <td>${fmtCreated(u.created_at)}</td>
-        <td style="text-align:right"><div class="td-actions" style="justify-content:flex-end">${removeBtn}</div></td>
+        <td style="text-align:right"><div class="td-actions" style="justify-content:flex-end;gap:.4rem">${editBtn}${removeBtn}</div></td>
       </tr>`;
   }).join('');
 }
@@ -179,8 +235,19 @@ async function loadAdmins() {
 function openInviteModal() {
   document.getElementById('u-email').value = '';
   document.getElementById('u-name').value = '';
+  document.getElementById('u-role').value = 'member';
   openModal('invite-modal');
   setTimeout(() => document.getElementById('u-email').focus(), 50);
+}
+
+function openEditModal(id) {
+  const u = adminList.find(a => a.id === id);
+  if (!u) return;
+  document.getElementById('e-id').value    = u.id;
+  document.getElementById('e-email').value = u.email || '';
+  document.getElementById('e-name').value  = u.name || '';
+  document.getElementById('e-role').value  = u.role || 'member';
+  openModal('edit-modal');
 }
 
 document.getElementById('btn-invite-user').addEventListener('click', openInviteModal);
@@ -188,12 +255,13 @@ document.getElementById('btn-invite-user').addEventListener('click', openInviteM
 document.getElementById('btn-send-invite').addEventListener('click', async () => {
   const email = document.getElementById('u-email').value.trim();
   const name  = document.getElementById('u-name').value.trim();
+  const role  = document.getElementById('u-role').value || 'member';
   if (!email) { showToast(t('users.msg.email_required'), 'error'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast(t('users.msg.email_invalid'), 'error'); return; }
 
   const btn = document.getElementById('btn-send-invite');
   btn.disabled = true;
-  const { ok, error } = await Admins.invite(email, name);
+  const { ok, error } = await Admins.invite(email, name, role);
   btn.disabled = false;
 
   if (!ok) {
@@ -203,6 +271,41 @@ document.getElementById('btn-send-invite').addEventListener('click', async () =>
   showToast(t('users.msg.invited'), 'success');
   closeModal('invite-modal');
   await loadAdmins();
+});
+
+document.getElementById('btn-save-edit').addEventListener('click', async () => {
+  const id   = document.getElementById('e-id').value;
+  const name = document.getElementById('e-name').value.trim();
+  const role = document.getElementById('e-role').value || 'member';
+  if (!id) return;
+  const btn = document.getElementById('btn-save-edit');
+  btn.disabled = true;
+  const { ok, error } = await Admins.update(id, { name, role });
+  btn.disabled = false;
+  if (!ok) {
+    showToast(t('msg.save_fail') + (error ? ' – ' + error : ''), 'error');
+    return;
+  }
+  showToast(t('users.msg.updated'), 'success');
+  closeModal('edit-modal');
+  await loadAdmins();
+});
+
+document.getElementById('btn-reset-password').addEventListener('click', async () => {
+  const email = document.getElementById('e-email').value.trim();
+  if (!email) return;
+  const btn = document.getElementById('btn-reset-password');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = t('users.password.resetting');
+  const { ok, error } = await Admins.resetPassword(email);
+  btn.disabled = false;
+  btn.textContent = original;
+  if (!ok) {
+    showToast(t('users.msg.password_fail') + (error ? ' – ' + error : ''), 'error');
+    return;
+  }
+  showToast(t('users.msg.password_sent'), 'success');
 });
 
 async function removeAdmin(id) {

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n-title-key="nav.focus">TTT Admin — 年度主題</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
+      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
+      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
+      <a href="focus.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
+      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
+      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
+      <a href="users.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">後台使用者</span></a>
+      <a href="settings.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
+    </div>
+  </aside>
+
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-breadcrumb"><a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.focus">年度主題</span></div>
+      <div class="topbar-actions">
+        <button class="btn btn--primary btn--sm" id="btn-new-focus">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span data-i18n="focus.new">新增年度主題</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+      <div class="panel">
+        <div class="panel__header">
+          <div class="panel__title" data-i18n="focus.title">所有年度主題</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="focus.col.year">年份</th>
+                <th data-i18n="focus.col.title">主題</th>
+                <th data-i18n="focus.col.status">狀態</th>
+                <th data-i18n="focus.col.media">媒體</th>
+                <th data-i18n="projects.col.updated">最後更新</th>
+                <th style="text-align:right" data-i18n="projects.col.actions">操作</th>
+              </tr>
+            </thead>
+            <tbody id="focus-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-backdrop" id="focus-modal">
+  <div class="modal modal--lg">
+    <div class="modal__header">
+      <div class="modal__title" id="focus-modal-title" data-i18n="focus.new">新增年度主題</div>
+      <button class="modal__close" data-close-modal>✕</button>
+    </div>
+    <div class="modal__body">
+      <input type="hidden" id="focus-id" />
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="focus.f.year">年份 *</label>
+          <input class="field-input" id="f-year" type="number" placeholder="2026" required />
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="focus.f.status">狀態</label>
+          <select class="field-select" id="f-status">
+            <option value="active" data-i18n="focus.status.active">當前主題</option>
+            <option value="completed" data-i18n="focus.status.completed">已完成</option>
+            <option value="planned" data-i18n="focus.status.planned">規劃中</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="focus.f.title_zh">中文標題 *</label>
+          <input class="field-input" id="f-title-zh" placeholder="流浪動物救援行動" required />
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="focus.f.title_en">英文標題</label>
+          <input class="field-input" id="f-title-en" placeholder="Stray Animal Rescue Initiative" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label" data-i18n="focus.f.icon">圖示 (emoji)</label>
+          <input class="field-input" id="f-icon" placeholder="🐾" maxlength="4" />
+        </div>
+        <div class="field">
+          <label class="field-label" data-i18n="focus.f.color">主色 (HEX)</label>
+          <input class="field-input" id="f-color" placeholder="#00c95d" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="focus.f.why_zh">為什麼是這個議題？（中）</label>
+        <textarea class="field-textarea" id="f-why-zh" placeholder="議題說明…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="focus.f.why_en">為什麼是這個議題？（英）</label>
+        <textarea class="field-textarea" id="f-why-en" placeholder="Why this issue…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="focus.f.response_zh">我們的回應 / 成果（中）</label>
+        <textarea class="field-textarea" id="f-response-zh" placeholder="行動與成果…"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label" data-i18n="focus.f.response_en">我們的回應 / 成果（英）</label>
+        <textarea class="field-textarea" id="f-response-en" placeholder="Our response…"></textarea>
+      </div>
+
+      <!-- 媒體：圖片 -->
+      <div class="field">
+        <label class="field-label">封面圖片</label>
+        <div class="upload-zone" id="f-image-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+          <div style="font-size:2rem;margin-bottom:.4rem">🖼️</div>
+          <div style="font-weight:500">點擊或拖曳上傳圖片</div>
+          <div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">建議尺寸 16:9，JPG/PNG</div>
+          <input type="hidden" id="f-image-url" />
+        </div>
+        <div id="f-image-preview" style="margin-top:.75rem;display:none">
+          <img id="f-image-thumb" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid rgba(0,0,0,.1)" />
+          <button type="button" class="btn btn--danger-ghost btn--sm" id="f-image-clear" style="margin-top:.5rem">移除圖片</button>
+        </div>
+      </div>
+
+      <!-- 媒體：影片 -->
+      <div class="field">
+        <label class="field-label">封面影片</label>
+        <div class="upload-zone" id="f-video-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+          <div style="font-size:2rem;margin-bottom:.4rem">🎬</div>
+          <div style="font-weight:500">點擊或拖曳上傳影片</div>
+          <div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">建議格式 MP4，時長控制在 30 秒內</div>
+          <input type="hidden" id="f-video-url" />
+        </div>
+        <div id="f-video-preview" style="margin-top:.75rem;display:none">
+          <video id="f-video-thumb" controls style="max-width:100%;max-height:240px;border-radius:8px;border:1px solid rgba(0,0,0,.1)"></video>
+          <button type="button" class="btn btn--danger-ghost btn--sm" id="f-video-clear" style="margin-top:.5rem">移除影片</button>
+        </div>
+        <div class="field-hint" style="margin-top:.5rem;font-size:.75rem;color:var(--text-3)">若同時上傳圖片與影片，前台優先顯示影片。</div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn btn--outline" data-close-modal data-i18n="btn.cancel">取消</button>
+      <button class="btn btn--primary" id="btn-save-focus" data-i18n="btn.save">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=6"></script>
+<script>
+let allFocus = [];
+
+const STATUS_BADGE = { active:'badge--green', completed:'badge--gray', planned:'badge--gold' };
+
+function renderTable() {
+  const tbody = document.getElementById('focus-tbody');
+  if (allFocus.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state__icon">🎯</div><div class="empty-state__title">${t('focus.empty')}</div></div></td></tr>`;
+    return;
+  }
+  const tEdit = t('btn.edit');
+  const tDel = t('btn.delete');
+  const STATUS_LABEL = {
+    active: t('focus.status.active'),
+    completed: t('focus.status.completed'),
+    planned: t('focus.status.planned')
+  };
+
+  tbody.innerHTML = allFocus.map(f => {
+    const mediaInfo = f.video_url ? '🎬' : (f.image_url ? '🖼️' : '—');
+    return `
+      <tr>
+        <td class="td-mono" style="font-weight:700">${f.year || '—'}</td>
+        <td>${f.icon ? f.icon + ' ' : ''}${escapeHtml(f.title_zh || f.title_en || '—')}</td>
+        <td><span class="badge ${STATUS_BADGE[f.status]||'badge--gray'}">${STATUS_LABEL[f.status]||f.status}</span></td>
+        <td>${mediaInfo}</td>
+        <td style="color:var(--text-3);font-size:.75rem">${fmtDate(f.updated_at)}</td>
+        <td><div class="td-actions">
+          <button class="btn btn--ghost btn--sm" onclick="editFocus('${f.id}')">${tEdit}</button>
+          <button class="btn btn--danger-ghost btn--sm" onclick="deleteFocus('${f.id}')">${tDel}</button>
+        </div></td>
+      </tr>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function setFocusImage(url) {
+  document.getElementById('f-image-url').value = url || '';
+  const preview = document.getElementById('f-image-preview');
+  const zone = document.getElementById('f-image-zone');
+  if (url) { document.getElementById('f-image-thumb').src = url; preview.style.display = 'block'; zone.style.opacity = '0.5'; }
+  else { preview.style.display = 'none'; zone.style.opacity = '1'; }
+}
+
+function setFocusVideo(url) {
+  document.getElementById('f-video-url').value = url || '';
+  const preview = document.getElementById('f-video-preview');
+  const zone = document.getElementById('f-video-zone');
+  if (url) { document.getElementById('f-video-thumb').src = url; preview.style.display = 'block'; zone.style.opacity = '0.5'; }
+  else { preview.style.display = 'none'; document.getElementById('f-video-thumb').removeAttribute('src'); zone.style.opacity = '1'; }
+}
+
+function openNewModal() {
+  document.getElementById('focus-id').value = '';
+  document.getElementById('focus-modal-title').textContent = t('focus.new');
+  ['year','title-zh','title-en','icon','color','why-zh','why-en','response-zh','response-en'].forEach(f => {
+    const el = document.getElementById('f-'+f); if (el) el.value = '';
+  });
+  document.getElementById('f-status').value = 'active';
+  setFocusImage(''); setFocusVideo('');
+  openModal('focus-modal');
+}
+
+async function editFocus(id) {
+  const f = await DB.getById('focus_themes', id);
+  if (!f) return;
+  document.getElementById('focus-id').value          = f.id;
+  document.getElementById('focus-modal-title').textContent = t('focus.edit');
+  document.getElementById('f-year').value            = f.year || '';
+  document.getElementById('f-status').value          = f.status || 'active';
+  document.getElementById('f-title-zh').value        = f.title_zh || '';
+  document.getElementById('f-title-en').value        = f.title_en || '';
+  document.getElementById('f-icon').value            = f.icon || '';
+  document.getElementById('f-color').value           = f.color || '';
+  document.getElementById('f-why-zh').value          = f.why_zh || '';
+  document.getElementById('f-why-en').value          = f.why_en || '';
+  document.getElementById('f-response-zh').value     = f.response_zh || '';
+  document.getElementById('f-response-en').value     = f.response_en || '';
+  setFocusImage(f.image_url || '');
+  setFocusVideo(f.video_url || '');
+  openModal('focus-modal');
+}
+
+async function deleteFocus(id) {
+  const f = await DB.getById('focus_themes', id);
+  if (!f) return;
+  confirmAction(t('msg.confirm_del_title'), `${f.year} ${f.title_zh || f.title_en || ''} — ${t('msg.confirm_del_text')}`, async () => {
+    const ok = await DB.delete('focus_themes', id);
+    if (!ok) return;
+    allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
+    renderTable();
+    showToast(t('msg.deleted'), 'success');
+  });
+}
+
+document.getElementById('btn-save-focus').addEventListener('click', async () => {
+  const id = document.getElementById('focus-id').value || null;
+  const data = {
+    year:         parseInt(document.getElementById('f-year').value, 10) || null,
+    status:       document.getElementById('f-status').value,
+    title_zh:     document.getElementById('f-title-zh').value.trim(),
+    title_en:     document.getElementById('f-title-en').value.trim(),
+    icon:         document.getElementById('f-icon').value.trim(),
+    color:        document.getElementById('f-color').value.trim(),
+    why_zh:       document.getElementById('f-why-zh').value.trim(),
+    why_en:       document.getElementById('f-why-en').value.trim(),
+    response_zh:  document.getElementById('f-response-zh').value.trim(),
+    response_en:  document.getElementById('f-response-en').value.trim(),
+    image_url:    document.getElementById('f-image-url').value || null,
+    video_url:    document.getElementById('f-video-url').value || null,
+  };
+  if (!data.year || !data.title_zh) { showToast(t('msg.save_fail'), 'error'); return; }
+  const btn = document.getElementById('btn-save-focus');
+  btn.disabled = true;
+  const result = id
+    ? await DB.update('focus_themes', id, data)
+    : await DB.insert('focus_themes', data);
+  btn.disabled = false;
+  if (!result) return;
+  showToast(id ? t('msg.updated') : t('msg.created'), 'success');
+  closeModal('focus-modal');
+  allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
+  renderTable();
+});
+
+document.getElementById('btn-new-focus').addEventListener('click', openNewModal);
+
+function bindFocusMedia() {
+  const imgZone  = document.getElementById('f-image-zone');
+  const imgInput = document.createElement('input');
+  imgInput.type = 'file'; imgInput.accept = 'image/*'; imgInput.style.display = 'none';
+  document.body.appendChild(imgInput);
+  bindUploadZone(imgZone, imgInput, async files => {
+    if (!files.length) return;
+    const file = files[0];
+    if (!file.type.startsWith('image/')) { showToast(t('msg.upload_invalid'), 'error'); return; }
+    showToast(t('msg.uploading'), 'info');
+    const url = await uploadToMedia(file, 'focus', { maxW: 1920, maxH: 1080 });
+    if (url) setFocusImage(url);
+  });
+  document.getElementById('f-image-clear').addEventListener('click', e => { e.preventDefault(); setFocusImage(''); });
+
+  const vidZone  = document.getElementById('f-video-zone');
+  const vidInput = document.createElement('input');
+  vidInput.type = 'file'; vidInput.accept = 'video/*'; vidInput.style.display = 'none';
+  document.body.appendChild(vidInput);
+  bindUploadZone(vidZone, vidInput, async files => {
+    if (!files.length) return;
+    const file = files[0];
+    if (!file.type.startsWith('video/')) { showToast('請選擇影片檔案', 'error'); return; }
+    showToast(t('msg.uploading'), 'info');
+    const url = await uploadToMedia(file, 'focus', { compress:false });
+    if (url) setFocusVideo(url);
+  });
+  document.getElementById('f-video-clear').addEventListener('click', e => { e.preventDefault(); setFocusVideo(''); });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const user = await Auth.get();
+  if (!user) return;
+  allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
+  renderTable();
+  bindFocusMedia();
+});
+document.addEventListener('admin-lang-changed', () => renderTable());
+</script>
+</body>
+</html>
