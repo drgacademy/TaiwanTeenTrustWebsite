@@ -70,6 +70,21 @@ CREATE POLICY "focus_themes_write_authenticated"
   ON focus_themes FOR ALL
   TO authenticated
   USING (true) WITH CHECK (true);
+
+-- 預設 2026 年度主題資料（與前台靜態 fallback 對齊）
+INSERT INTO focus_themes (year, status, title_zh, title_en, icon, color, why_zh, why_en, response_zh, response_en)
+VALUES (
+  2026,
+  'active',
+  '流浪動物救援行動',
+  'Stray Animal Rescue Initiative',
+  '🐾',
+  '#00c95d',
+  '台灣每年有超過10萬隻流浪動物，公立收容所普遍超載，安樂死率依然偏高。許多愛心人士想幫助卻不知道資源在哪裡。問題不是愛心不夠，而是資訊太分散。',
+  'Taiwan has over 100,000 stray animals each year. Public shelters are overcrowded and euthanasia rates remain high. Many compassionate people want to help but can''t find resources. The problem isn''t a lack of compassion — it''s fragmented information.',
+  '推出「浪浪援助地圖（Stray Aid Map）」——全台第一個由青年主導的流浪動物救援資訊平台。整合收容所、動物醫院與餵食站的即時數據，讓每一隻動物都被看見。',
+  'Launching "Stray Aid Map" — Taiwan''s first youth-led stray animal rescue platform. Integrating real-time data from shelters, veterinary clinics, and feeding stations so every animal is seen and every caring person finds the right resources.'
+);
 ```
 
 ## 5. 確認 Storage bucket `media` 存在
