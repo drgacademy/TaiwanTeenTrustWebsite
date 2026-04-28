@@ -12,13 +12,67 @@
     .leaflet-tile-pane { filter: brightness(.75) saturate(.6) hue-rotate(180deg) invert(1); }
     .leaflet-container { background: #111; }
     .leaflet-control-zoom a { background: #1a1a1a !important; color: #f0f0f0 !important; border-color: rgba(255,255,255,.1) !important; }
-    .needs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: .5rem; margin-bottom: 1rem; }
-    .need-btn { padding: .4rem .6rem; border: 1px solid var(--border); border-radius: .3rem; background: transparent; color: var(--text); cursor: pointer; font-size: .8rem; transition: all 0.2s; }
-    .need-btn:hover { background: rgba(255,255,255,.05); }
-    .need-btn.level-urgent { background: #fecaca; color: #7f1d1d; border-color: #dc2626; }
-    .need-btn.level-normal { background: #bfdbfe; color: #1e40af; border-color: #3b82f6; }
-    .need-btn.level-none { background: transparent; }
     .needs-section { border-top: 1px solid var(--border); padding-top: 1.25rem; margin-top: 1.25rem; }
+
+    /* 預設物資按鈕（點擊加入清單） */
+    .preset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .4rem; margin-bottom: 1rem; }
+    .preset-btn {
+      padding: .5rem .6rem;
+      border: 1px solid var(--border);
+      border-radius: .35rem;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: .8rem;
+      transition: all .15s;
+    }
+    .preset-btn:hover { background: rgba(255,255,255,.05); border-color: var(--accent); }
+    .preset-btn.selected { background: rgba(46,202,212,.15); border-color: var(--accent); color: var(--accent); }
+    .preset-btn .plus { color: var(--accent); margin-right: .25rem; font-weight: 600; }
+
+    /* 已選擇的物資清單 */
+    .selected-list {
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      padding: .5rem;
+      min-height: 60px;
+      background: rgba(255,255,255,.02);
+    }
+    .selected-empty { color: var(--text-3); font-size: .85rem; text-align: center; padding: 1rem; }
+    .selected-row {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem .65rem;
+      border-radius: .3rem;
+    }
+    .selected-row + .selected-row { border-top: 1px solid var(--border); margin-top: .25rem; padding-top: .8rem; }
+    .selected-row .name { flex: 1; font-size: .9rem; }
+    .selected-row .levels { display: flex; gap: .25rem; }
+    .selected-row .level-btn {
+      padding: .25rem .55rem;
+      border: 1px solid var(--border);
+      border-radius: .25rem;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: .72rem;
+      transition: all .15s;
+    }
+    .selected-row .level-btn:hover { background: rgba(255,255,255,.05); }
+    .selected-row .level-btn.active.urgent   { background: #fecaca; color: #7f1d1d; border-color: #dc2626; }
+    .selected-row .level-btn.active.moderate { background: #fed7aa; color: #7c2d12; border-color: #ea580c; }
+    .selected-row .level-btn.active.slight   { background: #fef3c7; color: #78350f; border-color: #ca8a04; }
+    .selected-row .remove-btn {
+      padding: .2rem .45rem;
+      border: 1px solid var(--border);
+      border-radius: .25rem;
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      font-size: .9rem;
+    }
+    .selected-row .remove-btn:hover { color: #ef4444; border-color: #ef4444; }
   </style>
 </head>
 <body>
@@ -172,13 +226,16 @@
       <div class="needs-section">
         <label class="field-label">飼料存量（週） *</label>
         <input class="field-input" id="l-food-weeks" type="number" step="0.1" placeholder="1.5" required />
-        <div class="field-hint">數字越大 = 糧食充足；0-2週 = 偏低；2週以下 = 緊急缺糧</div>
+        <div class="field-hint">數字越大 = 糧食充足；2-4週 = 偏低；2週以下 = 緊急缺糧</div>
 
         <label class="field-label" style="margin-top:1.5rem;display:block">缺乏物資／資金</label>
-        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.75rem">點選按鈕切換狀態：無 → 一般缺乏（藍） → 急需（紅） → 無</div>
-        <div class="needs-grid" id="needs-buttons"></div>
+        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.5rem">① 點選下方按鈕加入物資清單</div>
+        <div class="preset-grid" id="preset-buttons"></div>
 
-        <label class="field-label" style="margin-top:1rem;display:block">其他物資／說明（自由輸入）</label>
+        <div style="color:var(--text-3);font-size:.78rem;margin-bottom:.5rem">② 在下方清單中選擇缺乏程度（緊急 / 適度 / 微量）</div>
+        <div class="selected-list" id="selected-list"></div>
+
+        <label class="field-label" style="margin-top:1.25rem;display:block">其他物資／說明（自由輸入）</label>
         <textarea class="field-input" id="l-custom-needs" placeholder="例：尋求短期志工支援、醫療器材捐贈…" style="min-height:80px;resize:vertical"></textarea>
       </div>
     </div>
@@ -198,44 +255,98 @@ const PAGE_SIZE = 10;
 let currentPage = 1;
 let previewMap, previewMarker;
 
-// 預設物資清單
+// 預設物資清單（後台 + 前台共用 key 對照）
 const PRESET_NEEDS = [
-  { key: 'dry_food',  label_zh: '乾飼料',     label_en: 'Dry food' },
-  { key: 'canned',    label_zh: '罐頭食品',   label_en: 'Canned food' },
-  { key: 'medical',   label_zh: '醫療費補助', label_en: 'Medical funding' },
-  { key: 'surgery',   label_zh: '手術費補助', label_en: 'Surgery funding' },
-  { key: 'cleaning',  label_zh: '清潔用品',   label_en: 'Cleaning supplies' },
-  { key: 'volunteers',label_zh: '志工',       label_en: 'Volunteers' },
-  { key: 'donations', label_zh: '長期捐款',   label_en: 'Regular donations' }
+  { key: 'dry_food',   label_zh: '乾飼料',     label_en: 'Dry food' },
+  { key: 'canned',     label_zh: '罐頭食品',   label_en: 'Canned food' },
+  { key: 'deworming',  label_zh: '驅蟲藥',     label_en: 'Deworming meds' },
+  { key: 'medical',    label_zh: '醫療費補助', label_en: 'Medical funding' },
+  { key: 'surgery',    label_zh: '手術費補助', label_en: 'Surgery funding' },
+  { key: 'neutering',  label_zh: '結紮費',     label_en: 'Neutering funds' },
+  { key: 'cleaning',   label_zh: '清潔用品',   label_en: 'Cleaning supplies' },
+  { key: 'cages',      label_zh: '籠子',       label_en: 'Cages' },
+  { key: 'beds',       label_zh: '寵物床',     label_en: 'Pet beds' },
+  { key: 'toys',       label_zh: '玩具',       label_en: 'Toys' },
+  { key: 'volunteers', label_zh: '志工',       label_en: 'Volunteers' },
+  { key: 'donations',  label_zh: '長期捐款',   label_en: 'Regular donations' }
 ];
 
-let currentNeeds = [];
+const LEVEL_OPTIONS = [
+  { value: 'urgent',   label: '緊急' },
+  { value: 'moderate', label: '適度' },
+  { value: 'slight',   label: '微量' }
+];
 
-function renderNeedsButtons() {
-  const html = PRESET_NEEDS.map(p => {
-    const curr = currentNeeds.find(n => n.key === p.key);
-    const level = curr ? curr.level : 'none';
-    return `<button type="button" class="need-btn level-${level}" data-key="${p.key}" onclick="cycleNeedLevel('${p.key}')">${p.label_zh}</button>`;
-  }).join('');
-  document.getElementById('needs-buttons').innerHTML = html;
+let currentNeeds = []; // [{ key, level }]
+
+function findPreset(key) {
+  return PRESET_NEEDS.find(p => p.key === key);
 }
 
-function cycleNeedLevel(key) {
+function renderPresetButtons() {
+  const html = PRESET_NEEDS.map(p => {
+    const isSel = currentNeeds.some(n => n.key === p.key);
+    return `<button type="button" class="preset-btn${isSel ? ' selected' : ''}" onclick="togglePreset('${p.key}')">${isSel ? '' : '<span class="plus">+</span>'}${p.label_zh}</button>`;
+  }).join('');
+  document.getElementById('preset-buttons').innerHTML = html;
+}
+
+function renderSelectedList() {
+  const list = document.getElementById('selected-list');
+  if (!currentNeeds.length) {
+    list.innerHTML = '<div class="selected-empty">尚未選擇任何物資</div>';
+    return;
+  }
+  list.innerHTML = currentNeeds.map(n => {
+    const preset = findPreset(n.key);
+    const label = preset ? preset.label_zh : n.key;
+    const levels = LEVEL_OPTIONS.map(opt => `
+      <button type="button" class="level-btn${n.level === opt.value ? ' active ' + opt.value : ''}"
+              onclick="setNeedLevel('${n.key}', '${opt.value}')">${opt.label}</button>
+    `).join('');
+    return `
+      <div class="selected-row">
+        <div class="name">${label}</div>
+        <div class="levels">${levels}</div>
+        <button type="button" class="remove-btn" onclick="removeNeed('${n.key}')" title="移除">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderNeedsAll() {
+  renderPresetButtons();
+  renderSelectedList();
+}
+
+function togglePreset(key) {
   const idx = currentNeeds.findIndex(n => n.key === key);
   if (idx === -1) {
-    currentNeeds.push({ key, level: 'normal' });
+    currentNeeds.push({ key, level: 'moderate' });
   } else {
-    const levels = ['normal', 'urgent', 'none'];
-    const curr = currentNeeds[idx].level || 'none';
-    const nextIdx = levels.indexOf(curr) + 1;
-    const nextLevel = levels[nextIdx % 3];
-    if (nextLevel === 'none') {
-      currentNeeds.splice(idx, 1);
-    } else {
-      currentNeeds[idx].level = nextLevel;
-    }
+    currentNeeds.splice(idx, 1);
   }
-  renderNeedsButtons();
+  renderNeedsAll();
+}
+
+function setNeedLevel(key, level) {
+  const item = currentNeeds.find(n => n.key === key);
+  if (item) item.level = level;
+  renderNeedsAll();
+}
+
+function removeNeed(key) {
+  currentNeeds = currentNeeds.filter(n => n.key !== key);
+  renderNeedsAll();
+}
+
+// 舊版資料相容：把 normal → moderate
+function normalizeLevels(needs) {
+  if (!Array.isArray(needs)) return [];
+  return needs.map(n => ({
+    key: n.key,
+    level: (n.level === 'normal') ? 'moderate' : (n.level || 'moderate')
+  })).filter(n => n.key);
 }
 
 function renderTable() {
@@ -308,7 +419,7 @@ function openNewModal() {
   document.getElementById('l-image-url').value = '';
   document.getElementById('loc-image-preview').innerHTML = '';
   currentNeeds = [];
-  renderNeedsButtons();
+  renderNeedsAll();
   openModal('loc-modal');
   setTimeout(() => {
     initPreviewMap();
@@ -340,8 +451,8 @@ async function editLoc(id) {
   } else {
     document.getElementById('loc-image-preview').innerHTML = '';
   }
-  currentNeeds = Array.isArray(l.needs) ? JSON.parse(JSON.stringify(l.needs)) : [];
-  renderNeedsButtons();
+  currentNeeds = normalizeLevels(Array.isArray(l.needs) ? JSON.parse(JSON.stringify(l.needs)) : []);
+  renderNeedsAll();
   openModal('loc-modal');
   setTimeout(() => {
     initPreviewMap();
@@ -356,7 +467,7 @@ async function deleteLoc(id) {
   if (confirm(`確認刪除「${l.name}」？此動作無法復原。`)) {
     const ok = await DB.delete('map_locations', id);
     if (!ok) return;
-    allLocs = await DB.getAll('map_locations');
+    allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
     applyFilter();
     showToast('已刪除', 'success');
   }
@@ -405,7 +516,7 @@ document.getElementById('btn-save-loc').addEventListener('click', async () => {
   if (!result) return;
   showToast(id ? '已更新' : '已新增', 'success');
   closeModal('loc-modal');
-  allLocs = await DB.getAll('map_locations');
+  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
   applyFilter();
 });
 
@@ -415,7 +526,7 @@ document.getElementById('search-locs').addEventListener('input', applyFilter);
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
-  allLocs = await DB.getAll('map_locations');
+  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
   filteredLocs = allLocs;
   renderTable();
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();

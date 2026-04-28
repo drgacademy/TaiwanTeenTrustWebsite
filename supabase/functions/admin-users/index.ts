@@ -22,46 +22,74 @@ function jsonResponse(data: unknown, status = 200): Response {
 }
 
 Deno.serve(async (req: Request) => {
+  // ── CORS preflight ──
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
-  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-
-  if (!supabaseUrl || !serviceRoleKey) {
-    return jsonResponse({ error: 'Server misconfigured: missing env vars' }, 500);
-  }
-
-  const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-
-  // ── Auth check: caller must be a signed-in admin_users row with role = 'admin' ──
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader) {
-    return jsonResponse({ error: 'Missing authorization header' }, 401);
-  }
-  const token = authHeader.replace(/^Bearer\s+/i, '');
-  const { data: { user: caller }, error: authErr } = await supabaseAdmin.auth.getUser(token);
-  if (authErr || !caller) {
-    return jsonResponse({ error: 'Invalid or expired token' }, 401);
-  }
-
-  const { data: callerRow } = await supabaseAdmin
-    .from('admin_users')
-    .select('role')
-    .eq('user_id', caller.id)
-    .maybeSingle();
-
-  if (!callerRow) {
-    return jsonResponse({ error: 'Not an admin user' }, 403);
-  }
-  if (callerRow.role !== 'admin') {
-    return jsonResponse({ error: 'Admin role required' }, 403);
-  }
-
+  // ── Wrap everything in try-catch so unexpected errors return JSON, not "Failed to fetch" ──
   try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error('[admin-users] Missing env vars: SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
+      return jsonResponse({ error: 'Server misconfigured: missing env vars' }, 500);
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    // ── Auth check: must have a valid bearer token ──
+    const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
+    if (!authHeader) {
+      return jsonResponse({ error: 'Missing authorization header' }, 401);
+    }
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
+    if (!token) {
+      return jsonResponse({ error: 'Empty bearer token' }, 401);
+    }
+
+    // Defensive: getUser may return error or null data
+    let callerId: string | null = null;
+    try {
+      const result = await supabaseAdmin.auth.getUser(token);
+      const user = result?.data?.user;
+      if (result?.error || !user) {
+        console.warn('[admin-users] getUser failed:', result?.error?.message);
+        return jsonResponse({ error: 'Invalid or expired token' }, 401);
+      }
+      callerId = user.id;
+    } catch (e) {
+      console.error('[admin-users] getUser threw:', e);
+      return jsonResponse({ error: 'Auth check failed' }, 401);
+    }
+
+    // ── Admin role check ──
+    let callerRole: string | null = null;
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('admin_users')
+        .select('role')
+        .eq('user_id', callerId)
+        .maybeSingle();
+      if (error) {
+        console.warn('[admin-users] role lookup failed:', error.message);
+      }
+      callerRole = data?.role ?? null;
+    } catch (e) {
+      console.error('[admin-users] role lookup threw:', e);
+    }
+
+    if (!callerRole) {
+      return jsonResponse({ error: 'Not a backend user' }, 403);
+    }
+    if (callerRole !== 'admin') {
+      return jsonResponse({ error: 'Admin role required' }, 403);
+    }
+
+    // ── Route ──
     if (req.method === 'GET') {
       return await handleList(supabaseAdmin);
     }
@@ -75,44 +103,49 @@ Deno.serve(async (req: Request) => {
     if (req.method === 'DELETE') {
       const url = new URL(req.url);
       const id = url.searchParams.get('id');
-      return await handleDelete(supabaseAdmin, id, caller.id);
+      return await handleDelete(supabaseAdmin, id, callerId!);
     }
     return jsonResponse({ error: 'Method not allowed' }, 405);
   } catch (e) {
     console.error('[admin-users] Unhandled error:', e);
-    return jsonResponse({ error: (e as Error).message || 'Server error' }, 500);
+    return jsonResponse({ error: (e as Error)?.message || 'Server error' }, 500);
   }
 });
 
 async function handleList(supabase: SupabaseClient): Promise<Response> {
-  const { data: admins, error } = await supabase
-    .from('admin_users')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data: admins, error } = await supabase
+      .from('admin_users')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('[admin-users] list query failed:', error);
-    return jsonResponse({ error: error.message }, 400);
-  }
+    if (error) {
+      console.error('[admin-users] list query failed:', error);
+      return jsonResponse({ error: error.message }, 400);
+    }
 
-  const enriched = await Promise.all(
-    (admins || []).map(async (a: any) => {
-      if (a.email || !a.user_id) return a;
-      try {
-        const { data, error: getErr } = await supabase.auth.admin.getUserById(a.user_id);
-        if (getErr) {
-          console.warn('[admin-users] getUserById failed for', a.user_id, getErr.message);
+    const enriched = await Promise.all(
+      (admins || []).map(async (a: any) => {
+        if (a.email || !a.user_id) return a;
+        try {
+          const { data, error: getErr } = await supabase.auth.admin.getUserById(a.user_id);
+          if (getErr) {
+            console.warn('[admin-users] getUserById failed for', a.user_id, getErr.message);
+            return a;
+          }
+          return { ...a, email: data?.user?.email || a.email };
+        } catch (e) {
+          console.warn('[admin-users] getUserById threw for', a.user_id, e);
           return a;
         }
-        return { ...a, email: data?.user?.email || a.email };
-      } catch (e) {
-        console.warn('[admin-users] getUserById threw for', a.user_id, e);
-        return a;
-      }
-    })
-  );
+      })
+    );
 
-  return jsonResponse({ admins: enriched });
+    return jsonResponse({ admins: enriched });
+  } catch (e) {
+    console.error('[admin-users] handleList unhandled:', e);
+    return jsonResponse({ error: (e as Error)?.message || 'List failed' }, 500);
+  }
 }
 
 async function handleInvite(supabase: SupabaseClient, body: any): Promise<Response> {
