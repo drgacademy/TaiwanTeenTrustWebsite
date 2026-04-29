@@ -427,26 +427,20 @@ async function deleteMember(id) {
 
 document.getElementById('btn-save-member').addEventListener('click', async () => {
   const id   = document.getElementById('member-id').value || null;
+  const _posVal = document.querySelector('input[name="m-position"]:checked')?.value || '';
   const data = {
-    name:    document.getElementById('m-name').value.trim(),
-    name_en: document.getElementById('m-name-en').value.trim(),
-    dept:    document.getElementById('m-dept').value,
-    role:    document.getElementById('m-role').value.trim(),
-    year:    document.getElementById('m-year').value.trim(),
-    status:  document.getElementById('m-status').value,
-    email:   document.getElementById('m-email').value.trim(),
-    bio:     document.getElementById('m-bio').value.trim(),
-    bio_en:  document.getElementById('m-bio-en').value.trim(),
+    name:     document.getElementById('m-name').value.trim(),
+    name_en:  document.getElementById('m-name-en').value.trim(),
+    dept:     document.getElementById('m-dept').value,
+    year:     document.getElementById('m-year').value.trim(),
+    status:   document.getElementById('m-status').value,
+    email:    document.getElementById('m-email').value.trim(),
+    bio:      document.getElementById('m-bio').value.trim(),
+    bio_en:   document.getElementById('m-bio-en').value.trim(),
     photo:    memberPhoto || null,
-    position: (() => {
-      const v = document.querySelector('input[name="m-position"]:checked')?.value || '';
-      return (v && v !== 'other') ? v : null;
-    })(),
-    role: (() => {
-      const v = document.querySelector('input[name="m-position"]:checked')?.value || '';
-      return v === 'other' ? (document.getElementById('m-custom-role').value.trim() || null) : null;
-    })(),
-    is_lead: false,
+    position: (_posVal && _posVal !== 'other') ? _posVal : null,
+    role:     _posVal === 'other' ? (document.getElementById('m-custom-role').value.trim() || null) : null,
+    is_lead:  false,
   };
   if (!data.name) { showToast(t('msg.save_fail'), 'error'); return; }
   const btn = document.getElementById('btn-save-member');
