@@ -152,6 +152,7 @@ async function handleInvite(supabase: SupabaseClient, body: any): Promise<Respon
   const email = (body.email || '').trim().toLowerCase();
   const name = (body.name || '').trim() || null;
   const role = body.role === 'admin' ? 'admin' : 'member';
+  const redirectTo: string | undefined = body.redirectTo || undefined;
 
   if (!email) return jsonResponse({ error: 'Email is required' }, 400);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -165,7 +166,10 @@ async function handleInvite(supabase: SupabaseClient, body: any): Promise<Respon
     .maybeSingle();
   if (existing) return jsonResponse({ error: 'This email is already a backend user' }, 409);
 
-  const { data: invite, error: inviteErr } = await supabase.auth.admin.inviteUserByEmail(email);
+  const { data: invite, error: inviteErr } = await supabase.auth.admin.inviteUserByEmail(
+    email,
+    redirectTo ? { redirectTo } : {}
+  );
   if (inviteErr || !invite?.user) {
     return jsonResponse({ error: inviteErr?.message || 'Failed to send invite' }, 400);
   }

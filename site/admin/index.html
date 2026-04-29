@@ -50,6 +50,45 @@
   </div>
 </div>
 
+<!-- Set-password box (shown for invite / recovery links) -->
+<div id="set-password-box" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:var(--bg)">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="../assets/logo-real.png" alt="TTT" style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div>
+        <div class="login-logo-text">Taiwan Teen Trust</div>
+        <div class="login-logo-sub">Admin Panel</div>
+      </div>
+    </div>
+    <h1 class="login-title">設定登入密碼</h1>
+    <p class="login-sub">歡迎加入後台！請設定您的密碼以完成帳號啟用。</p>
+    <div class="login-error" id="sp-error"></div>
+    <form id="set-password-form">
+      <div class="form-group">
+        <label class="form-label">新密碼</label>
+        <div class="password-wrap">
+          <input class="form-input password-input" id="sp-new-pass" type="password" placeholder="至少 8 位字元" required minlength="8" autocomplete="new-password" />
+          <button type="button" class="password-toggle" onclick="(function(btn){var i=btn.previousElementSibling;var s=i.type==='password';i.type=s?'text':'password';btn.classList.toggle('shown',s)})(this)" aria-label="顯示密碼">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">確認密碼</label>
+        <div class="password-wrap">
+          <input class="form-input password-input" id="sp-confirm-pass" type="password" placeholder="再輸入一次" required minlength="8" autocomplete="new-password" />
+          <button type="button" class="password-toggle" onclick="(function(btn){var i=btn.previousElementSibling;var s=i.type==='password';i.type=s?'text':'password';btn.classList.toggle('shown',s)})(this)" aria-label="顯示密碼">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+      </div>
+      <button type="submit" id="sp-submit" class="btn-login">確認設定</button>
+    </form>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/admin.js?v=6"></script>
 </body>
