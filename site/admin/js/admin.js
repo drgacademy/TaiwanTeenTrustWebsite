@@ -299,6 +299,34 @@ async function initSidebar() {
 
   const logoutBtn = document.querySelector('.btn-logout');
   if (logoutBtn) logoutBtn.addEventListener('click', () => Auth.logout());
+
+  // ── Mobile sidebar: inject hamburger + overlay ──
+  const sidebar  = document.getElementById('admin-sidebar');
+  const topbar   = document.querySelector('.admin-topbar');
+  if (sidebar && topbar && !document.getElementById('sidebar-hamburger')) {
+    // Overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+
+    // Hamburger button (injected as first child of topbar)
+    const btn = document.createElement('button');
+    btn.id = 'sidebar-hamburger';
+    btn.setAttribute('aria-label', '選單');
+    btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+    topbar.insertBefore(btn, topbar.firstChild);
+
+    const openSidebar  = () => { sidebar.classList.add('open');  overlay.classList.add('show'); };
+    const closeSidebar = () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); };
+
+    btn.addEventListener('click', openSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar when a nav link is tapped on mobile
+    sidebar.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); });
+    });
+  }
 }
 
 /* ── Search filter helper ── */
