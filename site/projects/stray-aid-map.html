@@ -18,7 +18,7 @@
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabase = window.supabase.createClient(
+    window.supabaseClient = window.supabase.createClient(
       'https://tpolpfulwsfqpghweasl.supabase.co',
       'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J'
     );
@@ -1097,7 +1097,7 @@ let LOCATIONS = [];
 // Load from Supabase (with hardcoded fallback in case DB unavailable)
 async function loadLocations() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await window.supabaseClient
       .from('map_locations')
       .select('*')
       .eq('type', 'shelter')
