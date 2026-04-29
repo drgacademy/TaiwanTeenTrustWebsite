@@ -270,10 +270,32 @@ function confirmAction(title, text, onConfirm) {
 async function initSidebar() {
   const user = await Auth.get();
   if (!user) return;
+
   const avatar = document.querySelector('.sidebar-avatar');
   const name   = document.querySelector('.sidebar-user-name');
   if (avatar) avatar.textContent = (user.email || '?')[0].toUpperCase();
   if (name)   name.textContent   = user.email || '';
+
+  // Look up actual role from admin_users table
+  let role = 'member';
+  try {
+    const { data } = await sb.from('admin_users')
+      .select('role')
+      .eq('user_id', user.id)
+      .single();
+    role = data?.role || 'member';
+  } catch { /* default to member on error */ }
+
+  // Update role badge with correct i18n key (so lang switch also updates it)
+  const roleEl = document.querySelector('.sidebar-user-role');
+  if (roleEl) roleEl.dataset.i18n = role === 'admin' ? 'user.role.admin' : 'user.role.member';
+
+  // Hide the backend-users nav link for non-admins
+  if (role !== 'admin') {
+    const usersLink = document.querySelector('.admin-sidebar a[href="users.html"]');
+    if (usersLink) usersLink.style.display = 'none';
+  }
+
   const logoutBtn = document.querySelector('.btn-logout');
   if (logoutBtn) logoutBtn.addEventListener('click', () => Auth.logout());
 }
@@ -328,6 +350,7 @@ const I18N = {
     'nav.settings': '網站設定',
     'nav.preview': '前台預覽',
     'user.role.admin': '管理員',
+    'user.role.member': '團員',
     'btn.logout': '登出',
     'btn.view_site': '前台',
     'btn.save': '儲存',
@@ -657,6 +680,7 @@ const I18N = {
     'nav.settings': 'Site Settings',
     'nav.preview': 'View Site',
     'user.role.admin': 'Administrator',
+    'user.role.member': 'Member',
     'btn.logout': 'Log out',
     'btn.view_site': 'View site',
     'btn.save': 'Save',

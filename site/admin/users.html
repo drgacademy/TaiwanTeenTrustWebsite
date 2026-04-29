@@ -372,6 +372,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
   currentUserId = user.id;
+
+  // Guard: only admins may access this page
+  const { data: adminRow } = await sb.from('admin_users')
+    .select('role')
+    .eq('user_id', user.id)
+    .single();
+  if (!adminRow || adminRow.role !== 'admin') {
+    window.location.href = 'dashboard.html';
+    return;
+  }
+
   await loadAdmins();
 });
 document.addEventListener('admin-lang-changed', () => renderTable());

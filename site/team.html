@@ -80,6 +80,13 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 .lead-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-top:3rem}
 .lead-card{border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:2rem;display:flex;gap:1.25rem;transition:border-color .2s,transform .3s var(--ease)}
 .lead-card:hover{border-color:rgba(0,0,0,.2);transform:translateY(-3px)}
+.lead-card--president{border:2px solid transparent;background-image:linear-gradient(#fff,#fff),linear-gradient(135deg,#ff3b3b,#ff8c00,#ffd600,#00c95d,#0099ff,#7c3aff,#ff2dca);background-origin:border-box;background-clip:padding-box,border-box}
+.lead-card--president:hover{border-color:transparent;background-image:linear-gradient(#fff,#fff),linear-gradient(135deg,#ff3b3b,#ff8c00,#ffd600,#00c95d,#0099ff,#7c3aff,#ff2dca)}
+.lead-card--vice{border:2px solid transparent;background-image:linear-gradient(#fff,#fff),linear-gradient(135deg,#2ECAD4,#7c3aff);background-origin:border-box;background-clip:padding-box,border-box}
+.lead-card--vice:hover{border-color:transparent;background-image:linear-gradient(#fff,#fff),linear-gradient(135deg,#2ECAD4,#7c3aff)}
+.lead-badge{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.08em;padding:.2rem .6rem;border-radius:100px;margin-bottom:.45rem;color:#fff;text-transform:uppercase}
+.lead-badge--president{background:linear-gradient(135deg,#ff8c00,#ff3b3b)}
+.lead-badge--vice{background:linear-gradient(135deg,#2ECAD4,#7c3aff)}
 .lead-card__avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;background:var(--gray)}
 .lead-card__name{font-size:1rem;font-weight:700;margin-bottom:.2rem}
 .lead-card__role{font-size:.78rem;font-weight:600;margin-bottom:.55rem}
@@ -94,6 +101,8 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 .members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
 .member-card{border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:1.5rem 1.25rem;text-align:center;transition:border-color .2s,transform .3s var(--ease);background:#fff}
 .member-card:hover{border-color:rgba(0,0,0,.18);transform:translateY(-4px)}
+.member-card--leader{border-top-width:2.5px;border-top-style:solid}
+.member-card__leader-badge{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.06em;padding:.15rem .5rem;border-radius:100px;margin-bottom:.5rem;color:#fff}
 .member-card__icon{font-size:2rem;margin-bottom:.75rem}
 .member-card__name{font-size:.95rem;font-weight:700;margin-bottom:.2rem}
 .member-card__role{font-size:.75rem;color:var(--text-2)}
@@ -296,21 +305,29 @@ async function loadTeamMembers() {
       return;
     }
 
-    // 渲染領導核心
-    const leads = memList.filter(m => m.is_lead);
+    // 渲染領導核心（社長 + 副社長，由 position 欄位決定）
+    const leads = memList.filter(m => m.position === 'president' || m.position === 'vice_president');
     const leadSection = document.getElementById('leadership-section');
     const leadGrid    = document.getElementById('leadership-grid');
     if (leads.length && leadSection && leadGrid) {
-      const palette = ['var(--r1)','var(--r2)','var(--r4)','var(--r5)','var(--r6)','var(--r7)'];
-      leadGrid.innerHTML = leads.map((m, i) => {
-        const c = palette[i % palette.length];
+      // president first, vice second
+      const sortedLeads = [...leads].sort((a, b) =>
+        (a.position === 'president' ? 0 : 1) - (b.position === 'president' ? 0 : 1));
+      leadGrid.innerHTML = sortedLeads.map(m => {
+        const isPresident = m.position === 'president';
+        const c = isPresident ? '#ff8c00' : 'var(--ttt-cyan)';
+        const cardClass = isPresident ? 'lead-card lead-card--president' : 'lead-card lead-card--vice';
+        const badge = isPresident
+          ? `<div><span class="lead-badge lead-badge--president lang-zh">現任社長</span><span class="lead-badge lead-badge--president lang-en">President</span></div>`
+          : `<div><span class="lead-badge lead-badge--vice lang-zh">現任副社長</span><span class="lead-badge lead-badge--vice lang-en">Vice President</span></div>`;
         const avatar = m.photo
           ? `<img src="${m.photo}" alt="${m.name}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">`
-          : `<div class="lead-card__avatar" style="background:linear-gradient(135deg,${c.replace('var(','').replace(')','')}22,${c.replace('var(','').replace(')','')}22)">⭐</div>`;
+          : `<div class="lead-card__avatar">${isPresident ? '⭐' : '🌟'}</div>`;
         return `
-          <div class="lead-card">
+          <div class="${cardClass}">
             ${avatar}
             <div>
+              ${badge}
               <div class="lead-card__name lang-zh">${m.name || ''}</div>
               <div class="lead-card__name lang-en">${m.name_en || m.name || ''}</div>
               <div class="lead-card__role" style="color:${c}"><span class="lang-zh">${m.role || ''}</span><span class="lang-en">${m.role || ''}</span></div>
@@ -322,22 +339,42 @@ async function loadTeamMembers() {
       leadSection.style.display = '';
     }
 
-    // 將「非領導核心」成員依 dept 分組
+    // 將「非社長/副社長」成員依 dept 分組（組長也在這裡）
     const byDept = {};
-    memList.filter(m => !m.is_lead).forEach(m => {
+    memList.filter(m => m.position !== 'president' && m.position !== 'vice_president').forEach(m => {
       const k = m.dept || '其他';
       (byDept[k] = byDept[k] || []).push(m);
     });
 
     // 依部門順序輸出（沒成員的部門也顯示，方便管理員看到結構）
     const blocks = deptList.map((d, i) => {
-      const list = byDept[d.key] || [];
+      const rawList = byDept[d.key] || [];
       const bg = i % 2 === 1 ? '#fafafa' : 'transparent';
       const color = d.color || '#0099ff';
+      // Sort: group_leader position goes first
+      const list = [...rawList].sort((a, b) => {
+        const aL = a.position === 'group_leader';
+        const bL = b.position === 'group_leader';
+        if (aL && !bL) return -1;
+        if (!aL && bL) return 1;
+        return 0;
+      });
       const cards = list.map(m => {
+        const isLeader = m.position === 'group_leader';
         const avatar = m.photo
           ? `<img src="${m.photo}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
           : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem">👤</div>`;
+        if (isLeader) {
+          return `
+          <div class="member-card member-card--leader" style="border-top-color:${color}">
+            <div><span class="member-card__leader-badge lang-zh" style="background:${color}">組長</span><span class="member-card__leader-badge lang-en" style="background:${color}">Lead</span></div>
+            ${avatar}
+            <div class="member-card__name lang-zh">${m.name || ''}</div>
+            <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
+            <div class="member-card__role lang-zh">${m.role || ''}</div>
+            <div class="member-card__role lang-en">${m.role || ''}</div>
+          </div>`;
+        }
         return `
           <div class="member-card">
             ${avatar}
@@ -368,11 +405,31 @@ async function loadTeamMembers() {
     const knownKeys = new Set(deptList.map(d => d.key));
     const orphans = Object.keys(byDept).filter(k => !knownKeys.has(k));
     orphans.forEach(k => {
-      const list = byDept[k];
+      const rawList = byDept[k];
+      const fallbackColor = '#888';
+      const list = [...rawList].sort((a, b) => {
+        const aL = a.position === 'group_leader';
+        const bL = b.position === 'group_leader';
+        if (aL && !bL) return -1;
+        if (!aL && bL) return 1;
+        return 0;
+      });
       const cards = list.map(m => {
+        const isLeader = m.position === 'group_leader';
         const avatar = m.photo
           ? `<img src="${m.photo}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
           : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem">👤</div>`;
+        if (isLeader) {
+          return `
+          <div class="member-card member-card--leader" style="border-top-color:${fallbackColor}">
+            <div><span class="member-card__leader-badge lang-zh" style="background:${fallbackColor}">組長</span><span class="member-card__leader-badge lang-en" style="background:${fallbackColor}">Lead</span></div>
+            ${avatar}
+            <div class="member-card__name lang-zh">${m.name || ''}</div>
+            <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
+            <div class="member-card__role lang-zh">${m.role || ''}</div>
+            <div class="member-card__role lang-en">${m.role || ''}</div>
+          </div>`;
+        }
         return `
           <div class="member-card">
             ${avatar}
