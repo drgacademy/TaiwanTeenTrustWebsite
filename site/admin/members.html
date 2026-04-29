@@ -6,6 +6,15 @@
   <title data-i18n-title-key="nav.members">TTT Admin — 團隊成員</title>
   <link rel="icon" href="../assets/favicon.png" type="image/png" />
   <link rel="stylesheet" href="css/admin.css?v=5" />
+  <style>
+    .position-opt { display:flex;align-items:center;gap:.65rem;border:1px solid var(--border);border-radius:8px;padding:.65rem .9rem;cursor:pointer;transition:border-color .18s,background .18s;background:var(--surface-2) }
+    .position-opt:hover { border-color:var(--border-2) }
+    .position-opt.selected { border-color:var(--accent);background:var(--accent-dim) }
+    .position-opt input[type=radio] { display:none }
+    .position-opt svg { flex-shrink:0;color:var(--text-3);transition:color .18s }
+    .position-opt.selected svg { color:var(--accent) }
+    .position-opt span { font-size:.85rem;font-weight:500 }
+  </style>
 </head>
 <body>
 
@@ -163,10 +172,6 @@
           </select>
           <div class="field-hint"><a href="categories.html" style="color:var(--accent)">→ 編輯部門項目</a></div>
         </div>
-        <div class="field">
-          <label class="field-label" data-i18n="members.f.role">職稱</label>
-          <input class="field-input" id="m-role" placeholder="部長 / 副部長 / 組員" />
-        </div>
       </div>
       <div class="field-row">
         <div class="field">
@@ -186,24 +191,36 @@
         <input class="field-input" id="m-email" type="email" placeholder="example@example.com" />
       </div>
       <div class="field">
-        <label class="field-label">特殊職位</label>
+        <label class="field-label">職位</label>
         <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin-top:.25rem" id="m-position-group">
-          <label class="position-opt" style="display:flex;align-items:center;gap:.6rem;border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;cursor:pointer;transition:border-color .15s,background .15s">
-            <input type="radio" name="m-position" value="" style="accent-color:var(--accent)" />
-            <span style="font-size:.85rem;font-weight:500">一般成員</span>
+          <label class="position-opt selected">
+            <input type="radio" name="m-position" value="" checked />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>一般成員</span>
           </label>
-          <label class="position-opt" style="display:flex;align-items:center;gap:.6rem;border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;cursor:pointer;transition:border-color .15s,background .15s">
-            <input type="radio" name="m-position" value="president" style="accent-color:var(--accent)" />
-            <span style="font-size:.85rem;font-weight:500">⭐ 社長</span>
+          <label class="position-opt">
+            <input type="radio" name="m-position" value="president" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>社長</span>
           </label>
-          <label class="position-opt" style="display:flex;align-items:center;gap:.6rem;border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;cursor:pointer;transition:border-color .15s,background .15s">
-            <input type="radio" name="m-position" value="vice_president" style="accent-color:var(--accent)" />
-            <span style="font-size:.85rem;font-weight:500">🌟 副社長</span>
+          <label class="position-opt">
+            <input type="radio" name="m-position" value="vice_president" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>副社長</span>
           </label>
-          <label class="position-opt" style="display:flex;align-items:center;gap:.6rem;border:1px solid var(--border);border-radius:8px;padding:.65rem .85rem;cursor:pointer;transition:border-color .15s,background .15s">
-            <input type="radio" name="m-position" value="group_leader" style="accent-color:var(--accent)" />
-            <span style="font-size:.85rem;font-weight:500">🔹 組長</span>
+          <label class="position-opt">
+            <input type="radio" name="m-position" value="group_leader" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <span>組長</span>
           </label>
+          <label class="position-opt" style="grid-column:span 2">
+            <input type="radio" name="m-position" value="other" />
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            <span>其他</span>
+          </label>
+        </div>
+        <div id="m-custom-role-wrap" style="display:none;margin-top:.5rem">
+          <input class="field-input" id="m-custom-role" placeholder="輸入自訂職稱，例如：顧問、導師…" />
         </div>
         <div class="field-hint" style="margin-top:.45rem">社長／副社長 顯示於領導核心區；組長 顯示於各組別最左側。每個職位限一人。</div>
       </div>
@@ -226,6 +243,25 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/admin.js?v=6"></script>
 <script>
+/* ── Position UI helpers ── */
+function setPositionUI(value, customText = '') {
+  document.querySelectorAll('input[name="m-position"]').forEach(r => {
+    r.checked = r.value === value;
+    r.closest('.position-opt').classList.toggle('selected', r.value === value);
+  });
+  const wrap = document.getElementById('m-custom-role-wrap');
+  const inp  = document.getElementById('m-custom-role');
+  const isOther = value === 'other';
+  wrap.style.display = isOther ? 'block' : 'none';
+  if (inp) inp.value = isOther ? customText : '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('input[name="m-position"]').forEach(r => {
+    r.addEventListener('change', () => setPositionUI(r.value));
+  });
+});
+
 /* ── State ── */
 let allMembers = [];
 let filteredMembers = [];
@@ -341,14 +377,13 @@ function applyFilter() {
 function openNewModal() {
   document.getElementById('member-id').value = '';
   document.getElementById('member-modal-title').textContent = t('members.new');
-  ['name','name_en','role','year','email','bio','bio_en'].forEach(f => {
+  ['name','name_en','year','email','bio','bio_en'].forEach(f => {
     const el = document.getElementById('m-' + f.replace('_','-'));
     if (el) el.value = '';
   });
   document.getElementById('m-dept').value = '';
   document.getElementById('m-status').value = 'active';
-  const radios = document.querySelectorAll('input[name="m-position"]');
-  radios.forEach(r => { r.checked = r.value === ''; });
+  setPositionUI('');
   setAvatarPreview(null);
   openModal('member-modal');
 }
@@ -361,14 +396,19 @@ async function editMember(id) {
   document.getElementById('m-name').value     = m.name || '';
   document.getElementById('m-name-en').value  = m.name_en || '';
   document.getElementById('m-dept').value     = m.dept || '';
-  document.getElementById('m-role').value     = m.role || '';
   document.getElementById('m-year').value     = m.year || '';
   document.getElementById('m-status').value   = m.status || 'active';
   document.getElementById('m-email').value    = m.email || '';
   document.getElementById('m-bio').value      = m.bio || '';
   document.getElementById('m-bio-en').value   = m.bio_en || '';
+  // position=null + role text → select "其他" and fill custom input
+  const knownPositions = ['president','vice_president','group_leader'];
   const pos = m.position || '';
-  document.querySelectorAll('input[name="m-position"]').forEach(r => { r.checked = r.value === pos; });
+  if (!pos && m.role) {
+    setPositionUI('other', m.role);
+  } else {
+    setPositionUI(pos);
+  }
   setAvatarPreview(m.photo || null);
   openModal('member-modal');
 }
@@ -398,8 +438,15 @@ document.getElementById('btn-save-member').addEventListener('click', async () =>
     bio:     document.getElementById('m-bio').value.trim(),
     bio_en:  document.getElementById('m-bio-en').value.trim(),
     photo:    memberPhoto || null,
-    position: (document.querySelector('input[name="m-position"]:checked')?.value) || null,
-    is_lead:  false,
+    position: (() => {
+      const v = document.querySelector('input[name="m-position"]:checked')?.value || '';
+      return (v && v !== 'other') ? v : null;
+    })(),
+    role: (() => {
+      const v = document.querySelector('input[name="m-position"]:checked')?.value || '';
+      return v === 'other' ? (document.getElementById('m-custom-role').value.trim() || null) : null;
+    })(),
+    is_lead: false,
   };
   if (!data.name) { showToast(t('msg.save_fail'), 'error'); return; }
   const btn = document.getElementById('btn-save-member');

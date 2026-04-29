@@ -161,7 +161,8 @@ const Admins = {
     return r.ok ? { ok: true, list: r.data?.admins || [] } : { ok: false, error: r.error, list: [] };
   },
   async invite(email, name, role = 'member') {
-    const r = await callAdminFn('POST', { body: { email, name, role } });
+    const redirectTo = window.location.origin + '/admin/index.html';
+    const r = await callAdminFn('POST', { body: { email, name, role, redirectTo } });
     return r.ok ? { ok: true, admin: r.data?.admin } : { ok: false, error: r.error };
   },
   async remove(id) {
@@ -1103,6 +1104,41 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.textContent = originalText;
       }
     });
+
+    /* Detect invite / password-recovery token in URL hash */
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const tokenType  = hashParams.get('type');
+    if (tokenType === 'invite' || tokenType === 'recovery') {
+      document.querySelector('.login-page').style.display = 'none';
+      const spBox = document.getElementById('set-password-box');
+      if (spBox) spBox.style.display = 'flex';
+      const spForm  = document.getElementById('set-password-form');
+      const spErr   = document.getElementById('sp-error');
+      const spBtn   = document.getElementById('sp-submit');
+      if (spForm) {
+        spForm.addEventListener('submit', async e => {
+          e.preventDefault();
+          spErr.classList.remove('show');
+          const np = document.getElementById('sp-new-pass').value;
+          const cp = document.getElementById('sp-confirm-pass').value;
+          if (np.length < 8) {
+            spErr.textContent = '密碼長度至少 8 位字元'; spErr.classList.add('show'); return;
+          }
+          if (np !== cp) {
+            spErr.textContent = '兩次密碼不一致，請重新輸入'; spErr.classList.add('show'); return;
+          }
+          spBtn.disabled = true; spBtn.textContent = '設定中…';
+          const { error } = await sb.auth.updateUser({ password: np });
+          if (error) {
+            spErr.textContent = error.message; spErr.classList.add('show');
+            spBtn.disabled = false; spBtn.textContent = '確認設定';
+            return;
+          }
+          window.location.href = 'dashboard.html';
+        });
+      }
+      return;
+    }
 
     /* If already logged in, skip login */
     const existing = await Auth.get();
