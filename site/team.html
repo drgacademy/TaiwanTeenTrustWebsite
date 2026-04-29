@@ -305,39 +305,24 @@ async function loadTeamMembers() {
       return;
     }
 
-    // Helper: detect president / vice-president from role field
-    function getLeadType(m) {
-      const r = m.role || '';
-      if (r.includes('副社長')) return 'vice';
-      if (r.includes('社長'))   return 'president';
-      return 'other';
-    }
-
-    // 渲染領導核心
-    const leads = memList.filter(m => m.is_lead);
+    // 渲染領導核心（社長 + 副社長，由 position 欄位決定）
+    const leads = memList.filter(m => m.position === 'president' || m.position === 'vice_president');
     const leadSection = document.getElementById('leadership-section');
     const leadGrid    = document.getElementById('leadership-grid');
     if (leads.length && leadSection && leadGrid) {
-      const palette = ['var(--r1)','var(--r2)','var(--r4)','var(--r5)','var(--r6)','var(--r7)'];
-      // Sort: president → vice → others
-      const typeOrder = { president: 0, vice: 1, other: 2 };
-      const sortedLeads = [...leads].sort((a, b) => typeOrder[getLeadType(a)] - typeOrder[getLeadType(b)]);
-      leadGrid.innerHTML = sortedLeads.map((m, i) => {
-        const type = getLeadType(m);
-        const c = type === 'president' ? '#ff8c00'
-                : type === 'vice'      ? 'var(--ttt-cyan)'
-                : palette[i % palette.length];
-        const cardClass = type === 'president' ? 'lead-card lead-card--president'
-                        : type === 'vice'      ? 'lead-card lead-card--vice'
-                        : 'lead-card';
-        const badge = type === 'president'
+      // president first, vice second
+      const sortedLeads = [...leads].sort((a, b) =>
+        (a.position === 'president' ? 0 : 1) - (b.position === 'president' ? 0 : 1));
+      leadGrid.innerHTML = sortedLeads.map(m => {
+        const isPresident = m.position === 'president';
+        const c = isPresident ? '#ff8c00' : 'var(--ttt-cyan)';
+        const cardClass = isPresident ? 'lead-card lead-card--president' : 'lead-card lead-card--vice';
+        const badge = isPresident
           ? `<div><span class="lead-badge lead-badge--president lang-zh">現任社長</span><span class="lead-badge lead-badge--president lang-en">President</span></div>`
-          : type === 'vice'
-          ? `<div><span class="lead-badge lead-badge--vice lang-zh">現任副社長</span><span class="lead-badge lead-badge--vice lang-en">Vice President</span></div>`
-          : '';
+          : `<div><span class="lead-badge lead-badge--vice lang-zh">現任副社長</span><span class="lead-badge lead-badge--vice lang-en">Vice President</span></div>`;
         const avatar = m.photo
           ? `<img src="${m.photo}" alt="${m.name}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">`
-          : `<div class="lead-card__avatar">⭐</div>`;
+          : `<div class="lead-card__avatar">${isPresident ? '⭐' : '🌟'}</div>`;
         return `
           <div class="${cardClass}">
             ${avatar}
@@ -354,9 +339,9 @@ async function loadTeamMembers() {
       leadSection.style.display = '';
     }
 
-    // 將「非領導核心」成員依 dept 分組
+    // 將「非社長/副社長」成員依 dept 分組（組長也在這裡）
     const byDept = {};
-    memList.filter(m => !m.is_lead).forEach(m => {
+    memList.filter(m => m.position !== 'president' && m.position !== 'vice_president').forEach(m => {
       const k = m.dept || '其他';
       (byDept[k] = byDept[k] || []).push(m);
     });
@@ -366,16 +351,16 @@ async function loadTeamMembers() {
       const rawList = byDept[d.key] || [];
       const bg = i % 2 === 1 ? '#fafafa' : 'transparent';
       const color = d.color || '#0099ff';
-      // Sort: group leaders (role contains 組長) go first
+      // Sort: group_leader position goes first
       const list = [...rawList].sort((a, b) => {
-        const aL = (a.role || '').includes('組長');
-        const bL = (b.role || '').includes('組長');
+        const aL = a.position === 'group_leader';
+        const bL = b.position === 'group_leader';
         if (aL && !bL) return -1;
         if (!aL && bL) return 1;
         return 0;
       });
       const cards = list.map(m => {
-        const isLeader = (m.role || '').includes('組長');
+        const isLeader = m.position === 'group_leader';
         const avatar = m.photo
           ? `<img src="${m.photo}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
           : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem">👤</div>`;
@@ -423,14 +408,14 @@ async function loadTeamMembers() {
       const rawList = byDept[k];
       const fallbackColor = '#888';
       const list = [...rawList].sort((a, b) => {
-        const aL = (a.role || '').includes('組長');
-        const bL = (b.role || '').includes('組長');
+        const aL = a.position === 'group_leader';
+        const bL = b.position === 'group_leader';
         if (aL && !bL) return -1;
         if (!aL && bL) return 1;
         return 0;
       });
       const cards = list.map(m => {
-        const isLeader = (m.role || '').includes('組長');
+        const isLeader = m.position === 'group_leader';
         const avatar = m.photo
           ? `<img src="${m.photo}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
           : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem">👤</div>`;
