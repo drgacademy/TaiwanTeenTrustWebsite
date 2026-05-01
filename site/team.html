@@ -111,6 +111,25 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 .join-cta{background:var(--black);padding:5rem var(--gutter);text-align:center;color:#fff}
 .join-cta h2{font-size:clamp(2rem,4vw,4rem);font-weight:900;letter-spacing:-.03em;margin-bottom:1rem}
 .join-cta p{font-size:1rem;color:rgba(255,255,255,.5);max-width:48ch;margin:0 auto 2.5rem}
+
+/* Member Profile Modal */
+.member-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);z-index:600;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.member-modal-backdrop.open{opacity:1;visibility:visible}
+.member-modal{background:#fff;border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:2.5rem;position:relative;transform:translateY(24px) scale(.96);transition:transform .4s cubic-bezier(0.16,1,0.3,1)}
+.member-modal-backdrop.open .member-modal{transform:translateY(0) scale(1)}
+.member-modal__close{position:absolute;top:1rem;right:1rem;width:32px;height:32px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:.95rem;cursor:pointer;border:none;font-family:inherit;transition:background .2s;color:#0a0a0a;line-height:1}
+.member-modal__close:hover{background:var(--gray-2)}
+.member-modal__photo{width:120px;height:120px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 1.5rem;border:3px solid var(--gray-2)}
+.member-modal__icon{width:120px;height:120px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1.5rem}
+.member-modal__name{font-size:1.4rem;font-weight:800;letter-spacing:-.02em;text-align:center;margin-bottom:.2rem}
+.member-modal__name-en{font-size:.9rem;color:var(--text-2);text-align:center;margin-bottom:1rem}
+.member-modal__badges{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.member-modal__badge{font-size:.65rem;font-weight:700;letter-spacing:.07em;padding:.22rem .65rem;border-radius:100px;text-transform:uppercase}
+.member-modal__divider{height:1px;background:var(--gray-2);margin:1.25rem 0}
+.member-modal__bio-label{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:.6rem}
+.member-modal__bio{font-size:.88rem;color:var(--text-2);line-height:1.78;white-space:pre-line}
+.member-modal__no-bio{font-size:.88rem;color:var(--text-3);text-align:center;font-style:italic}
+.member-card,.lead-card{cursor:pointer}
   </style>
 </head>
 <body>
@@ -280,12 +299,66 @@ gsap.utils.toArray('.member-card').forEach((el, i) => {
   });
 });
 </script>
+<!-- Member Profile Modal -->
+<div class="member-modal-backdrop" id="member-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="member-modal-name">
+  <div class="member-modal" id="member-modal">
+    <button class="member-modal__close" id="member-modal-close" aria-label="Close">✕</button>
+    <div id="member-modal-body"></div>
+  </div>
+</div>
+
 <script src="js/aurora.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/site-content.js?v=1"></script>
 <script>
 const SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
+
+const memberDataStore = {};
+
+function openMemberModal(m) {
+  const lang = localStorage.getItem('ttt-lang') || 'zh';
+  const name = (lang === 'en' && m.name_en) ? m.name_en : (m.name || '');
+  const nameAlt = lang === 'en' ? (m.name || '') : (m.name_en || '');
+  const bio = (lang === 'en' && m.bio_en) ? m.bio_en : (m.bio || '');
+
+  let posLabel = '';
+  if (m.position === 'president') posLabel = lang === 'en' ? 'President' : '社長';
+  else if (m.position === 'vice_president') posLabel = lang === 'en' ? 'Vice President' : '副社長';
+  else if (m.position === 'group_leader') posLabel = lang === 'en' ? 'Group Leader' : '組長';
+
+  const photo = m.photo
+    ? `<img src="${m.photo}" alt="${name}" class="member-modal__photo">`
+    : `<div class="member-modal__icon">👤</div>`;
+
+  const badgeColor = m.cardColor || '#888';
+  const badges = [];
+  if (posLabel) badges.push(`<span class="member-modal__badge" style="background:${badgeColor};color:#fff">${posLabel}</span>`);
+  if (m.role) badges.push(`<span class="member-modal__badge" style="background:#f0f0f0;color:#444">${m.role}</span>`);
+  const deptLabel = lang === 'en' ? (m.deptLabel_en || m.deptKey || '') : (m.deptLabel_zh || m.deptKey || '');
+  if (deptLabel) badges.push(`<span class="member-modal__badge" style="background:#f0f0f0;color:#888">${deptLabel}</span>`);
+
+  const bioSection = bio
+    ? `<div class="member-modal__bio-label">${lang === 'en' ? 'About' : '自我介紹'}</div><div class="member-modal__bio">${bio}</div>`
+    : `<div class="member-modal__no-bio">${lang === 'en' ? 'No introduction yet.' : '尚未填寫自我介紹。'}</div>`;
+
+  document.getElementById('member-modal-body').innerHTML = `
+    ${photo}
+    <div class="member-modal__name" id="member-modal-name">${name}</div>
+    ${nameAlt ? `<div class="member-modal__name-en">${nameAlt}</div>` : ''}
+    ${badges.length ? `<div class="member-modal__badges">${badges.join('')}</div>` : ''}
+    <div class="member-modal__divider"></div>
+    ${bioSection}
+  `;
+
+  document.getElementById('member-modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMemberModal() {
+  document.getElementById('member-modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 async function loadTeamMembers() {
   const container = document.getElementById('depts-container');
@@ -299,6 +372,7 @@ async function loadTeamMembers() {
 
     const deptList = depts || [];
     const memList  = members || [];
+    const deptMap  = Object.fromEntries(deptList.map(d => [d.key, d]));
 
     if (!deptList.length && !memList.length) {
       emptyEl.style.display = 'block';
@@ -310,12 +384,14 @@ async function loadTeamMembers() {
     const leadSection = document.getElementById('leadership-section');
     const leadGrid    = document.getElementById('leadership-grid');
     if (leads.length && leadSection && leadGrid) {
-      // president first, vice second
       const sortedLeads = [...leads].sort((a, b) =>
         (a.position === 'president' ? 0 : 1) - (b.position === 'president' ? 0 : 1));
       leadGrid.innerHTML = sortedLeads.map(m => {
         const isPresident = m.position === 'president';
-        const c = isPresident ? '#ff8c00' : 'var(--ttt-cyan)';
+        const cardColor = isPresident ? '#ff8c00' : 'var(--ttt-cyan)';
+        const dept = deptMap[m.dept] || {};
+        memberDataStore[m.id] = { ...m, cardColor, deptLabel_zh: dept.label_zh || m.dept || '', deptLabel_en: dept.label_en || m.dept || '', deptKey: m.dept || '' };
+        const c = cardColor;
         const cardClass = isPresident ? 'lead-card lead-card--president' : 'lead-card lead-card--vice';
         const badge = isPresident
           ? `<div><span class="lead-badge lead-badge--president lang-zh">現任社長</span><span class="lead-badge lead-badge--president lang-en">President</span></div>`
@@ -324,7 +400,7 @@ async function loadTeamMembers() {
           ? `<img src="${m.photo}" alt="${m.name}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">`
           : `<div class="lead-card__avatar">${isPresident ? '⭐' : '🌟'}</div>`;
         return `
-          <div class="${cardClass}">
+          <div class="${cardClass}" data-member-id="${m.id}">
             ${avatar}
             <div>
               ${badge}
@@ -337,6 +413,13 @@ async function loadTeamMembers() {
           </div>`;
       }).join('');
       leadSection.style.display = '';
+
+      leadGrid.querySelectorAll('[data-member-id]').forEach(card => {
+        card.addEventListener('click', () => {
+          const member = memberDataStore[card.dataset.memberId];
+          if (member) openMemberModal(member);
+        });
+      });
     }
 
     // 將「非社長/副社長」成員依 dept 分組（組長也在這裡）
@@ -346,12 +429,11 @@ async function loadTeamMembers() {
       (byDept[k] = byDept[k] || []).push(m);
     });
 
-    // 依部門順序輸出（沒成員的部門也顯示，方便管理員看到結構）
+    // 依部門順序輸出
     const blocks = deptList.map((d, i) => {
       const rawList = byDept[d.key] || [];
       const bg = i % 2 === 1 ? '#fafafa' : 'transparent';
       const color = d.color || '#0099ff';
-      // Sort: group_leader position goes first
       const list = [...rawList].sort((a, b) => {
         const aL = a.position === 'group_leader';
         const bL = b.position === 'group_leader';
@@ -361,12 +443,13 @@ async function loadTeamMembers() {
       });
       const cards = list.map(m => {
         const isLeader = m.position === 'group_leader';
+        memberDataStore[m.id] = { ...m, cardColor: color, deptLabel_zh: d.label_zh || '', deptLabel_en: d.label_en || d.label_zh || '', deptKey: d.key || '' };
         const avatar = m.photo
-          ? `<img src="${m.photo}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
-          : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem">👤</div>`;
+          ? `<img src="${m.photo}" alt="${m.name}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
+          : `<div style="width:96px;height:96px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto .75rem">👤</div>`;
         if (isLeader) {
           return `
-          <div class="member-card member-card--leader" style="border-top-color:${color}">
+          <div class="member-card member-card--leader" style="border-top-color:${color}" data-member-id="${m.id}">
             <div><span class="member-card__leader-badge lang-zh" style="background:${color}">組長</span><span class="member-card__leader-badge lang-en" style="background:${color}">Lead</span></div>
             ${avatar}
             <div class="member-card__name lang-zh">${m.name || ''}</div>
@@ -376,7 +459,7 @@ async function loadTeamMembers() {
           </div>`;
         }
         return `
-          <div class="member-card">
+          <div class="member-card" data-member-id="${m.id}">
             ${avatar}
             <div class="member-card__name lang-zh">${m.name || ''}</div>
             <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
@@ -416,12 +499,13 @@ async function loadTeamMembers() {
       });
       const cards = list.map(m => {
         const isLeader = m.position === 'group_leader';
+        memberDataStore[m.id] = { ...m, cardColor: fallbackColor, deptLabel_zh: k, deptLabel_en: k, deptKey: k };
         const avatar = m.photo
-          ? `<img src="${m.photo}" alt="${m.name}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
-          : `<div style="width:64px;height:64px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto .75rem">👤</div>`;
+          ? `<img src="${m.photo}" alt="${m.name}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
+          : `<div style="width:96px;height:96px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto .75rem">👤</div>`;
         if (isLeader) {
           return `
-          <div class="member-card member-card--leader" style="border-top-color:${fallbackColor}">
+          <div class="member-card member-card--leader" style="border-top-color:${fallbackColor}" data-member-id="${m.id}">
             <div><span class="member-card__leader-badge lang-zh" style="background:${fallbackColor}">組長</span><span class="member-card__leader-badge lang-en" style="background:${fallbackColor}">Lead</span></div>
             ${avatar}
             <div class="member-card__name lang-zh">${m.name || ''}</div>
@@ -431,7 +515,7 @@ async function loadTeamMembers() {
           </div>`;
         }
         return `
-          <div class="member-card">
+          <div class="member-card" data-member-id="${m.id}">
             ${avatar}
             <div class="member-card__name lang-zh">${m.name || ''}</div>
             <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
@@ -458,6 +542,14 @@ async function loadTeamMembers() {
       emptyEl.style.display = 'block';
     }
 
+    // 加上點擊開啟 modal 的事件
+    container.querySelectorAll('[data-member-id]').forEach(card => {
+      card.addEventListener('click', () => {
+        const member = memberDataStore[card.dataset.memberId];
+        if (member) openMemberModal(member);
+      });
+    });
+
     // 重新觸發語系切換套用 data-zh/data-en
     if (typeof setLang === 'function') {
       setLang(localStorage.getItem('ttt-lang') || 'zh');
@@ -477,7 +569,13 @@ async function loadTeamMembers() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', loadTeamMembers);
+document.addEventListener('DOMContentLoaded', () => {
+  loadTeamMembers();
+  const backdrop = document.getElementById('member-modal-backdrop');
+  backdrop.addEventListener('click', e => { if (e.target === backdrop) closeMemberModal(); });
+  document.getElementById('member-modal-close').addEventListener('click', closeMemberModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMemberModal(); });
+});
 </script>
 </body>
 </html>
