@@ -828,7 +828,7 @@ body.lang-is-en span.lang-en { display: inline; }
       </div>
       <div class="stat-item">
         <div class="stat-num">
-          <span class="counter" data-target="10000" data-site-key="stat_reached" data-site-attr="data-target">0</span><span class="stat-suf">+</span>
+          <span class="counter" data-target="10000" data-reach-counter>0</span><span class="stat-suf">+</span>
         </div>
         <div class="stat-label lang-zh">觸及人次</div>
         <div class="stat-label lang-en">People Reached</div>
@@ -1268,7 +1268,7 @@ gsap.utils.toArray('.proj-card').forEach((el, i) => {
 const REACH_BASE = 10000;
 const REACH_SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
 const REACH_SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
-const reachEl = document.querySelector('.counter[data-target="10000"]');
+const reachEl = document.querySelector('.counter[data-reach-counter]');
 let reachCurrent = REACH_BASE;  // fallback if RPC fails
 
 async function fetchReach() {
