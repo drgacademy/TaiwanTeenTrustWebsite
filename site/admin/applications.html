@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n-title-key="nav.applications">TTT Admin — 加入申請</title>
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="css/admin.css?v=5" />
+  <style>
+    .status-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .65rem;border-radius:100px;font-size:.72rem;font-weight:600;letter-spacing:.03em}
+    .status-badge.pending{background:#fff7e0;color:#b87000}
+    .status-badge.reviewed{background:#e8f0ff;color:#2255cc}
+    .status-badge.accepted{background:#e6faf0;color:#0a7a45}
+    .status-badge.rejected{background:#ffeaea;color:#c00}
+    .status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:currentColor}
+    .app-num{font-weight:700;color:var(--text-3);font-size:.82rem}
+    .detail-field{margin-bottom:1.25rem}
+    .detail-field label{display:block;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:.35rem}
+    .detail-field p{font-size:.9rem;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .detail-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:580px){.detail-row{grid-template-columns:1fr}}
+    .status-select{padding:.35rem .7rem;border:1.5px solid var(--border);border-radius:6px;font-size:.82rem;font-family:inherit;background:var(--surface);color:var(--text);cursor:pointer}
+    .access-denied{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:1rem;text-align:center}
+    .access-denied svg{opacity:.3}
+    .access-denied h2{font-size:1.3rem;font-weight:700;color:var(--text-3)}
+    .access-denied p{font-size:.9rem;color:var(--text-3)}
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="admin-sidebar">
+    <div class="sidebar-brand">
+      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
+      <a href="dashboard.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span>
+      </a>
+      <a href="members.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav.members">團隊成員</span>
+      </a>
+      <a href="projects.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span>
+      </a>
+      <a href="blog.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span>
+      </a>
+      <a href="map-locations.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span>
+      </a>
+      <a href="applications.html" class="sidebar-link active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="nav.applications">加入申請</span>
+      </a>
+      <a href="users.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span>
+      </a>
+      <a href="settings.html" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span>
+      </a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
+      <a href="../index.html" target="_blank" class="sidebar-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span>
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">A</div>
+        <div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div>
+      </div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div class="topbar-breadcrumb">
+        <a href="dashboard.html" data-i18n="common.home">首頁</a><span>/</span><span style="color:var(--text)" data-i18n="nav.applications">加入申請</span>
+      </div>
+    </div>
+
+    <div class="admin-content" id="main-content">
+      <!-- Access denied state (hidden by default, shown if not admin) -->
+      <div class="access-denied" id="access-denied" style="display:none">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        <h2>無存取權限</h2>
+        <p>此頁面僅限管理員帳號查看。</p>
+      </div>
+
+      <div class="panel" id="apps-panel">
+        <div class="panel__header">
+          <div class="panel__title">加入申請</div>
+          <div class="panel__toolbar">
+            <div class="search-input">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="search-apps" placeholder="搜尋姓名、學校…" />
+            </div>
+            <select class="select-input" id="filter-status">
+              <option value="">所有狀態</option>
+              <option value="pending">待審核</option>
+              <option value="reviewed">已閱讀</option>
+              <option value="accepted">已錄取</option>
+              <option value="rejected">未錄取</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:48px">#</th>
+                <th>中文姓名</th>
+                <th>英文姓名</th>
+                <th>高中全名</th>
+                <th>畢業年份</th>
+                <th>申請時間</th>
+                <th>狀態</th>
+                <th style="text-align:right">操作</th>
+              </tr>
+            </thead>
+            <tbody id="apps-tbody">
+              <tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon">📋</div><div class="empty-state__title">讀取中…</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div id="apps-count" style="color:var(--text-3);font-size:.75rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Detail Modal ── -->
+<div class="modal-backdrop" id="app-detail-modal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal__header">
+      <div class="modal__title" id="app-modal-title">申請詳情</div>
+      <button class="modal__close" data-close-modal>✕</button>
+    </div>
+    <div class="modal__body" id="app-modal-body"></div>
+    <div class="modal__footer">
+      <div style="display:flex;align-items:center;gap:.75rem;flex:1">
+        <label style="font-size:.78rem;font-weight:600;color:var(--text-3)">狀態</label>
+        <select class="status-select" id="app-status-select">
+          <option value="pending">待審核</option>
+          <option value="reviewed">已閱讀</option>
+          <option value="accepted">已錄取</option>
+          <option value="rejected">未錄取</option>
+        </select>
+        <button class="btn btn--primary btn--sm" id="btn-save-status">儲存狀態</button>
+      </div>
+      <button class="btn btn--outline" data-close-modal>關閉</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/admin.js?v=6"></script>
+<script>
+let appList = [];
+let currentAppId = null;
+
+const STATUS_LABELS = {
+  pending:  '待審核',
+  reviewed: '已閱讀',
+  accepted: '已錄取',
+  rejected: '未錄取',
+};
+
+function statusBadge(s) {
+  const label = STATUS_LABELS[s] || s;
+  return `<span class="status-badge ${s}"><span class="status-dot"></span>${label}</span>`;
+}
+
+function fmtTs(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+function esc(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+function renderTable(list) {
+  const tbody = document.getElementById('apps-tbody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-state__icon">📭</div><div class="empty-state__title">目前尚無申請記錄</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map((a, i) => {
+    const num = appList.indexOf(a) + 1;
+    return `<tr>
+      <td><span class="app-num">#${num}</span></td>
+      <td><strong>${esc(a.name_zh)}</strong></td>
+      <td>${esc(a.name_en)}</td>
+      <td>${esc(a.school)}</td>
+      <td>${esc(a.graduation_year)}</td>
+      <td style="font-size:.8rem;color:var(--text-3)">${fmtTs(a.created_at)}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td style="text-align:right">
+        <div class="td-actions" style="justify-content:flex-end">
+          <button class="btn btn--ghost btn--sm" onclick="openDetail('${a.id}')">查看</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('apps-count').textContent = `共 ${appList.length} 筆申請`;
+}
+
+function applyFilters() {
+  const q = document.getElementById('search-apps').value.toLowerCase();
+  const status = document.getElementById('filter-status').value;
+  let filtered = appList;
+  if (q) filtered = filtered.filter(a =>
+    (a.name_zh || '').toLowerCase().includes(q) ||
+    (a.name_en || '').toLowerCase().includes(q) ||
+    (a.school  || '').toLowerCase().includes(q)
+  );
+  if (status) filtered = filtered.filter(a => a.status === status);
+  renderTable(filtered);
+}
+
+async function loadApps() {
+  const { data, error } = await sb.from('join_applications').select('*').order('created_at', { ascending: true });
+  if (error) {
+    showToast('讀取失敗：' + error.message, 'error');
+    return;
+  }
+  appList = data || [];
+  applyFilters();
+}
+
+function openDetail(id) {
+  const a = appList.find(x => x.id === id);
+  if (!a) return;
+  currentAppId = id;
+  const num = appList.indexOf(a) + 1;
+  document.getElementById('app-modal-title').textContent = `申請 #${num} — ${a.name_zh}`;
+  document.getElementById('app-status-select').value = a.status || 'pending';
+  document.getElementById('app-modal-body').innerHTML = `
+    <div class="detail-row">
+      <div class="detail-field"><label>中文全名</label><p>${esc(a.name_zh)}</p></div>
+      <div class="detail-field"><label>英文全名</label><p>${esc(a.name_en)}</p></div>
+    </div>
+    <div class="detail-row">
+      <div class="detail-field"><label>高中全名</label><p>${esc(a.school)}</p></div>
+      <div class="detail-field"><label>畢業年份</label><p>${esc(a.graduation_year)}</p></div>
+    </div>
+    <div class="detail-field"><label>申請時間</label><p>${fmtTs(a.created_at)}</p></div>
+    <div class="detail-field"><label>為什麼想要加入 Taiwan Teen Trust？</label><p>${esc(a.reason_join)}</p></div>
+    <div class="detail-field"><label>在 TTT 可以學到什麼？實現什麼？</label><p>${esc(a.expected_gains)}</p></div>
+  `;
+  openModal('app-detail-modal');
+}
+
+document.getElementById('btn-save-status').addEventListener('click', async () => {
+  if (!currentAppId) return;
+  const newStatus = document.getElementById('app-status-select').value;
+  const btn = document.getElementById('btn-save-status');
+  btn.disabled = true;
+  const { error } = await sb.from('join_applications').update({ status: newStatus }).eq('id', currentAppId);
+  btn.disabled = false;
+  if (error) {
+    showToast('更新失敗：' + error.message, 'error');
+    return;
+  }
+  const app = appList.find(a => a.id === currentAppId);
+  if (app) app.status = newStatus;
+  showToast('狀態已更新', 'success');
+  closeModal('app-detail-modal');
+  applyFilters();
+});
+
+document.getElementById('search-apps').addEventListener('input', applyFilters);
+document.getElementById('filter-status').addEventListener('change', applyFilters);
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', async () => {
+  initModals();
+
+  const user = await Auth.check();
+  if (!user) return;
+
+  await initSidebar();
+  injectSidebarLangToggle();
+  applyI18n();
+
+  /* Role check: only admin role can access this page */
+  const { data: adminRow } = await sb.from('admin_users').select('role').eq('id', user.id).single();
+  if (!adminRow || adminRow.role !== 'admin') {
+    document.getElementById('apps-panel').style.display = 'none';
+    document.getElementById('access-denied').style.display = 'flex';
+    return;
+  }
+
+  await loadApps();
+});
+</script>
+</body>
+</html>
