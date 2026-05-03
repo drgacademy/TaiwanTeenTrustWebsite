@@ -327,6 +327,24 @@ async function initSidebar() {
       link.addEventListener('click', () => { if (window.innerWidth <= 768) closeSidebar(); });
     });
   }
+
+  /* Pending applications badge (admin only) */
+  if (role === 'admin') {
+    try {
+      const { count } = await sb.from('join_applications')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      if (count > 0) {
+        const appsLink = document.querySelector('.admin-sidebar a[href="applications.html"]');
+        if (appsLink && !appsLink.querySelector('.sidebar-notif')) {
+          const badge = document.createElement('span');
+          badge.className = 'sidebar-notif';
+          badge.textContent = count > 99 ? '99+' : count;
+          appsLink.appendChild(badge);
+        }
+      }
+    } catch (_) {}
+  }
 }
 
 /* ── Search filter helper ── */
