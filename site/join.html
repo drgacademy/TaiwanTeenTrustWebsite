@@ -88,6 +88,9 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 .field-error .form-input,.field-error .form-textarea,.field-error .form-select{border-color:#ff3b3b!important;box-shadow:none}
 .form-err{font-size:.78rem;color:#ff3b3b;margin-top:.35rem;display:none}
 .form-err.show{display:block}
+/* Submit notice */
+.submit-notice{display:flex;align-items:flex-start;gap:.65rem;background:#f0f8ff;border:1px solid #c8e4ff;border-radius:8px;padding:.85rem 1rem;font-size:.85rem;color:#1a6fb5;margin-bottom:1.25rem;line-height:1.6}
+.submit-notice svg{flex-shrink:0;margin-top:.15rem;color:#1a6fb5}
 /* Submit error */
 .submit-err{background:#fff0f0;border:1px solid #ffcccc;border-radius:8px;padding:.75rem 1rem;font-size:.85rem;color:#c00;margin-bottom:1rem;display:none}
 /* Success */
@@ -182,6 +185,20 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
         </div>
       </div>
 
+      <div class="form-group" id="fg-email">
+        <label class="form-label" for="email">
+          <span class="lang-zh">電子郵件<span class="req">*</span></span>
+          <span class="lang-en">Email Address<span class="req">*</span></span>
+        </label>
+        <div class="form-sublabel lang-zh">請填寫常用信箱，我們將透過此信箱與您聯繫面談事宜。</div>
+        <div class="form-sublabel lang-en">Please use your primary email address — we'll contact you here to arrange the interview.</div>
+        <input class="form-input" type="email" id="email" autocomplete="email" placeholder="you@example.com" />
+        <div class="form-err" id="err-email">
+          <span class="lang-zh">請填寫有效的電子郵件地址</span>
+          <span class="lang-en">Please enter a valid email address</span>
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="form-group" id="fg-school">
           <label class="form-label" for="school">
@@ -241,6 +258,12 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
           <span class="lang-zh">請填寫此欄位</span>
           <span class="lang-en">Please fill in this field</span>
         </div>
+      </div>
+
+      <div class="submit-notice">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <span class="lang-zh">在收到您的申請後，我們會在 <strong>7–10 個工作天</strong>內寄信給您預約面談時間，麻煩注意一下自己的信箱喔，謝謝！</span>
+        <span class="lang-en">After receiving your application, we'll email you within <strong>7–10 business days</strong> to schedule an interview. Please keep an eye on your inbox — thank you!</span>
       </div>
 
       <div class="submit-err" id="submit-err"></div>
@@ -341,10 +364,11 @@ function setFieldError(field, show) {
 
 function validate() {
   let ok = true;
-  ['name_zh', 'name_en', 'school', 'graduation_year', 'reason_join', 'expected_gains'].forEach(f => {
-    const empty = !val(f);
-    setFieldError(f, empty);
-    if (empty) ok = false;
+  ['name_zh', 'name_en', 'email', 'school', 'graduation_year', 'reason_join', 'expected_gains'].forEach(f => {
+    let invalid = !val(f);
+    if (f === 'email' && !invalid) invalid = !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val(f));
+    setFieldError(f, invalid);
+    if (invalid) ok = false;
   });
   return ok;
 }
@@ -359,6 +383,7 @@ form.addEventListener('submit', async e => {
     const { error } = await sb.from('join_applications').insert({
       name_zh: val('name_zh'),
       name_en: val('name_en'),
+      email: val('email'),
       school: val('school'),
       graduation_year: val('graduation_year'),
       reason_join: val('reason_join'),
