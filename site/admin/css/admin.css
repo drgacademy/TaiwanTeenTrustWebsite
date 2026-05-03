@@ -244,6 +244,12 @@ input, textarea, select { font-family: inherit; }
   width: 4px; height: 4px; border-radius: 50%; background: var(--accent);
   box-shadow: 0 0 8px var(--accent);
 }
+.sidebar-notif {
+  margin-left: auto; flex-shrink: 0;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 100px; background: #e05252; color: #fff;
+  font-size: .65rem; font-weight: 700; line-height: 18px; text-align: center;
+}
 .sidebar-footer {
   margin-top: auto;
   padding: 1rem 1.35rem;
