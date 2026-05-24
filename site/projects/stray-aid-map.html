@@ -282,7 +282,14 @@
       position: sticky; top: var(--nav-h);
     }
     @media (max-width: 768px) {
-      .map-sidebar { position: static; max-height: none; border-right: none; border-bottom: 1px solid var(--border); }
+      .map-sidebar {
+        position: static;
+        height: 350px;
+        display: flex;
+        flex-direction: column;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
     }
     .sidebar-head {
       padding: 1.25rem 1.25rem .75rem;
@@ -714,8 +721,8 @@
             <span class="lang-zh">浪浪<br><span style="color:var(--accent)">援助地圖</span></span>
             <span class="lang-en">Stray<br><span style="color:var(--accent)">Aid Map</span></span>
           </h1>
-          <p class="map-hero__desc lang-zh">整合全台收容所資訊，透過互動地圖讓每個人都能快速找到最近的流浪動物收容所。</p>
-          <p class="map-hero__desc lang-en">Browse animal shelters across Taiwan — find the nearest one in seconds with our interactive map.</p>
+          <p class="map-hero__desc lang-zh">以減少流浪動物苦難為核心，我們整合全台收容所即時資訊，透過地圖連結救援資源，守護每一個流浪的生命。</p>
+          <p class="map-hero__desc lang-en">Dedicated to reducing the suffering of stray animals, we connect vital rescue resources across Taiwan to protect every vulnerable life.</p>
 
           <div class="map-stats">
             <div class="map-stat">
@@ -851,6 +858,16 @@
         <span class="lang-zh">關閉</span>
         <span class="lang-en">Close</span>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ SHELTER INFO MODAL ════════════════════ -->
+<div class="modal-overlay" id="modal-shelter-info">
+  <div class="modal-box" style="max-width: 500px;">
+    <button class="modal-close" id="close-shelter-info" aria-label="Close">×</button>
+    <div id="shelter-info-content">
+      <!-- Will be populated dynamically -->
     </div>
   </div>
 </div>
@@ -1044,6 +1061,16 @@
 </script>
 
 <script>
+/* ════════════════════ SAFETY UTILITIES ════════════════════ */
+function esc(str) {
+  if (typeof str !== 'string') return str;
+  return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+}
+
 /* ════════════════════ LANG SYSTEM ════════════════════ */
 let currentLang = 'zh';
 
@@ -1099,7 +1126,7 @@ async function loadLocations() {
   try {
     const { data, error } = await window.supabaseClient
       .from('map_locations')
-      .select('*')
+      .select('id, name, name_en, type, status, address, address_en, phone, hours, hours_en, lat, lng, food_weeks, needs, custom_needs, image_url')
       .eq('type', 'shelter')
       .eq('status', 'active')
       .order('name', { ascending: true });
@@ -1117,13 +1144,14 @@ async function loadLocations() {
       lng: parseFloat(loc.lng),
       url: '#',
       foodWeeks: parseFloat(loc.food_weeks) || 0,
-      needs: convertNeeds(loc.needs)
+      needs: convertNeeds(loc.needs),
+      customNeeds: loc.custom_needs || '',
+      imageUrl: loc.image_url || ''
     }));
 
     return true;
   } catch (err) {
     console.warn('[stray-aid-map] Failed to load from DB, using fallback:', err);
-    // Fallback: hardcoded minimal data
     LOCATIONS = [];
     return false;
   }
@@ -1150,7 +1178,6 @@ function convertNeeds(needs) {
   const zh = [];
   const en = [];
   needs.forEach(n => {
-    // Backwards-compat: old 'normal' level → treat as 'moderate'
     const level = n.level === 'normal' ? 'moderate' : n.level;
     if (level !== 'urgent' && level !== 'moderate' && level !== 'slight') return;
     const labels = needsMap[n.key] || { zh: n.label_zh || n.key, en: n.label_en || n.key };
@@ -1192,29 +1219,17 @@ function makeIcon(loc) {
 }
 
 /* ════════════════════ POPUP FACTORY ════════════════════ */
-function makePopupHTML(loc, lang, showNeeds) {
+function makePopupHTML(loc, lang) {
   const fs    = foodStatus(loc.foodWeeks);
-  const name  = loc.name[lang]  || loc.name.zh;
-  const addr  = loc.addr[lang]  || loc.addr.zh;
-  const hours = loc.hours[lang] || loc.hours.zh;
+  const name  = esc(loc.name[lang]  || loc.name.zh);
+  const addr  = esc(loc.addr[lang]  || loc.addr.zh);
+  const hours = esc(loc.hours[lang] || loc.hours.zh);
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name.zh)}`;
   const dirLabel    = lang === 'zh' ? '導航前往' : 'Get Directions';
   const infoLabel   = lang === 'zh' ? '更多資訊' : 'More Info';
-  const needsTitle  = lang === 'zh' ? '目前缺乏物資／資金' : 'Current Needs';
   const weeksLabel  = lang === 'zh' ? `${loc.foodWeeks} 週` : `${loc.foodWeeks} wks`;
-  const needs = loc.needs[lang] || loc.needs.zh;
 
-  const needsSection = showNeeds ? `
-    <div class="popup-needs">
-      <div class="popup-needs__title">🆘 ${needsTitle}</div>
-      <div class="popup-needs__tags">
-        ${needs.map(n => `<span class="need-tag need-tag--${n.level || 'moderate'}">${n.label}</span>`).join('')}
-      </div>
-    </div>` : '';
-
-  const infoBtn = showNeeds
-    ? `<span class="popup-btn popup-btn--outline" style="opacity:.45;cursor:default">${infoLabel}</span>`
-    : `<button class="popup-btn popup-btn--outline" onclick="expandNeeds('${loc.id}')">${infoLabel}</button>`;
+  const infoBtn = `<button class="popup-btn popup-btn--outline" onclick="openShelterInfoModal('${loc.id}')">${infoLabel}</button>`;
 
   return `
     <div class="popup-inner">
@@ -1222,7 +1237,7 @@ function makePopupHTML(loc, lang, showNeeds) {
       <div class="popup-name">${name}</div>
       <div class="food-badge" style="color:${fs.color}">
         <div class="food-badge__dot"></div>
-        ${fs.label[lang]}
+        ${esc(fs.label[lang])}
         <span class="food-badge__weeks">${weeksLabel}</span>
       </div>
       <div class="popup-row">
@@ -1236,10 +1251,9 @@ function makePopupHTML(loc, lang, showNeeds) {
       ${loc.phone ? `
       <div class="popup-row">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${fs.color}" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span>${loc.phone}</span>
+        <span>${esc(loc.phone)}</span>
       </div>` : ''}
     </div>
-    ${needsSection}
     <div class="popup-actions">
       <a href="${mapUrl}" target="_blank" class="popup-btn popup-btn--primary">${dirLabel}</a>
       ${infoBtn}
@@ -1247,12 +1261,98 @@ function makePopupHTML(loc, lang, showNeeds) {
   `;
 }
 
-/* ════════════════════ EXPAND NEEDS ════════════════════ */
-function expandNeeds(id) {
+/* ════════════════════ SHELTER INFO MODAL OPENER ════════════════════ */
+function openShelterInfoModal(id) {
   const loc = LOCATIONS.find(l => l.id === id);
-  if (!loc || !markers[id]) return;
-  markers[id].setPopupContent(makePopupHTML(loc, currentLang, true));
-  markers[id].getPopup().update();
+  if (!loc) return;
+  const lang = currentLang;
+  const fs = foodStatus(loc.foodWeeks);
+  const name = esc(loc.name[lang] || loc.name.zh);
+  const addr = esc(loc.addr[lang] || loc.addr.zh);
+  const hours = esc(loc.hours[lang] || loc.hours.zh);
+  const phone = esc(loc.phone || '');
+  const weeksLabel = lang === 'zh' ? `${loc.foodWeeks} 週` : `${loc.foodWeeks} weeks`;
+  const needsTitle = lang === 'zh' ? '目前缺乏物資／資金' : 'Current Needs';
+  const needsList = loc.needs[lang] || loc.needs.zh;
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name.zh)}`;
+  const dirLabel = lang === 'zh' ? '導航前往' : 'Get Directions';
+
+  let needsHtml = '';
+  if (needsList && needsList.length > 0) {
+    needsHtml = `
+      <div class="popup-needs" style="margin-top: 1.5rem;">
+        <div class="popup-needs__title" style="font-weight: 700; margin-bottom: 0.5rem;">🆘 ${needsTitle}</div>
+        <div class="popup-needs__tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          ${needsList.map(n => `<span class="need-tag need-tag--${n.level || 'moderate'}">${esc(n.label)}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  } else {
+    needsHtml = `
+      <div style="margin-top: 1.5rem; color: var(--text-3);">
+        ${lang === 'zh' ? '暫無急需物資資訊' : 'No urgent needs listed'}
+      </div>
+    `;
+  }
+
+  let customNeedsHtml = '';
+  if (loc.customNeeds) {
+    customNeedsHtml = `
+      <div style="margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+        <div style="font-weight: 700; margin-bottom: 0.5rem; color: var(--text-2);">${lang === 'zh' ? '收容所特別說明' : 'Special Notes'}</div>
+        <p style="font-size: 0.9rem; color: var(--text-2); line-height: 1.6; white-space: pre-line;">${esc(loc.customNeeds)}</p>
+      </div>
+    `;
+  }
+
+  let imageHtml = '';
+  if (loc.imageUrl) {
+    imageHtml = `
+      <div style="width: 100%; height: 180px; overflow: hidden; border-radius: 6px; margin-bottom: 1.25rem;">
+        <img src="${esc(loc.imageUrl)}" alt="${name}" style="width: 100%; height: 100%; object-fit: cover;" />
+      </div>
+    `;
+  }
+
+  const contentEl = document.getElementById('shelter-info-content');
+  contentEl.innerHTML = `
+    ${imageHtml}
+    <div class="popup-type" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem;">
+      🏠 ${lang === 'zh' ? '收容所詳細資訊' : 'Shelter Details'}
+    </div>
+    <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--text);">${name}</h3>
+    
+    <div class="food-badge" style="color:${fs.color}; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; margin-bottom: 1.25rem;">
+      <div class="food-badge__dot" style="width: 8px; height: 8px; border-radius: 50%; background: ${fs.color};"></div>
+      ${esc(fs.label[lang])}
+      <span style="font-weight: normal; opacity: 0.75;">(${weeksLabel})</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-2); font-size: 0.95rem;">
+      <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+        <span style="flex-shrink: 0; color: var(--accent);">📍</span>
+        <span>${addr}</span>
+      </div>
+      <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+        <span style="flex-shrink: 0; color: var(--accent);">🕒</span>
+        <span>${hours}</span>
+      </div>
+      ${phone ? `
+      <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
+        <span style="flex-shrink: 0; color: var(--accent);">📞</span>
+        <span>${phone}</span>
+      </div>` : ''}
+    </div>
+
+    ${needsHtml}
+    ${customNeedsHtml}
+
+    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+      <a href="${mapUrl}" target="_blank" class="popup-btn popup-btn--primary" style="flex: 1; text-align: center; display: inline-block; padding: 0.75rem; border-radius: 6px; background: var(--accent); color: var(--bg); font-weight: 700;">${dirLabel}</a>
+    </div>
+  `;
+
+  document.getElementById('modal-shelter-info').classList.add('open');
 }
 
 /* ════════════════════ FILTERED LIST ════════════════════ */
@@ -1274,7 +1374,7 @@ function renderMarkers() {
   getFilteredLocations().forEach(loc => {
     const m = L.marker([loc.lat, loc.lng], { icon: makeIcon(loc) })
       .addTo(map)
-      .bindPopup(makePopupHTML(loc, lang, false), { closeButton: false, maxWidth: 300, className: 'ttt-popup' });
+      .bindPopup(makePopupHTML(loc, lang), { closeButton: false, maxWidth: 300, className: 'ttt-popup' });
     m.on('click', () => { activateCard(loc.id); scrollToCard(loc.id); });
     markers[loc.id] = m;
   });
@@ -1297,11 +1397,11 @@ function renderList() {
   }
 
   list.innerHTML = filtered.map(loc => {
-    const name  = loc.name[lang]  || loc.name.zh;
-    const addr  = loc.addr[lang]  || loc.addr.zh;
-    const hours = loc.hours[lang] || loc.hours.zh;
+    const name  = esc(loc.name[lang]  || loc.name.zh);
+    const addr  = esc(loc.addr[lang]  || loc.addr.zh);
+    const hours = esc(loc.hours[lang] || loc.hours.zh);
     const fs    = foodStatus(loc.foodWeeks);
-    const foodLabel = `${fs.label[lang]} ${loc.foodWeeks}${lang === 'zh' ? '週' : 'wks'}`;
+    const foodLabel = `${esc(fs.label[lang])} ${loc.foodWeeks}${lang === 'zh' ? '週' : 'wks'}`;
     return `
       <div class="location-card ${fs.cls}${loc.id === activeCardId ? ' active' : ''}" data-id="${loc.id}" onclick="onCardClick('${loc.id}')">
         <div class="location-card__name">${name}</div>
@@ -1387,6 +1487,14 @@ document.getElementById('close-thankyou').addEventListener('click', () => {
   document.getElementById('modal-thankyou').classList.remove('open');
 });
 document.getElementById('modal-thankyou').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
+/* ════════════════════ SHELTER INFO MODAL LISTENERS ════════════════════ */
+document.getElementById('close-shelter-info').addEventListener('click', () => {
+  document.getElementById('modal-shelter-info').classList.remove('open');
+});
+document.getElementById('modal-shelter-info').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
 });
 

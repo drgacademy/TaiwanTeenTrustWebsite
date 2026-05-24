@@ -173,6 +173,10 @@
           </select>
           <div class="field-hint"><a href="categories.html" style="color:var(--accent)">→ 編輯部門項目</a></div>
         </div>
+        <div class="field">
+          <label class="field-label">學校名稱</label>
+          <input class="field-input" id="m-school" placeholder="建國中學 / 北一女中" />
+        </div>
       </div>
       <div class="field-row">
         <div class="field">
@@ -378,7 +382,7 @@ function applyFilter() {
 function openNewModal() {
   document.getElementById('member-id').value = '';
   document.getElementById('member-modal-title').textContent = t('members.new');
-  ['name','name_en','year','email','bio','bio_en'].forEach(f => {
+  ['name','name_en','year','email','bio','bio_en','school'].forEach(f => {
     const el = document.getElementById('m-' + f.replace('_','-'));
     if (el) el.value = '';
   });
@@ -402,6 +406,7 @@ async function editMember(id) {
   document.getElementById('m-email').value    = m.email || '';
   document.getElementById('m-bio').value      = m.bio || '';
   document.getElementById('m-bio-en').value   = m.bio_en || '';
+  document.getElementById('m-school').value   = m.school || '';
   // position=null + role text → select "其他" and fill custom input
   const knownPositions = ['president','vice_president','group_leader'];
   const pos = m.position || '';
@@ -438,6 +443,7 @@ document.getElementById('btn-save-member').addEventListener('click', async () =>
     email:    document.getElementById('m-email').value.trim(),
     bio:      document.getElementById('m-bio').value.trim(),
     bio_en:   document.getElementById('m-bio-en').value.trim(),
+    school:   document.getElementById('m-school').value.trim() || null,
     photo:    memberPhoto || null,
     position: (_posVal && _posVal !== 'other') ? _posVal : null,
     role:     _posVal === 'other' ? (document.getElementById('m-custom-role').value.trim() || null) : null,
