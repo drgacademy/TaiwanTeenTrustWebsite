@@ -872,6 +872,86 @@
   </div>
 </div>
 
+<!-- ════════════════════ PLEDGE MODAL ════════════════════ -->
+<div class="modal-overlay" id="modal-pledge">
+  <div class="modal-box">
+    <button class="modal-close" id="close-pledge" aria-label="Close">×</button>
+    <div class="modal-box__title lang-zh">🐾 捐贈物資</div>
+    <div class="modal-box__title lang-en">🐾 Donate Supplies</div>
+    <div class="modal-box__sub lang-zh">請填寫您的物資與收取地址，我們將安排外送志工前往收取！</div>
+    <div class="modal-box__sub lang-en">Submit your donation info. A volunteer rider will pick it up!</div>
+    <form id="pledge-form">
+      <input type="hidden" name="shelter_id" id="pledge-shelter-id" />
+      <div class="form-field">
+        <label class="lang-zh">您的姓名 <span style="color:rgba(255,255,255,.3)">(必填)</span></label>
+        <label class="lang-en">Name <span style="color:rgba(255,255,255,.3)">(required)</span></label>
+        <input type="text" name="donor_name" placeholder="王小明" required />
+      </div>
+      <div class="form-field">
+        <label class="lang-zh">聯絡電話 <span style="color:rgba(255,255,255,.3)">(必填)</span></label>
+        <label class="lang-en">Phone <span style="color:rgba(255,255,255,.3)">(required)</span></label>
+        <input type="tel" name="donor_phone" placeholder="09xx-xxx-xxx" required />
+      </div>
+      <div class="form-field">
+        <label class="lang-zh">收取地址 <span style="color:rgba(255,255,255,.3)">(必填，外送志工將用此地址進行導航)</span></label>
+        <label class="lang-en">Pickup Address <span style="color:rgba(255,255,255,.3)">(required)</span></label>
+        <input type="text" name="pickup_address" id="pledge-pickup-address" placeholder="例如：台北市新生南路三段86號" required />
+      </div>
+      <div class="form-field">
+        <label class="lang-zh">物資類別 <span style="color:rgba(255,255,255,.3)">(必填)</span></label>
+        <label class="lang-en">Category <span style="color:rgba(255,255,255,.3)">(required)</span></label>
+        <select name="donation_category" class="form-input" style="width:100%; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:.375rem; padding:.6rem .9rem; font-size:.88rem; color:var(--text); font-family:inherit; transition:border-color .2s; outline:none;" required>
+          <option value="Food & Water" style="background:#141414;color:#f0f0f0">🍖 飼料與水 (Food & Water)</option>
+          <option value="Medical" style="background:#141414;color:#f0f0f0">💊 醫療與驅蟲藥 (Medical)</option>
+          <option value="Tools & Utilities" style="background:#141414;color:#f0f0f0">⚙️ 工具與發電機 (Tools & Utilities)</option>
+          <option value="Shelter Materials" style="background:#141414;color:#f0f0f0">⛺ 圍欄與保暖棚 (Shelter Materials)</option>
+          <option value="Other" style="background:#141414;color:#f0f0f0">📦 其他物資 (Other)</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="lang-zh">物資內容與數量 <span style="color:rgba(255,255,255,.3)">(必填)</span></label>
+        <label class="lang-en">Description <span style="color:rgba(255,255,255,.3)">(required)</span></label>
+        <input type="text" name="donation_items" placeholder="例如：1台柴油發電機，2箱大桶礦泉水" required />
+      </div>
+      <button type="submit" class="form-submit">
+        <span class="lang-zh">確認提交外送</span>
+        <span class="lang-en">Confirm Pledge</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ════════════════════ PLEDGE SUCCESS MODAL ════════════════════ -->
+<div class="modal-overlay" id="modal-pledge-success">
+  <div class="modal-box" style="max-width: 440px;">
+    <div class="thankyou-box">
+      <div class="thankyou-box__icon">🎁</div>
+      <div class="thankyou-box__title lang-zh">物資外送媒合成功！</div>
+      <div class="thankyou-box__title lang-en">Donation Pledged!</div>
+      <p style="font-size: .88rem; color: rgba(255,255,255,.5); margin-bottom: 1.5rem; line-height: 1.6;" class="lang-zh">
+        您的專屬追蹤 ID 為：<br>
+        <strong id="pledge-success-id" style="color: var(--accent); font-size: 1.1rem; user-select: all; letter-spacing: 1px;"></strong><br>
+        <span style="font-size: .78rem; opacity: .8;">(請複製此 ID 至外送追蹤頁面查看進度)</span>
+      </p>
+      <p style="font-size: .88rem; color: rgba(255,255,255,.5); margin-bottom: 1.5rem; line-height: 1.6;" class="lang-en">
+        Your tracking ID is:<br>
+        <strong id="pledge-success-id-en" style="color: var(--accent); font-size: 1.1rem; user-select: all; letter-spacing: 1px;"></strong><br>
+        <span style="font-size: .78rem; opacity: .8;">(Copy this ID to track delivery status)</span>
+      </p>
+      <div style="display:flex; flex-direction:column; gap:.5rem;">
+        <a id="lnk-go-delivery" href="stray-aid-delivery.html" class="popup-btn popup-btn--primary" style="display:block; text-align:center; padding: 0.75rem; border-radius: 6px; font-weight: 700; background: var(--accent); color: var(--bg);">
+          <span class="lang-zh">前往外送追蹤平台 →</span>
+          <span class="lang-en">Go to Tracking Portal →</span>
+        </a>
+        <button class="thankyou-box__close" id="close-pledge-success" style="margin-top:0;">
+          <span class="lang-zh">關閉</span>
+          <span class="lang-en">Close</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ════════════════════ FOOTER ════════════════════ -->
 <footer>
   <div class="footer-inner">
@@ -1347,8 +1427,9 @@ function openShelterInfoModal(id) {
     ${needsHtml}
     ${customNeedsHtml}
 
-    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-      <a href="${mapUrl}" target="_blank" class="popup-btn popup-btn--primary" style="flex: 1; text-align: center; display: inline-block; padding: 0.75rem; border-radius: 6px; background: var(--accent); color: var(--bg); font-weight: 700;">${dirLabel}</a>
+    <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="${mapUrl}" target="_blank" class="popup-btn popup-btn--primary" style="flex: 1; min-width: 120px; text-align: center; display: inline-block; padding: 0.75rem; border-radius: 6px; background: var(--accent); color: var(--bg); font-weight: 700;">${dirLabel}</a>
+      <button class="popup-btn popup-btn--outline" style="flex: 1; min-width: 120px; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--accent); color: var(--accent); background: transparent; font-weight: 700;" onclick="openPledgeModal('${loc.id}')">${lang === 'zh' ? '🐾 捐贈物資' : '🐾 Donate Supplies'}</button>
     </div>
   `;
 
@@ -1524,6 +1605,105 @@ document.getElementById('close-shelter-info').addEventListener('click', () => {
 });
 document.getElementById('modal-shelter-info').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
+/* ════════════════════ PLEDGE MODAL LOGIC ════════════════════ */
+function openPledgeModal(shelterId) {
+  document.getElementById('modal-shelter-info').classList.remove('open');
+  document.getElementById('pledge-shelter-id').value = shelterId;
+  document.getElementById('modal-pledge').classList.add('open');
+}
+
+document.getElementById('close-pledge').addEventListener('click', () => {
+  document.getElementById('modal-pledge').classList.remove('open');
+});
+document.getElementById('modal-pledge').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+document.getElementById('close-pledge-success').addEventListener('click', () => {
+  document.getElementById('modal-pledge-success').classList.remove('open');
+});
+document.getElementById('modal-pledge-success').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
+document.getElementById('pledge-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const submitBtn = form.querySelector('.form-submit');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = currentLang === 'zh' ? '地理編碼中...' : 'Geocoding...';
+  }
+
+  const formData = new FormData(form);
+  const address = formData.get('pickup_address');
+
+  let lat = 23.8;
+  let lng = 121.0;
+
+  try {
+    const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+    const response = await fetch(geoUrl, {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'TaiwanTeenTrustWebsite/1.0'
+      }
+    });
+    if (response.ok) {
+      const geoData = await response.json();
+      if (geoData && geoData.length > 0) {
+        lat = parseFloat(geoData[0].lat);
+        lng = parseFloat(geoData[0].lon);
+      }
+    }
+  } catch (err) {
+    console.warn('[pledge-geocode] Geocoding API failed:', err);
+  }
+
+  const payload = {
+    shelter_id: formData.get('shelter_id'),
+    donor_name: formData.get('donor_name'),
+    donor_phone: formData.get('donor_phone'),
+    pickup_address: address,
+    pickup_lat: lat,
+    pickup_lng: lng,
+    donation_category: formData.get('donation_category'),
+    donation_items: formData.get('donation_items'),
+    status: 'pending'
+  };
+
+  try {
+    if (submitBtn) {
+      submitBtn.textContent = currentLang === 'zh' ? '提交中...' : 'Submitting...';
+    }
+    const { data, error } = await window.supabaseClient
+      .from('donation_pledges')
+      .insert([payload])
+      .select('id');
+
+    if (error) throw error;
+    if (!data || data.length === 0) throw new Error('No data returned from insert');
+
+    const pledgeId = data[0].id;
+
+    document.getElementById('pledge-success-id').textContent = pledgeId;
+    document.getElementById('pledge-success-id-en').textContent = pledgeId;
+    
+    document.getElementById('modal-pledge').classList.remove('open');
+    setTimeout(() => {
+      document.getElementById('modal-pledge-success').classList.add('open');
+    }, 150);
+    form.reset();
+  } catch (err) {
+    console.error('[pledge] Failed to insert pledge:', err);
+    alert(currentLang === 'zh' ? '提交失敗，請稍後再試。' : 'Submission failed. Please try again later.');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = currentLang === 'zh' ? '確認提交外送' : 'Confirm Pledge';
+    }
+  }
 });
 
 /* ════════════════════ INIT ════════════════════ */

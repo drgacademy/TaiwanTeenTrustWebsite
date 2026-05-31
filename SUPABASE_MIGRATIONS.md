@@ -586,4 +586,67 @@ CREATE POLICY "map_location_submissions_modify_admin" ON map_location_submission
   USING (is_admin()) WITH CHECK (is_admin());
 ```
 
+## 16. 2026-05-31 Donation Pledges & Logistics System
+
+### 16.1 Table Schema
+```sql
+CREATE TABLE IF NOT EXISTS donation_pledges (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  shelter_id uuid REFERENCES map_locations(id) ON DELETE CASCADE,
+  donor_name text NOT NULL,
+  donor_phone text NOT NULL,
+  pickup_address text NOT NULL,
+  pickup_lat numeric NOT NULL,
+  pickup_lng numeric NOT NULL,
+  donation_category text NOT NULL CHECK (donation_category IN ('Food & Water', 'Medical', 'Tools & Utilities', 'Shelter Materials', 'Other')),
+  donation_items text NOT NULL,
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'assigned', 'picked_up', 'delivered', 'verified')),
+  rider_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
+  rider_name text,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Trigger for updated_at
+DROP TRIGGER IF EXISTS donation_pledges_set_updated_at ON donation_pledges;
+CREATE TRIGGER donation_pledges_set_updated_at
+  BEFORE UPDATE ON donation_pledges
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- Trigger for audit logging
+DROP TRIGGER IF EXISTS audit_donation_pledges ON donation_pledges;
+CREATE TRIGGER audit_donation_pledges AFTER INSERT OR UPDATE OR DELETE ON donation_pledges
+  FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
+```
+
+### 16.2 RLS Policies
+```sql
+ALTER TABLE donation_pledges ENABLE ROW LEVEL SECURITY;
+
+-- Public users can insert pending pledges
+DROP POLICY IF EXISTS "donation_pledges_insert_public" ON donation_pledges;
+CREATE POLICY "donation_pledges_insert_public" ON donation_pledges FOR INSERT
+  WITH CHECK (status = 'pending' AND rider_id IS NULL);
+
+-- Anyone can view pledges to track their own or find open pickups
+DROP POLICY IF EXISTS "donation_pledges_select_all" ON donation_pledges;
+CREATE POLICY "donation_pledges_select_all" ON donation_pledges FOR SELECT USING (true);
+
+-- Riders can claim tasks and update statuses, admins can edit everything
+DROP POLICY IF EXISTS "donation_pledges_update_rider" ON donation_pledges;
+CREATE POLICY "donation_pledges_update_rider" ON donation_pledges FOR UPDATE TO authenticated
+  USING (true)
+  WITH CHECK (
+    (status = 'assigned' AND rider_id = auth.uid()) OR
+    (rider_id = auth.uid() AND status IN ('picked_up', 'delivered')) OR
+    is_admin()
+  );
+
+-- Only admins can delete pledges
+DROP POLICY IF EXISTS "donation_pledges_delete_admin" ON donation_pledges;
+CREATE POLICY "donation_pledges_delete_admin" ON donation_pledges FOR DELETE TO authenticated
+  USING (is_admin());
+```
+
+
 

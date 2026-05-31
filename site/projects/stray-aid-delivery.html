@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="../assets/favicon.png" type="image/png" />
+  <title>Taiwan Teen Trust - Logistics Portal</title>
+  <meta name="description" content="Taiwan Teen Trust 物資外送與追蹤平台 - 安排與追蹤浪浪物資外送進度。" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.supabaseClient = window.supabase.createClient(
+      'https://tpolpfulwsfqpghweasl.supabase.co',
+      'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J'
+    );
+  </script>
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0a;
+      --card-bg: #141414;
+      --text: #f0f0f0;
+      --text-muted: rgba(255,255,255,0.4);
+      --accent: #2ECAD4;
+      --accent-dim: rgba(46,202,212,0.15);
+      --border: rgba(255,255,255,0.08);
+      --nav-h: 68px;
+      --rainbow: linear-gradient(90deg, #0D2B52 0%, #1A467D 50%, #2ECAD4 100%);
+    }
+    html, body { background: var(--bg) !important; color: var(--text); min-height: 100vh; font-family: 'Noto Sans TC', 'Inter', sans-serif; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── Lang ── */
+    body:not(.lang-en) .lang-en { display: none; }
+    body.lang-en .lang-zh { display: none; }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-h);
+      background: rgba(10,10,10,.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .navbar__inner {
+      max-width: 88rem; margin: 0 auto;
+      height: 100%; padding: 0 clamp(1rem, 4vw, 2.5rem);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .navbar__logo {
+      display: flex; align-items: center; gap: .75rem;
+      font-size: .95rem; font-weight: 700; color: var(--text);
+    }
+    .navbar__logo img {
+      width: 32px; height: 32px; border-radius: 8px;
+      object-fit: cover; object-position: left center;
+    }
+    .navbar__links { display: flex; gap: 1.75rem; }
+    .navbar__links a {
+      font-size: .85rem; font-weight: 600;
+      color: var(--accent); transition: filter .2s;
+    }
+    .navbar__links a:hover { filter: brightness(1.2); }
+    .lang-toggle {
+      display: flex; background: rgba(255,255,255,.06);
+      border: 1px solid var(--border); border-radius: 2rem; overflow: hidden;
+    }
+    .lang-btn {
+      font-size: .75rem; font-weight: 600; padding: .3rem .7rem;
+      color: rgba(255,255,255,.4); transition: all .2s;
+    }
+    .lang-btn.active { background: rgba(255,255,255,.1); color: var(--text); }
+
+    /* ── Main Layout ── */
+    .delivery-page {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+    }
+    @media (max-width: 960px) {
+      .delivery-page { grid-template-columns: 1fr; }
+    }
+
+    /* ── Control Panel ── */
+    .control-panel {
+      background: #0f0f0f;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+      max-height: calc(100vh - var(--nav-h));
+      padding: 1.75rem;
+      gap: 2rem;
+    }
+    @media (max-width: 960px) {
+      .control-panel { max-height: none; }
+    }
+
+    .panel-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .panel-section__title {
+      font-size: 1rem; font-weight: 800; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+
+    /* ── Form styling ── */
+    .form-field { margin-bottom: 1rem; }
+    .form-field label {
+      display: block; font-size: .75rem; font-weight: 600;
+      color: rgba(255,255,255,.5); margin-bottom: .35rem; letter-spacing: .04em;
+    }
+    .form-field input, .form-field select {
+      width: 100%; background: rgba(255,255,255,.04);
+      border: 1px solid var(--border); border-radius: .375rem;
+      padding: .6rem .9rem; font-size: .88rem;
+      color: var(--text); font-family: inherit;
+      transition: border-color .2s; outline: none;
+    }
+    .form-field input:focus { border-color: var(--accent); }
+    .btn-submit {
+      width: 100%; padding: .75rem; border: none; border-radius: .5rem;
+      background: var(--accent); color: #0a0a0a;
+      font-size: .88rem; font-weight: 700; transition: filter .2s;
+    }
+    .btn-submit:hover { filter: brightness(1.1); }
+
+    /* ── Stepper (Tracking) ── */
+    .tracker-status {
+      display: flex; flex-direction: column; margin-top: 1.5rem;
+      position: relative; padding-left: 1.5rem;
+    }
+    .tracker-status::before {
+      content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+      width: 2px; background: rgba(255,255,255,.1); z-index: 1;
+    }
+    .step-item {
+      position: relative; padding-bottom: 1.5rem;
+      font-size: .85rem; color: var(--text-muted);
+    }
+    .step-item:last-child { padding-bottom: 0; }
+    .step-dot {
+      position: absolute; left: -14px; top: 4px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #333; border: 2px solid var(--card-bg); z-index: 2;
+    }
+    .step-item.active { color: var(--text); font-weight: 700; }
+    .step-item.active .step-dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+    .step-item.active ~ .step-item { color: var(--text-muted); }
+    .step-info { font-size: .75rem; font-weight: normal; color: var(--text-muted); margin-top: .15rem; }
+
+    /* ── Auth Tabs ── */
+    .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+    .auth-tab {
+      flex: 1; text-align: center; padding: .5rem; font-size: .8rem;
+      font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent;
+    }
+    .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── Delivery Cards ── */
+    .task-card {
+      background: rgba(255,255,255,.02); border: 1px solid var(--border);
+      border-radius: .5rem; padding: 1rem; margin-bottom: .75rem;
+    }
+    .task-card__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .5rem; }
+    .task-card__title { font-size: .85rem; font-weight: 700; }
+    .task-card__badge {
+      font-size: .65rem; font-weight: 700; padding: .15rem .5rem; border-radius: .25rem;
+      border: 1px solid currentColor; background: rgba(255,255,255,.05);
+    }
+    .task-card__addr { font-size: .75rem; color: var(--text-muted); margin-bottom: .5rem; }
+    .task-card__items { font-size: .8rem; border-top: 1px dashed var(--border); padding-top: .5rem; margin-top: .5rem; }
+    .task-actions { display: flex; gap: .5rem; margin-top: .75rem; }
+    .btn-action {
+      flex: 1; padding: .45rem; border-radius: .3rem; font-size: .75rem;
+      font-weight: 700; text-align: center;
+    }
+    .btn-action--primary { background: var(--accent); color: #0a0a0a; }
+    .btn-action--outline { border: 1px solid var(--border); color: var(--text-muted); }
+    .btn-action--outline:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
+
+    /* ── Map ── */
+    .map-container { position: relative; background: #111; min-height: 50vh; }
+    #map { width: 100%; height: 100%; }
+    .leaflet-tile-pane { filter: brightness(.85) saturate(.7) hue-rotate(180deg) invert(1); }
+    .leaflet-container { background: #111; }
+    
+    .custom-marker-pickup {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2.5px solid #fb923c; background: rgba(10,10,10,.85);
+      color: #fb923c; font-size: 14px;
+      box-shadow: 0 0 10px rgba(251,146,60,.4);
+    }
+    .custom-marker-shelter {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2.5px solid var(--accent); background: rgba(10,10,10,.85);
+      color: var(--accent); font-size: 14px;
+      box-shadow: 0 0 10px rgba(46,202,212,.4);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════ Navbar ════ -->
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../index.html" class="navbar__logo">
+        <img src="../assets/logo-real.png" alt="TTT" />
+        <span>Taiwan Teen Trust</span>
+      </a>
+      <div class="navbar__links">
+        <a href="stray-aid-map.html" data-zh="← 返回地圖" data-en="← Back to Map">← 返回地圖</a>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="zh">中</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════ Main Content ════ -->
+  <div class="delivery-page">
+    
+    <!-- ── Left: Controls & Dashboard ── -->
+    <aside class="control-panel">
+      
+      <!-- Section A: Donor Tracking -->
+      <section class="panel-section">
+        <div class="panel-section__title">
+          <span>🔍</span>
+          <span class="lang-zh">物資追蹤 (Donation Tracking)</span>
+          <span class="lang-en">Donation Tracking</span>
+        </div>
+        <form id="tracking-form" onsubmit="trackDonation(event)">
+          <div class="form-field">
+            <label class="lang-zh">輸入外送追蹤 ID (Pledge ID)</label>
+            <label class="lang-en">Enter Pledge ID</label>
+            <input type="text" id="track-id-input" placeholder="e.g. 970fbf15-a02f-..." required />
+          </div>
+          <button type="submit" class="btn-submit">
+            <span class="lang-zh">搜尋進度</span>
+            <span class="lang-en">Search Status</span>
+          </button>
+        </form>
+
+        <!-- Stepper timeline -->
+        <div id="tracking-timeline" style="display: none;">
+          <div class="tracker-status">
+            <div class="step-item" id="step-pending">
+              <div class="step-dot"></div>
+              <span class="lang-zh">已提出外送 (Pledged)</span>
+              <span class="lang-en">Donation Pledged</span>
+              <div class="step-info lang-zh">等待志工認領...</div>
+              <div class="step-info lang-en">Waiting for volunteer courier...</div>
+            </div>
+            <div class="step-item" id="step-assigned">
+              <div class="step-dot"></div>
+              <span class="lang-zh">已媒合志工 (Rider Assigned)</span>
+              <span class="lang-en">Courier Assigned</span>
+              <div class="step-info" id="assigned-rider-info">志工已認領，準備出發</div>
+            </div>
+            <div class="step-item" id="step-picked_up">
+              <div class="step-dot"></div>
+              <span class="lang-zh">志工收取運送中 (In Transit)</span>
+              <span class="lang-en">In Transit</span>
+              <div class="step-info lang-zh">物資已收取，正在前往收容所</div>
+              <div class="step-info lang-en">Supplies collected and heading to shelter</div>
+            </div>
+            <div class="step-item" id="step-delivered">
+              <div class="step-dot"></div>
+              <span class="lang-zh">物資已送達 (Delivered)</span>
+              <span class="lang-en">Delivered</span>
+              <div class="step-info lang-zh">物資已送抵收容所，等待收容所簽收</div>
+              <div class="step-info lang-en">Supplies arrived. Awaiting shelter confirmation</div>
+            </div>
+            <div class="step-item" id="step-verified">
+              <div class="step-dot"></div>
+              <span class="lang-zh">收容所確認簽收 (Verified & Finished)</span>
+              <span class="lang-en">Verified & Completed</span>
+              <div class="step-info lang-zh">收容所已點收物資，感謝您的愛心！</div>
+              <div class="step-info lang-en">Shelter verified drop-off. Thank you for your support!</div>
+            </div>
+          </div>
+        </div>
+        <div id="tracking-error" style="display: none; color: #ef4444; font-size: .8rem; margin-top: 1rem;" class="lang-zh">找不到此 ID 的外送紀錄。</div>
+        <div id="tracking-error-en" style="display: none; color: #ef4444; font-size: .8rem; margin-top: 1rem;" class="lang-en">No donation found with this ID.</div>
+      </section>
+
+      <!-- Section B: Volunteer Portal Auth / Dashboard -->
+      <section class="panel-section">
+        <!-- Auth wrapper -->
+        <div id="auth-container">
+          <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')">登入 (Sign In)</button>
+            <button class="auth-tab" onclick="switchAuthTab('signup')">註冊 (Sign Up)</button>
+          </div>
+          
+          <!-- Login Form -->
+          <form id="login-form" onsubmit="handleLogin(event)">
+            <div class="form-field">
+              <label>Email</label>
+              <input type="email" id="login-email" required />
+            </div>
+            <div class="form-field">
+              <label>Password</label>
+              <input type="password" id="login-password" minlength="6" required />
+            </div>
+            <button type="submit" class="btn-submit">登入 (Sign In)</button>
+          </form>
+
+          <!-- Signup Form -->
+          <form id="signup-form" onsubmit="handleSignup(event)" style="display: none;">
+            <div class="form-field">
+              <label>Email</label>
+              <input type="email" id="signup-email" required />
+            </div>
+            <div class="form-field">
+              <label>Password</label>
+              <input type="password" id="signup-password" minlength="6" required />
+            </div>
+            <div class="form-field">
+              <label class="lang-zh">外送志工姓名</label>
+              <label class="lang-en">Courier Name</label>
+              <input type="text" id="signup-name" required />
+            </div>
+            <button type="submit" class="btn-submit">註冊志工 (Register)</button>
+          </form>
+        </div>
+
+        <!-- Logged In Rider Dashboard -->
+        <div id="rider-dashboard" style="display: none;">
+          <div class="panel-section__title" style="margin-bottom: .25rem;">
+            <span>🛵</span>
+            <span class="lang-zh">外送員工作板</span>
+            <span class="lang-en">Courier Dashboard</span>
+          </div>
+          <div id="rider-welcome" style="font-size: .78rem; color: var(--text-muted); margin-bottom: 1.25rem;"></div>
+          
+          <div style="font-size: .8rem; font-weight: 800; margin-bottom: .5rem;" class="lang-zh">您的進行中外送 (My Tasks)</div>
+          <div style="font-size: .8rem; font-weight: 800; margin-bottom: .5rem;" class="lang-en">My Deliveries</div>
+          <div id="my-tasks-list"></div>
+
+          <button onclick="handleLogout()" class="btn-action btn-action--outline" style="width: 100%; margin-top: 1.5rem;">登出 (Sign Out)</button>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- ── Right: Map Area ── -->
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    'use strict';
+
+    /* ── Lang Toggle ── */
+    let currentLang = 'zh';
+    function setLang(lang) {
+      currentLang = lang;
+      document.body.classList.toggle('lang-en', lang === 'en');
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      const trackInput = document.getElementById('track-id-input');
+      if (trackInput) {
+        trackInput.placeholder = lang === 'zh' ? '例如: 970fbf15-a02f...' : 'e.g. 970fbf15-a02f...';
+      }
+    }
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+
+    /* ── State ── */
+    let user = null;
+    let map = null;
+    let markers = {};
+    let activeRouteLine = null;
+    let sheltersMap = {};
+    let pledgesList = [];
+
+    /* ── Leaflet Init ── */
+    function initMap() {
+      map = L.map('map', { center: [23.8, 121.0], zoom: 7 });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+    }
+
+    /* ── Geocoding Category Emoji Mapping ── */
+    const categoryEmojis = {
+      'Food & Water': '🍖',
+      'Medical': '💊',
+      'Tools & Utilities': '⚙️',
+      'Shelter Materials': '⛺',
+      'Other': '📦'
+    };
+
+    /* ── Load Shelters & Pledges ── */
+    async function loadShelterLocations() {
+      try {
+        const { data, error } = await window.supabaseClient
+          .from('map_locations')
+          .select('id, name, name_en, lat, lng')
+          .eq('type', 'shelter')
+          .eq('status', 'active');
+        if (!error && data) {
+          data.forEach(s => {
+            sheltersMap[s.id] = s;
+          });
+        }
+      } catch (err) {
+        console.warn('Failed to load shelters:', err);
+      }
+    }
+
+    async function loadPledges() {
+      try {
+        const { data, error } = await window.supabaseClient
+          .from('donation_pledges')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) {
+          pledgesList = data;
+          renderMarkers();
+          if (user) {
+            renderRiderDashboard();
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load pledges:', err);
+      }
+    }
+
+    function renderMarkers() {
+      // Clear old markers
+      Object.values(markers).forEach(m => map.removeLayer(m));
+      markers = {};
+      if (activeRouteLine) {
+        map.removeLayer(activeRouteLine);
+        activeRouteLine = null;
+      }
+
+      // Add Shelters as static references
+      Object.values(sheltersMap).forEach(s => {
+        const shelterMarker = L.marker([s.lat, s.lng], {
+          icon: L.divIcon({
+            className: '',
+            html: `<div class="custom-marker-shelter">🏠</div>`,
+            iconSize: [32, 32], iconAnchor: [16, 16]
+          })
+        }).addTo(map);
+        shelterMarker.bindPopup(`<strong>${currentLang === 'zh' ? s.name : (s.name_en || s.name)}</strong><br>${currentLang === 'zh' ? '受贈收容所' : 'Receiving Shelter'}`);
+      });
+
+      // Add Available Pledges (pending status)
+      pledgesList.forEach(p => {
+        if (p.status !== 'pending' && p.status !== 'assigned' && p.status !== 'picked_up') return;
+
+        // Skip other couriers' claimed tasks unless it's claimed by current user
+        if (p.status !== 'pending' && (!user || p.rider_id !== user.id)) return;
+
+        const emoji = categoryEmojis[p.donation_category] || '📦';
+        const markerColor = p.status === 'pending' ? '#fb923c' : '#2ECAD4';
+        
+        const m = L.marker([p.pickup_lat, p.pickup_lng], {
+          icon: L.divIcon({
+            className: '',
+            html: `<div class="custom-marker-pickup" style="border-color:${markerColor}; color:${markerColor}; box-shadow:0 0 10px ${markerColor}66">${emoji}</div>`,
+            iconSize: [32, 32], iconAnchor: [16, 16]
+          })
+        }).addTo(map);
+
+        const shelter = sheltersMap[p.shelter_id] || { name: 'Shelter' };
+        const shelterName = currentLang === 'zh' ? shelter.name : (shelter.name_en || shelter.name);
+
+        let popupContent = `
+          <div style="font-family: inherit; font-size: 0.85rem; padding: 0.2rem;">
+            <strong>${currentLang === 'zh' ? '🎁 物資外送任務' : '🎁 Donation Delivery'}</strong><br>
+            <span style="color:#888;">${currentLang === 'zh' ? '類別' : 'Category'}:</span> ${emoji} ${p.donation_category}<br>
+            <span style="color:#888;">${currentLang === 'zh' ? '內容' : 'Items'}:</span> ${esc(p.donation_items)}<br>
+            <span style="color:#888;">${currentLang === 'zh' ? '地址' : 'Address'}:</span> ${esc(p.pickup_address)}<br>
+            <span style="color:#888;">${currentLang === 'zh' ? '送往' : 'To'}:</span> ${shelterName}<br>
+        `;
+
+        if (p.status === 'pending') {
+          if (user) {
+            popupContent += `<button onclick="claimTask('${p.id}')" style="display:block; width:100%; margin-top:0.5rem; background:var(--accent); color:#0a0a0a; border-radius:4px; padding:0.35rem; font-weight:700; font-size:0.75rem;">${currentLang === 'zh' ? '認領外送任務' : 'Claim Task'}</button>`;
+          } else {
+            popupContent += `<br><em style="color:#fb923c; font-size:0.75rem;">${currentLang === 'zh' ? '請登入志工帳號以認領任務' : 'Login as Courier to claim'}</em>`;
+          }
+        } else {
+          // Claimed by current user
+          const actionBtn = p.status === 'assigned' 
+            ? `<button onclick="updateTaskStatus('${p.id}', 'picked_up')" style="display:block; width:100%; margin-top:0.5rem; background:#fb923c; color:#fff; border-radius:4px; padding:0.35rem; font-weight:700; font-size:0.75rem;">${currentLang === 'zh' ? '已收貨 (Mark Picked Up)' : 'Mark Picked Up'}</button>`
+            : `<button onclick="updateTaskStatus('${p.id}', 'delivered')" style="display:block; width:100%; margin-top:0.5rem; background:#22c55e; color:#fff; border-radius:4px; padding:0.35rem; font-weight:700; font-size:0.75rem;">${currentLang === 'zh' ? '已送達 (Mark Delivered)' : 'Mark Delivered'}</button>`;
+          popupContent += actionBtn;
+          
+          // Draw dashed polyline to route the task on map
+          if (shelter.lat && shelter.lng) {
+            activeRouteLine = L.polyline([[p.pickup_lat, p.pickup_lng], [shelter.lat, shelter.lng]], {
+              color: '#2ECAD4', dashArray: '6, 8', weight: 3
+            }).addTo(map);
+          }
+        }
+
+        popupContent += `</div>`;
+        m.bindPopup(popupContent);
+        markers[p.id] = m;
+      });
+    }
+
+    /* ── Task Actions ── */
+    async function claimTask(id) {
+      if (!user) return;
+      const { data: profile } = await window.supabaseClient.auth.getUser();
+      const riderName = profile?.user?.user_metadata?.name || 'Volunteer Rider';
+
+      try {
+        const { error } = await window.supabaseClient
+          .from('donation_pledges')
+          .update({
+            status: 'assigned',
+            rider_id: user.id,
+            rider_name: riderName
+          })
+          .eq('id', id);
+
+        if (error) throw error;
+        await loadPledges();
+      } catch (err) {
+        console.error('[claimTask] Failed:', err);
+      }
+    }
+
+    async function updateTaskStatus(id, status) {
+      try {
+        const { error } = await window.supabaseClient
+          .from('donation_pledges')
+          .update({ status })
+          .eq('id', id);
+
+        if (error) throw error;
+        await loadPledges();
+      } catch (err) {
+        console.error('[updateTaskStatus] Failed:', err);
+      }
+    }
+
+    /* ── Donor Tracking ── */
+    async function trackDonation(e) {
+      e.preventDefault();
+      const id = document.getElementById('track-id-input').value.trim();
+      const timeline = document.getElementById('tracking-timeline');
+      const errZh = document.getElementById('tracking-error');
+      const errEn = document.getElementById('tracking-error-en');
+
+      timeline.style.display = 'none';
+      errZh.style.display = 'none';
+      errEn.style.display = 'none';
+
+      try {
+        // Query by ID or phone number
+        let query = window.supabaseClient.from('donation_pledges').select('*');
+        if (id.length === 36) {
+          query = query.eq('id', id);
+        } else {
+          query = query.eq('donor_phone', id);
+        }
+
+        const { data, error } = await query;
+        if (error || !data || data.length === 0) {
+          errZh.style.display = currentLang === 'zh' ? 'block' : 'none';
+          errEn.style.display = currentLang === 'en' ? 'block' : 'none';
+          return;
+        }
+
+        const p = data[0];
+        timeline.style.display = 'block';
+
+        // Clear stepper active classes
+        document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
+
+        const steps = ['pending', 'assigned', 'picked_up', 'delivered', 'verified'];
+        const currentIdx = steps.indexOf(p.status);
+
+        for (let i = 0; i <= currentIdx; i++) {
+          const stepEl = document.getElementById(`step-${steps[i]}`);
+          if (stepEl) stepEl.classList.add('active');
+        }
+
+        // Show rider information if assigned
+        const riderInfoEl = document.getElementById('assigned-rider-info');
+        if (p.rider_name) {
+          riderInfoEl.textContent = currentLang === 'zh' 
+            ? `配對志工：${p.rider_name} (配送中)` 
+            : `Assigned Volunteer: ${p.rider_name} (In Transit)`;
+        } else {
+          riderInfoEl.textContent = currentLang === 'zh' ? '志工已認領，準備出發' : 'Volunteer assigned';
+        }
+
+        // Pan map to geocoded address
+        map.flyTo([p.pickup_lat, p.pickup_lng], 13);
+
+      } catch (err) {
+        console.warn('Tracking query thrown:', err);
+      }
+    }
+
+    /* ── Auth Logic ── */
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(el => el.classList.remove('active'));
+      const activeBtn = document.querySelector(`.auth-tab[onclick*="${tab}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        alert(error.message);
+      } else {
+        user = data.user;
+        checkAuthState();
+      }
+    }
+
+    async function handleSignup(e) {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const name = document.getElementById('signup-name').value;
+
+      const { data, error } = await window.supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { data: { name } }
+      });
+      if (error) {
+        alert(error.message);
+      } else {
+        alert('註冊成功！請完成驗證。 (Signed Up successfully!)');
+        user = data.user;
+        checkAuthState();
+      }
+    }
+
+    async function handleLogout() {
+      await window.supabaseClient.auth.signOut();
+      user = null;
+      checkAuthState();
+    }
+
+    function checkAuthState() {
+      const authCont = document.getElementById('auth-container');
+      const riderDash = document.getElementById('rider-dashboard');
+      const welcome = document.getElementById('rider-welcome');
+
+      if (user) {
+        authCont.style.display = 'none';
+        riderDash.style.display = 'block';
+        welcome.textContent = `${currentLang === 'zh' ? '登入帳號：' : 'Logged in as: '} ${user.email}`;
+        renderRiderDashboard();
+      } else {
+        authCont.style.display = 'block';
+        riderDash.style.display = 'none';
+      }
+      renderMarkers();
+    }
+
+    function renderRiderDashboard() {
+      const listEl = document.getElementById('my-tasks-list');
+      const myTasks = pledgesList.filter(p => p.rider_id === user.id && p.status !== 'verified');
+
+      if (myTasks.length === 0) {
+        listEl.innerHTML = `<div style="font-size:.78rem; color:var(--text-muted); padding:.5rem 0;">${currentLang === 'zh' ? '目前沒有進行中的外送任務。' : 'No active tasks.'}</div>`;
+        return;
+      }
+
+      listEl.innerHTML = myTasks.map(p => {
+        const shelter = sheltersMap[p.shelter_id] || { name: 'Shelter' };
+        const shelterName = currentLang === 'zh' ? shelter.name : (shelter.name_en || shelter.name);
+        const statusLabels = {
+          assigned: { zh: '待收取', en: 'Assigned' },
+          picked_up: { zh: '運送中', en: 'In Transit' },
+          delivered: { zh: '已送達', en: 'Delivered' }
+        };
+        const badge = statusLabels[p.status] || { zh: p.status, en: p.status };
+        const emoji = categoryEmojis[p.donation_category] || '📦';
+
+        const actionBtn = p.status === 'assigned'
+          ? `<button onclick="updateTaskStatus('${p.id}', 'picked_up')" class="btn-action btn-action--primary">${currentLang === 'zh' ? '🚚 已收取貨品' : 'Mark Picked Up'}</button>`
+          : p.status === 'picked_up'
+            ? `<button onclick="updateTaskStatus('${p.id}', 'delivered')" class="btn-action btn-action--primary">${currentLang === 'zh' ? '✅ 已送達收容所' : 'Mark Delivered'}</button>`
+            : `<div style="font-size:0.75rem; color:#22c55e;">${currentLang === 'zh' ? '等待收容所驗證中...' : 'Awaiting verification...'}</div>`;
+
+        return `
+          <div class="task-card">
+            <div class="task-card__header">
+              <span class="task-card__title">${emoji} ${p.donation_category}</span>
+              <span class="task-card__badge">${currentLang === 'zh' ? badge.zh : badge.en}</span>
+            </div>
+            <div class="task-card__addr">📍 ${currentLang === 'zh' ? '起點' : 'From'}: ${esc(p.pickup_address)}</div>
+            <div class="task-card__addr">🏠 ${currentLang === 'zh' ? '終點' : 'To'}: ${shelterName}</div>
+            <div class="task-card__items">
+              <div><strong>${currentLang === 'zh' ? '聯絡人' : 'Donor'}:</strong> ${esc(p.donor_name)} (${esc(p.donor_phone)})</div>
+              <div><strong>${currentLang === 'zh' ? '內容' : 'Items'}:</strong> ${esc(p.donation_items)}</div>
+            </div>
+            <div class="task-actions">
+              ${actionBtn}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ── Escaping Utils ── */
+    function esc(str) {
+      if (typeof str !== 'string') return str;
+      return str.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+    }
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', async () => {
+      initMap();
+      
+      // Fetch initial session state
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      if (session) {
+        user = session.user;
+      }
+
+      await loadShelterLocations();
+      await loadPledges();
+      checkAuthState();
+
+      // Listen for auth updates
+      window.supabaseClient.auth.onAuthStateChange((_event, session) => {
+        user = session?.user || null;
+        checkAuthState();
+      });
+    });
+  </script>
+</body>
+</html>
