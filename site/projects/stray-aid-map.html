@@ -1475,13 +1475,41 @@ document.getElementById('close-contribute').addEventListener('click', () => {
 document.getElementById('modal-contribute').addEventListener('click', e => {
   if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
 });
-document.getElementById('contribute-form').addEventListener('submit', e => {
+document.getElementById('contribute-form').addEventListener('submit', async e => {
   e.preventDefault();
-  document.getElementById('modal-contribute').classList.remove('open');
-  setTimeout(() => {
-    document.getElementById('modal-thankyou').classList.add('open');
-  }, 150);
-  e.target.reset();
+  const form = e.target;
+  const submitBtn = form.querySelector('.form-submit');
+  if (submitBtn) submitBtn.disabled = true;
+
+  const formData = new FormData(form);
+  const payload = {
+    name: formData.get('name'),
+    phone: formData.get('phone') || null,
+    address: formData.get('address') || null,
+    facebook: formData.get('facebook') || null,
+    instagram: formData.get('instagram') || null,
+    website: formData.get('website') || null,
+    status: 'pending'
+  };
+
+  try {
+    const { error } = await window.supabaseClient
+      .from('map_location_submissions')
+      .insert([payload]);
+
+    if (error) throw error;
+
+    document.getElementById('modal-contribute').classList.remove('open');
+    setTimeout(() => {
+      document.getElementById('modal-thankyou').classList.add('open');
+    }, 150);
+    form.reset();
+  } catch (err) {
+    console.error('[contribute] Failed to insert shelter submission:', err);
+    alert(currentLang === 'zh' ? '提交失敗，請稍後再試。' : 'Submission failed. Please try again later.');
+  } finally {
+    if (submitBtn) submitBtn.disabled = false;
+  }
 });
 document.getElementById('close-thankyou').addEventListener('click', () => {
   document.getElementById('modal-thankyou').classList.remove('open');

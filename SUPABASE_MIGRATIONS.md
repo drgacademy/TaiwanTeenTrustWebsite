@@ -455,3 +455,135 @@ CREATE TRIGGER audit_posts AFTER INSERT OR UPDATE OR DELETE ON posts
   FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
 ```
 
+## 15. 2026-05-31 Security & RLS Policies Migration
+
+### 15.1 Helper Functions
+```sql
+-- Check if current authenticated user has an 'admin' role
+CREATE OR REPLACE FUNCTION is_admin() RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM admin_users
+    WHERE user_id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Check if current authenticated user is a member (either member or admin)
+CREATE OR REPLACE FUNCTION is_member() RETURNS boolean AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM admin_users
+    WHERE user_id = auth.uid()
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+```
+
+### 15.2 Ownership Columns
+```sql
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS user_id uuid REFERENCES auth.users(id) DEFAULT auth.uid();
+ALTER TABLE members ADD COLUMN IF NOT EXISTS user_id uuid REFERENCES auth.users(id);
+```
+
+### 15.3 Map Location Submissions Table
+```sql
+CREATE TABLE IF NOT EXISTS map_location_submissions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  phone text,
+  address text,
+  facebook text,
+  instagram text,
+  website text,
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Trigger to update updated_at
+DROP TRIGGER IF EXISTS map_location_submissions_set_updated_at ON map_location_submissions;
+CREATE TRIGGER map_location_submissions_set_updated_at
+  BEFORE UPDATE ON map_location_submissions
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- Attach triggers to relevant tables
+DROP TRIGGER IF EXISTS audit_map_location_submissions ON map_location_submissions;
+CREATE TRIGGER audit_map_location_submissions AFTER INSERT OR UPDATE OR DELETE ON map_location_submissions
+  FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
+```
+
+### 15.4 Enable RLS & Define Policies
+```sql
+-- 1. Enable RLS on all remaining tables
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE map_locations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE map_location_submissions ENABLE ROW LEVEL SECURITY;
+
+-- 2. Define policies for posts
+DROP POLICY IF EXISTS "posts_select_all" ON posts;
+CREATE POLICY "posts_select_all" ON posts FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "posts_insert_own" ON posts;
+CREATE POLICY "posts_insert_own" ON posts FOR INSERT TO authenticated
+  WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "posts_update_own_or_admin" ON posts;
+CREATE POLICY "posts_update_own_or_admin" ON posts FOR UPDATE TO authenticated
+  USING (auth.uid() = user_id OR is_admin())
+  WITH CHECK (auth.uid() = user_id OR is_admin());
+
+DROP POLICY IF EXISTS "posts_delete_own_or_admin" ON posts;
+CREATE POLICY "posts_delete_own_or_admin" ON posts FOR DELETE TO authenticated
+  USING (auth.uid() = user_id OR is_admin());
+
+-- 3. Define policies for members
+DROP POLICY IF EXISTS "members_select_all" ON members;
+CREATE POLICY "members_select_all" ON members FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "members_insert_admin" ON members;
+CREATE POLICY "members_insert_admin" ON members FOR INSERT TO authenticated
+  WITH CHECK (is_admin());
+
+DROP POLICY IF EXISTS "members_update_own_or_admin" ON members;
+CREATE POLICY "members_update_own_or_admin" ON members FOR UPDATE TO authenticated
+  USING (auth.uid() = user_id OR is_admin())
+  WITH CHECK (auth.uid() = user_id OR is_admin());
+
+DROP POLICY IF EXISTS "members_delete_admin" ON members;
+CREATE POLICY "members_delete_admin" ON members FOR DELETE TO authenticated
+  USING (is_admin());
+
+-- 4. Define policies for projects
+DROP POLICY IF EXISTS "projects_select_all" ON projects;
+CREATE POLICY "projects_select_all" ON projects FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "projects_modify_admin" ON projects;
+CREATE POLICY "projects_modify_admin" ON projects FOR ALL TO authenticated
+  USING (is_admin()) WITH CHECK (is_admin());
+
+-- 5. Define policies for map_locations
+DROP POLICY IF EXISTS "map_locations_select_all" ON map_locations;
+CREATE POLICY "map_locations_select_all" ON map_locations FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "map_locations_modify_admin" ON map_locations;
+CREATE POLICY "map_locations_modify_admin" ON map_locations FOR ALL TO authenticated
+  USING (is_admin()) WITH CHECK (is_admin());
+
+-- 6. Define policies for map_location_submissions
+DROP POLICY IF EXISTS "map_location_submissions_select_admin" ON map_location_submissions;
+CREATE POLICY "map_location_submissions_select_admin" ON map_location_submissions FOR SELECT TO authenticated
+  USING (is_admin());
+
+DROP POLICY IF EXISTS "map_location_submissions_insert_public" ON map_location_submissions;
+CREATE POLICY "map_location_submissions_insert_public" ON map_location_submissions FOR INSERT
+  WITH CHECK (status = 'pending');
+
+DROP POLICY IF EXISTS "map_location_submissions_modify_admin" ON map_location_submissions;
+CREATE POLICY "map_location_submissions_modify_admin" ON map_location_submissions FOR ALL TO authenticated
+  USING (is_admin()) WITH CHECK (is_admin());
+```
+
+
