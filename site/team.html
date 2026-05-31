@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
   <style>
-:root{--r1:#ff3b3b;--r2:#ff8c00;--r3:#ffd600;--r4:#00c95d;--r5:#0099ff;--r6:#7c3aff;--r7:#ff2dca;--rainbow:linear-gradient(90deg,#ff3b3b 0%,#ff8c00 16%,#ffd600 32%,#00c95d 48%,#0099ff 65%,#7c3aff 82%,#ff2dca 100%);--black:#0a0a0a;--white:#fff;--gray:#f5f5f5;--gray-2:#e8e8e8;--text-2:rgba(10,10,10,.5);--text-3:rgba(10,10,10,.28);--ease:cubic-bezier(0.16,1,0.3,1);--gutter:clamp(1.25rem,5vw,5rem);--ttt-cyan:#2ECAD4;}
+:root{--r1:#0D2B52;--r2:#143867;--r3:#1A467D;--r4:#1D7B93;--r5:#2ECAD4;--r6:#27B4C1;--r7:#209EAE;--rainbow:linear-gradient(90deg,#0D2B52 0%,#1A467D 50%,#2ECAD4 100%);--black:#0a0a0a;--white:#fff;--gray:#f5f5f5;--gray-2:#e8e8e8;--text-2:rgba(10,10,10,.5);--text-3:rgba(10,10,10,.28);--ease:cubic-bezier(0.16,1,0.3,1);--gutter:clamp(1.25rem,5vw,5rem);--ttt-cyan:#2ECAD4;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body{font-family:'Inter','Noto Sans TC',sans-serif;background:#fff;color:#0a0a0a;overflow-x:hidden;line-height:1.6}
@@ -130,6 +130,8 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 .member-modal__bio{font-size:.88rem;color:var(--text-2);line-height:1.78;white-space:pre-line}
 .member-modal__no-bio{font-size:.88rem;color:var(--text-3);text-align:center;font-style:italic}
 .member-card,.lead-card{cursor:pointer}
+.member-card__school{font-size:.78rem;color:var(--text-3);margin-bottom:.35rem}
+.lead-card__school{font-size:.75rem;color:var(--text-3);margin-bottom:.35rem}
   </style>
 </head>
 <body>
@@ -239,7 +241,6 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
         <li><a href="https://www.instagram.com/taiwanteentrust/" target="_blank" rel="noopener">Instagram</a></li>
         <li><a href="https://www.threads.com/@taiwanteentrust" target="_blank" rel="noopener">Threads</a></li>
         <li><a href="https://taiwanteentrust.org/2025-fureverfriends-yearbook" target="_blank" rel="noopener" data-zh="活動花絮" data-en="Yearbook">活動花絮</a></li>
-        <li><a href="admin/index.html" data-zh="後台管理" data-en="Admin">後台管理</a></li>
       </ul>
     </div>
   </div>
@@ -318,9 +319,13 @@ const memberDataStore = {};
 
 function openMemberModal(m) {
   const lang = localStorage.getItem('ttt-lang') || 'zh';
-  const name = (lang === 'en' && m.name_en) ? m.name_en : (m.name || '');
-  const nameAlt = lang === 'en' ? (m.name || '') : (m.name_en || '');
-  const bio = (lang === 'en' && m.bio_en) ? m.bio_en : (m.bio || '');
+  const rawName = (lang === 'en' && m.name_en) ? m.name_en : (m.name || '');
+  const rawNameAlt = lang === 'en' ? (m.name || '') : (m.name_en || '');
+  const rawBio = (lang === 'en' && m.bio_en) ? m.bio_en : (m.bio || '');
+
+  const name = window.esc(rawName);
+  const nameAlt = window.esc(rawNameAlt);
+  const bio = window.escBio(rawBio);
 
   let posLabel = '';
   if (m.position === 'president') posLabel = lang === 'en' ? 'President' : '社長';
@@ -328,15 +333,16 @@ function openMemberModal(m) {
   else if (m.position === 'group_leader') posLabel = lang === 'en' ? 'Group Leader' : '組長';
 
   const photo = m.photo
-    ? `<img src="${m.photo}" alt="${name}" class="member-modal__photo">`
+    ? `<img src="${window.esc(m.photo)}" alt="${name}" class="member-modal__photo">`
     : `<div class="member-modal__icon">👤</div>`;
 
-  const badgeColor = m.cardColor || '#888';
+  const badgeColor = window.esc(m.cardColor || '#888');
   const badges = [];
-  if (posLabel) badges.push(`<span class="member-modal__badge" style="background:${badgeColor};color:#fff">${posLabel}</span>`);
-  if (m.role) badges.push(`<span class="member-modal__badge" style="background:#f0f0f0;color:#444">${m.role}</span>`);
+  if (posLabel) badges.push(`<span class="member-modal__badge" style="background:${badgeColor};color:#fff">${window.esc(posLabel)}</span>`);
+  if (m.role) badges.push(`<span class="member-modal__badge" style="background:#f0f0f0;color:#444">${window.esc(m.role)}</span>`);
   const deptLabel = lang === 'en' ? (m.deptLabel_en || m.deptKey || '') : (m.deptLabel_zh || m.deptKey || '');
-  if (deptLabel) badges.push(`<span class="member-modal__badge" style="background:#f0f0f0;color:#888">${deptLabel}</span>`);
+  if (deptLabel) badges.push(`<span class="member-modal__badge" style="background:#f0f0f0;color:#888">${window.esc(deptLabel)}</span>`);
+  if (m.school) badges.push(`<span class="member-modal__badge" style="background:#e8f5e9;color:#2e7d32">${window.esc(m.school)}</span>`);
 
   const bioSection = bio
     ? `<div class="member-modal__bio-label">${lang === 'en' ? 'About' : '自我介紹'}</div><div class="member-modal__bio">${bio}</div>`
@@ -366,8 +372,8 @@ async function loadTeamMembers() {
   try {
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     const [{ data: depts }, { data: members }] = await Promise.all([
-      sb.from('departments').select('*').order('sort_order', { ascending: true }),
-      sb.from('members').select('*').eq('status', 'active').order('year', { ascending: false }),
+      sb.from('departments').select('key, label_zh, label_en, color, icon, sort_order').order('sort_order', { ascending: true }),
+      sb.from('members').select('id, name, name_en, role, bio, bio_en, photo, position, dept, year, status, school').eq('status', 'active').order('year', { ascending: false }),
     ]);
 
     const deptList = depts || [];
@@ -391,24 +397,25 @@ async function loadTeamMembers() {
         const cardColor = isPresident ? '#ff8c00' : 'var(--ttt-cyan)';
         const dept = deptMap[m.dept] || {};
         memberDataStore[m.id] = { ...m, cardColor, deptLabel_zh: dept.label_zh || m.dept || '', deptLabel_en: dept.label_en || m.dept || '', deptKey: m.dept || '' };
-        const c = cardColor;
+        const c = window.esc(cardColor);
         const cardClass = isPresident ? 'lead-card lead-card--president' : 'lead-card lead-card--vice';
         const badge = isPresident
           ? `<div><span class="lead-badge lead-badge--president lang-zh">現任社長</span><span class="lead-badge lead-badge--president lang-en">President</span></div>`
           : `<div><span class="lead-badge lead-badge--vice lang-zh">現任副社長</span><span class="lead-badge lead-badge--vice lang-en">Vice President</span></div>`;
         const avatar = m.photo
-          ? `<img src="${m.photo}" alt="${m.name}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">`
+          ? `<img src="${window.esc(m.photo)}" alt="${window.esc(m.name || '')}" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0">`
           : `<div class="lead-card__avatar">${isPresident ? '⭐' : '🌟'}</div>`;
         return `
-          <div class="${cardClass}" data-member-id="${m.id}">
+          <div class="${cardClass}" data-member-id="${window.esc(m.id)}">
             ${avatar}
             <div>
               ${badge}
-              <div class="lead-card__name lang-zh">${m.name || ''}</div>
-              <div class="lead-card__name lang-en">${m.name_en || m.name || ''}</div>
-              <div class="lead-card__role" style="color:${c}"><span class="lang-zh">${m.role || ''}</span><span class="lang-en">${m.role || ''}</span></div>
-              ${m.bio ? `<div class="lead-card__bio lang-zh">${m.bio}</div>` : ''}
-              ${m.bio_en || m.bio ? `<div class="lead-card__bio lang-en">${m.bio_en || m.bio}</div>` : ''}
+              <div class="lead-card__name lang-zh">${window.esc(m.name || '')}</div>
+              <div class="lead-card__name lang-en">${window.esc(m.name_en || m.name || '')}</div>
+              ${m.school ? `<div class="lead-card__school">${window.esc(m.school)}</div>` : ''}
+              <div class="lead-card__role" style="color:${c}"><span class="lang-zh">${window.esc(m.role || '')}</span><span class="lang-en">${window.esc(m.role || '')}</span></div>
+              ${m.bio ? `<div class="lead-card__bio lang-zh">${window.esc(m.bio)}</div>` : ''}
+              ${m.bio_en || m.bio ? `<div class="lead-card__bio lang-en">${window.esc(m.bio_en || m.bio)}</div>` : ''}
             </div>
           </div>`;
       }).join('');
@@ -445,26 +452,28 @@ async function loadTeamMembers() {
         const isLeader = m.position === 'group_leader';
         memberDataStore[m.id] = { ...m, cardColor: color, deptLabel_zh: d.label_zh || '', deptLabel_en: d.label_en || d.label_zh || '', deptKey: d.key || '' };
         const avatar = m.photo
-          ? `<img src="${m.photo}" alt="${m.name}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
+          ? `<img src="${window.esc(m.photo)}" alt="${window.esc(m.name || '')}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
           : `<div style="width:96px;height:96px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto .75rem">👤</div>`;
         if (isLeader) {
           return `
-          <div class="member-card member-card--leader" style="border-top-color:${color}" data-member-id="${m.id}">
-            <div><span class="member-card__leader-badge lang-zh" style="background:${color}">組長</span><span class="member-card__leader-badge lang-en" style="background:${color}">Lead</span></div>
+          <div class="member-card member-card--leader" style="border-top-color:${window.esc(color)}" data-member-id="${window.esc(m.id)}">
+            <div><span class="member-card__leader-badge lang-zh" style="background:${window.esc(color)}">組長</span><span class="member-card__leader-badge lang-en" style="background:${window.esc(color)}">Lead</span></div>
             ${avatar}
-            <div class="member-card__name lang-zh">${m.name || ''}</div>
-            <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
-            <div class="member-card__role lang-zh">${m.role || ''}</div>
-            <div class="member-card__role lang-en">${m.role || ''}</div>
+            ${m.school ? `<div class="member-card__school">${window.esc(m.school)}</div>` : ''}
+            <div class="member-card__name lang-zh">${window.esc(m.name || '')}</div>
+            <div class="member-card__name lang-en">${window.esc(m.name_en || m.name || '')}</div>
+            <div class="member-card__role lang-zh">${window.esc(m.role || '')}</div>
+            <div class="member-card__role lang-en">${window.esc(m.role || '')}</div>
           </div>`;
         }
         return `
-          <div class="member-card" data-member-id="${m.id}">
+          <div class="member-card" data-member-id="${window.esc(m.id)}">
             ${avatar}
-            <div class="member-card__name lang-zh">${m.name || ''}</div>
-            <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
-            <div class="member-card__role lang-zh">${m.role || ''}</div>
-            <div class="member-card__role lang-en">${m.role || ''}</div>
+            ${m.school ? `<div class="member-card__school">${window.esc(m.school)}</div>` : ''}
+            <div class="member-card__name lang-zh">${window.esc(m.name || '')}</div>
+            <div class="member-card__name lang-en">${window.esc(m.name_en || m.name || '')}</div>
+            <div class="member-card__role lang-zh">${window.esc(m.role || '')}</div>
+            <div class="member-card__role lang-en">${window.esc(m.role || '')}</div>
           </div>`;
       }).join('');
       const inner = list.length
@@ -473,10 +482,10 @@ async function loadTeamMembers() {
       return `
         <div class="dept" style="background:${bg}">
           <div style="max-width:1400px;margin:0 auto">
-            <div class="dept__bar" style="background:${color}"></div>
+            <div class="dept__bar" style="background:${window.esc(color)}"></div>
             <div class="dept__header">
-              <h2 class="dept__name lang-zh">${d.icon || ''} ${d.label_zh}</h2>
-              <h2 class="dept__name lang-en">${d.icon || ''} ${d.label_en || d.label_zh}</h2>
+              <h2 class="dept__name lang-zh">${window.esc(d.icon || '')} ${window.esc(d.label_zh || '')}</h2>
+              <h2 class="dept__name lang-en">${window.esc(d.icon || '')} ${window.esc(d.label_en || d.label_zh || '')}</h2>
               <span class="dept__count">${list.length} <span class="lang-zh">位成員</span><span class="lang-en">members</span></span>
             </div>
             ${inner}
@@ -501,26 +510,28 @@ async function loadTeamMembers() {
         const isLeader = m.position === 'group_leader';
         memberDataStore[m.id] = { ...m, cardColor: fallbackColor, deptLabel_zh: k, deptLabel_en: k, deptKey: k };
         const avatar = m.photo
-          ? `<img src="${m.photo}" alt="${m.name}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
+          ? `<img src="${window.esc(m.photo)}" alt="${window.esc(m.name || '')}" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto .75rem">`
           : `<div style="width:96px;height:96px;border-radius:50%;background:var(--gray);display:flex;align-items:center;justify-content:center;font-size:2.2rem;margin:0 auto .75rem">👤</div>`;
         if (isLeader) {
           return `
-          <div class="member-card member-card--leader" style="border-top-color:${fallbackColor}" data-member-id="${m.id}">
+          <div class="member-card member-card--leader" style="border-top-color:${fallbackColor}" data-member-id="${window.esc(m.id)}">
             <div><span class="member-card__leader-badge lang-zh" style="background:${fallbackColor}">組長</span><span class="member-card__leader-badge lang-en" style="background:${fallbackColor}">Lead</span></div>
             ${avatar}
-            <div class="member-card__name lang-zh">${m.name || ''}</div>
-            <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
-            <div class="member-card__role lang-zh">${m.role || ''}</div>
-            <div class="member-card__role lang-en">${m.role || ''}</div>
+            ${m.school ? `<div class="member-card__school">${window.esc(m.school)}</div>` : ''}
+            <div class="member-card__name lang-zh">${window.esc(m.name || '')}</div>
+            <div class="member-card__name lang-en">${window.esc(m.name_en || m.name || '')}</div>
+            <div class="member-card__role lang-zh">${window.esc(m.role || '')}</div>
+            <div class="member-card__role lang-en">${window.esc(m.role || '')}</div>
           </div>`;
         }
         return `
-          <div class="member-card" data-member-id="${m.id}">
+          <div class="member-card" data-member-id="${window.esc(m.id)}">
             ${avatar}
-            <div class="member-card__name lang-zh">${m.name || ''}</div>
-            <div class="member-card__name lang-en">${m.name_en || m.name || ''}</div>
-            <div class="member-card__role lang-zh">${m.role || ''}</div>
-            <div class="member-card__role lang-en">${m.role || ''}</div>
+            ${m.school ? `<div class="member-card__school">${window.esc(m.school)}</div>` : ''}
+            <div class="member-card__name lang-zh">${window.esc(m.name || '')}</div>
+            <div class="member-card__name lang-en">${window.esc(m.name_en || m.name || '')}</div>
+            <div class="member-card__role lang-zh">${window.esc(m.role || '')}</div>
+            <div class="member-card__role lang-en">${window.esc(m.role || '')}</div>
           </div>`;
       }).join('');
       blocks.push(`

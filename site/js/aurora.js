@@ -15,12 +15,12 @@
 
     /* Colour orbs — radial-gradient blobs that drift slowly */
     '.ao{position:absolute;border-radius:50%;animation:ao-float linear infinite alternate}',
-    '.ao1{width:75vw;height:75vw;background:radial-gradient(circle at 40% 40%,#ff3b3b 0%,transparent 68%);opacity:.13;top:-25%;left:-18%;animation-duration:24s}',
-    '.ao2{width:62vw;height:62vw;background:radial-gradient(circle at 55% 45%,#0099ff 0%,transparent 68%);opacity:.12;top:20%;right:-18%;animation-duration:30s;animation-delay:-11s}',
-    '.ao3{width:58vw;height:58vw;background:radial-gradient(circle at 45% 50%,#00c95d 0%,transparent 68%);opacity:.11;bottom:0%;left:8%;animation-duration:21s;animation-delay:-17s}',
-    '.ao4{width:48vw;height:48vw;background:radial-gradient(circle at 50% 50%,#ffd600 0%,transparent 68%);opacity:.10;top:52%;right:22%;animation-duration:26s;animation-delay:-8s}',
-    '.ao5{width:68vw;height:68vw;background:radial-gradient(circle at 50% 60%,#7c3aff 0%,transparent 68%);opacity:.11;bottom:-28%;right:-14%;animation-duration:35s;animation-delay:-23s}',
-    '.ao6{width:50vw;height:50vw;background:radial-gradient(circle at 50% 40%,#ff2dca 0%,transparent 68%);opacity:.09;top:40%;left:30%;animation-duration:28s;animation-delay:-5s}',
+    '.ao1{width:75vw;height:75vw;background:radial-gradient(circle at 40% 40%,#0D2B52 0%,transparent 68%);opacity:.13;top:-25%;left:-18%;animation-duration:24s}',
+    '.ao2{width:62vw;height:62vw;background:radial-gradient(circle at 55% 45%,#2ECAD4 0%,transparent 68%);opacity:.12;top:20%;right:-18%;animation-duration:30s;animation-delay:-11s}',
+    '.ao3{width:58vw;height:58vw;background:radial-gradient(circle at 45% 50%,#1A467D 0%,transparent 68%);opacity:.11;bottom:0%;left:8%;animation-duration:21s;animation-delay:-17s}',
+    '.ao4{width:48vw;height:48vw;background:radial-gradient(circle at 50% 50%,#1D7B93 0%,transparent 68%);opacity:.10;top:52%;right:22%;animation-duration:26s;animation-delay:-8s}',
+    '.ao5{width:68vw;height:68vw;background:radial-gradient(circle at 50% 60%,#0D2B52 0%,transparent 68%);opacity:.11;bottom:-28%;right:-14%;animation-duration:35s;animation-delay:-23s}',
+    '.ao6{width:50vw;height:50vw;background:radial-gradient(circle at 50% 40%,#2ECAD4 0%,transparent 68%);opacity:.09;top:40%;left:30%;animation-duration:28s;animation-delay:-5s}',
 
     /* Orb keyframe — gentle multi-direction drift */
     '@keyframes ao-float{',
@@ -46,9 +46,9 @@
     /* Footer neon rainbow top bar */
     'footer{position:relative}',
     'footer::before{content:\'\';position:absolute;top:0;left:0;right:0;height:3px;',
-    'background:linear-gradient(90deg,#ff3b3b,#ff8c00,#ffd600,#00c95d,#0099ff,#7c3aff,#ff2dca,#ff3b3b);',
+    'background:linear-gradient(90deg,#0D2B52,#1A467D,#2ECAD4,#0D2B52);',
     'background-size:200% 100%;animation:ttt-rainbow-shift 5s linear infinite;',
-    'box-shadow:0 0 8px rgba(255,60,60,.55),0 0 16px rgba(0,153,255,.4),0 0 24px rgba(124,58,255,.3)}',
+    'box-shadow:0 0 8px rgba(46,202,212,.55),0 0 16px rgba(26,70,125,.4),0 0 24px rgba(13,43,82,.3)}',
     '@keyframes ttt-rainbow-shift{0%{background-position:0% 0%}100%{background-position:200% 0%}}',
     '.footer-rainbow{display:none}',
   ].join('');
@@ -75,9 +75,9 @@
 
   /* Three waves at different Y positions, different rainbow color pairs */
   var WAVES = [
-    { amp: 115, freq: 0.00195, spd: 0.0045, yPct: 0.20, hue1: '#ff3b3b', hue2: '#ff8c00' },
-    { amp: 95,  freq: 0.00270, spd: 0.0060, yPct: 0.52, hue1: '#0099ff', hue2: '#00c95d' },
-    { amp: 135, freq: 0.00160, spd: 0.0075, yPct: 0.82, hue1: '#7c3aff', hue2: '#ff2dca' },
+    { amp: 115, freq: 0.00195, spd: 0.0045, yPct: 0.20, hue1: '#0D2B52', hue2: '#1A467D' },
+    { amp: 95,  freq: 0.00270, spd: 0.0060, yPct: 0.52, hue1: '#1A467D', hue2: '#2ECAD4' },
+    { amp: 135, freq: 0.00160, spd: 0.0075, yPct: 0.82, hue1: '#2ECAD4', hue2: '#0D2B52' },
   ];
 
   function resize() {
@@ -142,9 +142,9 @@
     ts.textContent =
       '#ttt-ov{position:fixed;inset:0;z-index:9990;pointer-events:none;overflow:hidden}' +
       '.ttt-p{position:absolute;inset:0}' +
-      '.ttt-p1{background:#D4A017;z-index:1}' +
-      '.ttt-p2{background:#4DADA9;z-index:2}' +
-      '.ttt-p3{background:#0D2B52;z-index:3}' +
+      '.ttt-p1{background:#34D399;z-index:1}' +
+      '.ttt-p2{background:#10B981;z-index:2}' +
+      '.ttt-p3{background:#064E3B;z-index:3}' +
       '.ttt-lg{position:absolute;inset:0;z-index:4;display:flex;align-items:center;' +
         'justify-content:center;gap:.9rem;opacity:0;transform:translateY(8px)}' +
       '.ttt-lg img{width:48px;height:48px;border-radius:10px;object-fit:cover;object-position:left center}' +
@@ -166,7 +166,7 @@
       '<div class="ttt-p ttt-p1" style="transform:translateX(-105%)"></div>' +
       '<div class="ttt-p ttt-p2" style="transform:translateX(-105%)"></div>' +
       '<div class="ttt-p ttt-p3" style="transform:translateX(-105%)"></div>' +
-      '<div class="ttt-lg"><img src="' + base + 'assets/logo-icon.jpg" alt="TTT">' +
+      '<div class="ttt-lg"><img src="' + base + 'assets/logo-real.png" alt="TTT">' +
         '<span>Taiwan Teen Trust</span></div>';
     document.body.appendChild(ov);
 
@@ -194,12 +194,12 @@
       lg.style.transform = 'translateY(8px)';
       ov.offsetHeight; /* force reflow */
 
-      /* Staggered entry: gold → teal → navy */
+      /* Staggered entry: mint -> emerald -> forest */
       slidePanel(panels[0], 'translateX(0)', 260, 0);
       slidePanel(panels[1], 'translateX(0)', 260, 50);
       slidePanel(panels[2], 'translateX(0)', 260, 100);
 
-      /* Logo fades in after navy lands */
+      /* Logo fades in after forest lands */
       setTimeout(function () {
         lg.style.transition = 'opacity 160ms ease, transform 160ms ease';
         lg.style.opacity = '1';
@@ -221,7 +221,7 @@
       lg.style.opacity = '0';
       lg.style.transform = 'translateY(-8px)';
 
-      /* Reverse stagger exit: navy → teal → gold */
+      /* Reverse stagger exit: forest -> emerald -> mint */
       slidePanel(panels[2], 'translateX(105%)', 280, 60);
       slidePanel(panels[1], 'translateX(105%)', 280, 130);
       slidePanel(panels[0], 'translateX(105%)', 280, 200);
@@ -237,6 +237,13 @@
       lg.style.opacity = '1';
       setTimeout(uncover, 100);
     }
+
+    /* Handle backwards navigation from bfcache */
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    });
 
     /* Intercept internal nav clicks */
     document.addEventListener('click', function (e) {

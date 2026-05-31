@@ -97,7 +97,8 @@ VALUES (
 ```sql
 ALTER TABLE members
   ADD COLUMN IF NOT EXISTS photo text,
-  ADD COLUMN IF NOT EXISTS is_lead boolean DEFAULT false;
+  ADD COLUMN IF NOT EXISTS is_lead boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS school text;
 ```
 
 ## 7. 新增 `project_categories` 表（專案分類管理）
@@ -325,5 +326,132 @@ VALUES
      {"key":"medical","label_zh":"醫療費補助","label_en":"Medical funding","level":"urgent"},
      {"key":"volunteers","label_zh":"志工","label_en":"Volunteers","level":"normal"}
    ]'::jsonb);
+```
+
+## 14. 2026-05-24 Security & Audit Migrations
+
+### 14.1 `focus_themes` RLS Policy Update
+```sql
+-- Add user_id column if not exists
+ALTER TABLE focus_themes ADD COLUMN IF NOT EXISTS user_id uuid REFERENCES auth.users(id) DEFAULT auth.uid();
+
+-- Enable RLS
+ALTER TABLE focus_themes ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing focus_themes policies
+DROP POLICY IF EXISTS "focus_themes_select_all" ON focus_themes;
+DROP POLICY IF EXISTS "focus_themes_write_authenticated" ON focus_themes;
+
+-- Create policies: anyone can read
+CREATE POLICY "focus_themes_select_all"
+  ON focus_themes FOR SELECT USING (true);
+
+-- Authenticated users can only insert/update/delete their own data
+CREATE POLICY "focus_themes_insert_own"
+  ON focus_themes FOR INSERT TO authenticated
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "focus_themes_update_own"
+  ON focus_themes FOR UPDATE TO authenticated
+  USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "focus_themes_delete_own"
+  ON focus_themes FOR DELETE TO authenticated
+  USING (auth.uid() = user_id);
+```
+
+### 14.2 `newsletter_subscriptions` Table
+```sql
+CREATE TABLE IF NOT EXISTS newsletter_subscriptions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email text UNIQUE NOT NULL,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE newsletter_subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- Public can subscribe
+CREATE POLICY "newsletter_subscriptions_insert_public"
+  ON newsletter_subscriptions FOR INSERT WITH CHECK (true);
+
+-- Authenticated users (admins/members) can view subscriptions
+CREATE POLICY "newsletter_subscriptions_select_authenticated"
+  ON newsletter_subscriptions FOR SELECT TO authenticated USING (true);
+```
+
+### 14.3 `audit_logs` Table & Triggers
+```sql
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  table_name text NOT NULL,
+  action_type text NOT NULL,
+  record_id text NOT NULL,
+  pre_image jsonb,
+  post_image jsonb,
+  user_id uuid,
+  created_at timestamptz DEFAULT now()
+);
+
+-- Enable RLS (only authenticated can read)
+ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "audit_logs_select_authenticated"
+  ON audit_logs FOR SELECT TO authenticated USING (true);
+
+-- Trigger function for audit logging
+CREATE OR REPLACE FUNCTION audit_trigger_func() RETURNS trigger AS $$
+DECLARE
+  v_user_id uuid;
+  v_record_id text;
+  v_pre jsonb := null;
+  v_post jsonb := null;
+BEGIN
+  -- Safely extract user_id if authenticated
+  BEGIN
+    v_user_id := auth.uid();
+  EXCEPTION WHEN OTHERS THEN
+    v_user_id := null;
+  END;
+
+  IF TG_OP = 'DELETE' THEN
+    v_record_id := OLD.id::text;
+    v_pre := to_jsonb(OLD);
+  ELSIF TG_OP = 'UPDATE' THEN
+    v_record_id := NEW.id::text;
+    v_pre := to_jsonb(OLD);
+    v_post := to_jsonb(NEW);
+  ELSE
+    v_record_id := NEW.id::text;
+    v_post := to_jsonb(NEW);
+  END IF;
+
+  INSERT INTO audit_logs (table_name, action_type, record_id, pre_image, post_image, user_id)
+  VALUES (TG_TABLE_NAME, TG_OP, v_record_id, v_pre, v_post, v_user_id);
+
+  IF TG_OP = 'DELETE' THEN
+    RETURN OLD;
+  ELSE
+    RETURN NEW;
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Attach triggers to relevant tables
+DROP TRIGGER IF EXISTS audit_focus_themes ON focus_themes;
+CREATE TRIGGER audit_focus_themes AFTER INSERT OR UPDATE OR DELETE ON focus_themes
+  FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
+
+DROP TRIGGER IF EXISTS audit_members ON members;
+CREATE TRIGGER audit_members AFTER INSERT OR UPDATE OR DELETE ON members
+  FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
+
+DROP TRIGGER IF EXISTS audit_projects ON projects;
+CREATE TRIGGER audit_projects AFTER INSERT OR UPDATE OR DELETE ON projects
+  FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
+
+DROP TRIGGER IF EXISTS audit_posts ON posts;
+CREATE TRIGGER audit_posts AFTER INSERT OR UPDATE OR DELETE ON posts
+  FOR EACH ROW EXECUTE FUNCTION audit_trigger_func();
 ```
 
