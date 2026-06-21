@@ -7,7 +7,8 @@
 
 /* ─── Language System ─── */
 const LANG_KEY = 'ttt-lang';
-let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+const isHomepage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
+let currentLang = isHomepage ? 'zh' : (localStorage.getItem(LANG_KEY) || 'zh');
 
 const t = {
   zh: {
@@ -48,14 +49,14 @@ function setLang(lang) {
   document.body.classList.toggle('lang-en', lang === 'en');
 
   // Update lang buttons
-  document.querySelectorAll('.lang-btn').forEach(btn => {
+  document.querySelectorAll('.lang-btn, .nav__lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
 }
 
 /* ─── Navbar ─── */
 function initNavbar() {
-  const navbar = document.querySelector('.navbar');
+  const navbar = document.querySelector('.nav');
   if (!navbar) return;
 
   // Scroll state
@@ -64,8 +65,8 @@ function initNavbar() {
   }, { passive: true });
 
   // Hamburger
-  const hamburger = document.querySelector('.navbar__hamburger');
-  const mobileNav = document.querySelector('.navbar__mobile');
+  const hamburger = document.querySelector('.nav__hamburger');
+  const mobileNav = document.querySelector('.nav__drawer');
   if (hamburger && mobileNav) {
     hamburger.addEventListener('click', () => {
       const open = hamburger.classList.toggle('open');
@@ -84,7 +85,7 @@ function initNavbar() {
 
   // Active link
   const path = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.navbar__link').forEach(link => {
+  document.querySelectorAll('.nav__link').forEach(link => {
     const href = link.getAttribute('href');
     if (href && (href === path || href.endsWith(path))) {
       link.classList.add('active');
@@ -94,7 +95,7 @@ function initNavbar() {
 
 /* ─── Language Toggle Init ─── */
 function initLang() {
-  document.querySelectorAll('.lang-btn').forEach(btn => {
+  document.querySelectorAll('.lang-btn, .nav__lang-btn').forEach(btn => {
     btn.addEventListener('click', () => setLang(btn.dataset.lang));
   });
   setLang(currentLang);
@@ -263,10 +264,15 @@ function initAccordion() {
 
 /* ─── Page Loader ─── */
 function initLoader() {
-  const loader = document.querySelector('.page-loader');
+  const loader = document.querySelector('.page-loader, .loader, #loader');
   if (!loader) return;
   window.addEventListener('load', () => {
-    setTimeout(() => loader.classList.add('hidden'), 600);
+    setTimeout(() => {
+      loader.classList.add('hidden', 'out');
+      if (typeof playHeroEntrance === 'function') {
+        playHeroEntrance();
+      }
+    }, 600);
   });
 }
 

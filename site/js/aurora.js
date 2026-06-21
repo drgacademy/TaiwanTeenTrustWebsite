@@ -137,38 +137,19 @@
     var homeA = document.querySelector('a[href="index.html"], a[href="../index.html"]');
     var base = (homeA && homeA.getAttribute('href').indexOf('../') === 0) ? '../' : '';
 
-    /* Inject transition CSS */
-    var ts = document.createElement('style');
-    ts.textContent =
-      '#ttt-ov{position:fixed;inset:0;z-index:9990;pointer-events:none;overflow:hidden}' +
-      '.ttt-p{position:absolute;inset:0}' +
-      '.ttt-p1{background:#34D399;z-index:1}' +
-      '.ttt-p2{background:#10B981;z-index:2}' +
-      '.ttt-p3{background:#064E3B;z-index:3}' +
-      '.ttt-lg{position:absolute;inset:0;z-index:4;display:flex;align-items:center;' +
-        'justify-content:center;gap:.9rem;opacity:0;transform:translateY(8px)}' +
-      '.ttt-lg img{width:48px;height:48px;border-radius:10px;object-fit:cover;object-position:left center}' +
-      '.ttt-lg span{color:#fff;font-size:1.5rem;font-weight:800;letter-spacing:-.02em;' +
-        'font-family:Poppins,sans-serif;text-shadow:0 2px 20px rgba(0,0,0,.3)}' +
-      /* Shimmer line that races across each panel */
-      '.ttt-p::after{content:\'\';position:absolute;top:0;bottom:0;left:-8px;width:8px;' +
-        'background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);' +
-        'transform:translateX(-100%);opacity:0}' +
-      '.ttt-p.ttt-shine::after{opacity:1;animation:ttt-shine .55s ease forwards}' +
-      '@keyframes ttt-shine{0%{transform:translateX(-100%);opacity:0}' +
-        '15%{opacity:1}85%{opacity:1}100%{transform:translateX(calc(100vw + 8px));opacity:0}}';
-    document.head.appendChild(ts);
-
-    /* Build overlay */
-    var ov = document.createElement('div');
-    ov.id = 'ttt-ov';
-    ov.innerHTML =
-      '<div class="ttt-p ttt-p1" style="transform:translateX(-105%)"></div>' +
-      '<div class="ttt-p ttt-p2" style="transform:translateX(-105%)"></div>' +
-      '<div class="ttt-p ttt-p3" style="transform:translateX(-105%)"></div>' +
-      '<div class="ttt-lg"><img src="' + base + 'assets/logo-real.png" alt="TTT">' +
-        '<span>Taiwan Teen Trust</span></div>';
-    document.body.appendChild(ov);
+    /* Build overlay if not present */
+    var ov = document.getElementById('ttt-ov');
+    if (!ov) {
+      ov = document.createElement('div');
+      ov.id = 'ttt-ov';
+      ov.innerHTML =
+        '<div class="ttt-p ttt-p1" style="transform:translateX(-105%)"></div>' +
+        '<div class="ttt-p ttt-p2" style="transform:translateX(-105%)"></div>' +
+        '<div class="ttt-p ttt-p3" style="transform:translateX(-105%)"></div>' +
+        '<div class="ttt-lg"><img src="' + base + 'assets/logo-real.png" alt="TTT">' +
+          '<span>Taiwan Teen Trust</span></div>';
+      document.body.appendChild(ov);
+    }
 
     var panels = ov.querySelectorAll('.ttt-p');
     var lg = ov.querySelector('.ttt-lg');
@@ -185,6 +166,7 @@
 
     function cover(cb) {
       /* Reset panels to left edge */
+      document.documentElement.classList.add('ttt-transitioning');
       panels.forEach(function (p) {
         p.style.transition = 'none';
         p.style.transform = 'translateX(-105%)';
@@ -194,12 +176,12 @@
       lg.style.transform = 'translateY(8px)';
       ov.offsetHeight; /* force reflow */
 
-      /* Staggered entry: mint -> emerald -> forest */
+      /* Staggered entry */
       slidePanel(panels[0], 'translateX(0)', 260, 0);
       slidePanel(panels[1], 'translateX(0)', 260, 50);
       slidePanel(panels[2], 'translateX(0)', 260, 100);
 
-      /* Logo fades in after forest lands */
+      /* Logo fades in */
       setTimeout(function () {
         lg.style.transition = 'opacity 160ms ease, transform 160ms ease';
         lg.style.opacity = '1';
@@ -221,15 +203,21 @@
       lg.style.opacity = '0';
       lg.style.transform = 'translateY(-8px)';
 
-      /* Reverse stagger exit: forest -> emerald -> mint */
+      /* Reverse stagger exit */
       slidePanel(panels[2], 'translateX(105%)', 280, 60);
       slidePanel(panels[1], 'translateX(105%)', 280, 130);
       slidePanel(panels[0], 'translateX(105%)', 280, 200);
+
+      /* Remove transitioning class after uncover completes */
+      setTimeout(function () {
+        document.documentElement.classList.remove('ttt-transitioning');
+      }, 500);
     }
 
     /* On page load: if arriving via a transition, play uncover */
     if (sessionStorage.getItem('ttt-tr')) {
       sessionStorage.removeItem('ttt-tr');
+      document.documentElement.classList.add('ttt-transitioning');
       panels.forEach(function (p) {
         p.style.transition = 'none';
         p.style.transform = 'translateX(0)';

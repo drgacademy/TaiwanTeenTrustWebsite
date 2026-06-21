@@ -23,17 +23,11 @@ window.escBio = function(str) {
 (function () {
   'use strict';
 
-  const SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
-
-  if (!window.supabase || !window.supabase.createClient) {
-    console.warn('[site-content] Supabase JS not loaded; skipping dynamic content.');
+  const sb = window.supabaseClient;
+  if (!sb) {
+    console.warn('[site-content] Supabase client not initialized; skipping dynamic content.');
     return;
   }
-
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
 
   let contentMap = null;
 
