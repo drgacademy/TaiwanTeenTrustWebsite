@@ -840,19 +840,15 @@ body.lang-en span.lang-en { display: inline; }
 <section class="mission-section">
   <div class="mission-inner">
     <div class="mission-left">
-      <div class="lw"><div class="li mission-word lang-zh">信任</div></div>
-      <div class="lw"><div class="li mission-word lang-en">TRUST</div></div>
+      <div class="lw"><div class="li mission-word"><span class="lang-zh">信任</span><span class="lang-en">TRUST</span></div></div>
       <div class="mission-sub lang-zh">TRUST</div>
       <div class="mission-sub lang-en">信任</div>
     </div>
     <div class="mission-right">
       <h2 class="mission-title">
-        <span class="lw"><span class="li lang-zh">我們相信</span></span>
-        <span class="lw"><span class="li lang-zh">青年有能力</span></span>
-        <span class="lw"><span class="li lang-zh">改變世界</span></span>
-        <span class="lw"><span class="li lang-en">We believe teenagers</span></span>
-        <span class="lw"><span class="li lang-en">have the power</span></span>
-        <span class="lw"><span class="li lang-en">to change the world</span></span>
+        <span class="lw"><span class="li"><span class="lang-zh">我們相信</span><span class="lang-en">We believe teenagers</span></span></span>
+        <span class="lw"><span class="li"><span class="lang-zh">青年有能力</span><span class="lang-en">have the power</span></span></span>
+        <span class="lw"><span class="li"><span class="lang-zh">改變世界</span><span class="lang-en">to change the world</span></span></span>
       </h2>
       <p class="mission-body" id="mission-body">
         <span class="lang-zh" data-site-key="mission_body" data-site-lang="zh">Taiwan Teen Trust 成立於 2020 年，是由一群高中生發起的非營利組織。我們不等待大人的許可，我們自己動手創造改變——從台灣的流浪動物問題到青年政策倡議，每一個專案都是我們對社會的承諾。</span>
@@ -875,8 +871,7 @@ body.lang-en span.lang-en { display: inline; }
         <div class="sec-tag lang-zh">我們關注</div>
         <div class="sec-tag lang-en">Focus Areas</div>
         <h2 class="sec-title">
-          <span class="lw"><span class="li lang-zh">三大行動方向</span></span>
-          <span class="lw"><span class="li lang-en">Three Core Pillars</span></span>
+          <span class="lw"><span class="li"><span class="lang-zh">三大行動方向</span><span class="lang-en">Three Core Pillars</span></span></span>
         </h2>
       </div>
       <a href="focus.html" class="btn-stroke" style="opacity:0;transform:translateY(1.5rem)" id="btn-pillars-more">
@@ -922,8 +917,7 @@ body.lang-en span.lang-en { display: inline; }
         <div class="sec-tag lang-zh">近期專案</div>
         <div class="sec-tag lang-en">Recent Projects</div>
         <h2 class="sec-title">
-          <span class="lw"><span class="li lang-zh">我們正在做的事</span></span>
-          <span class="lw"><span class="li lang-en">What We're Building</span></span>
+          <span class="lw"><span class="li"><span class="lang-zh">我們正在做的事</span><span class="lang-en">What We're Building</span></span></span>
         </h2>
       </div>
       <a href="projects.html" class="btn-stroke" style="opacity:0;transform:translateY(1.5rem)" id="btn-proj-more">
@@ -1023,12 +1017,8 @@ body.lang-en span.lang-en { display: inline; }
       <span class="lang-en">Be Part of Something Bigger</span>
     </div>
     <h2 class="join-title">
-      <span class="lw"><span class="li lang-zh">準備好了嗎？</span></span>
-      <span class="lw"><span class="li lang-en">Ready to</span></span>
-      <span class="lw">
-        <span class="li lang-zh"><span class="rainbow-text">一起改變台灣。</span></span>
-        <span class="li lang-en"><span class="rainbow-text">Change Taiwan?</span></span>
-      </span>
+      <span class="lw"><span class="li"><span class="lang-zh">準備好了嗎？</span><span class="lang-en">Ready to</span></span></span>
+      <span class="lw"><span class="li"><span class="lang-zh"><span class="rainbow-text">一起改變台灣。</span></span><span class="lang-en"><span class="rainbow-text">Change Taiwan?</span></span></span></span>
     </h2>
     <p class="join-desc" id="join-desc">
       <span class="lang-zh">不管你是想參與專案、貢獻技能，還是只是想認識一群認真改變世界的台灣青年——我們的門永遠敞開。</span>
@@ -1127,6 +1117,7 @@ function setLang(l) {
   document.querySelectorAll('[data-zh]').forEach(el => {
     el.innerHTML = l === 'zh' ? el.dataset.zh : (el.dataset.en || el.dataset.zh);
   });
+  if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
 }
 document.querySelectorAll('.nav__lang-btn').forEach(btn => {
   btn.addEventListener('click', () => setLang(btn.dataset.lang));
