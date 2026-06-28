@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="assets/favicon.png" type="image/png" />
+  <title>嘖嘖募資引導中 | Taiwan Teen Trust</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card-bg: #111111;
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.4);
+      --accent: #2ECAD4;
+      --accent-dim: rgba(46, 202, 212, 0.1);
+      --border: rgba(255, 255, 255, 0.08);
+      --rainbow: linear-gradient(90deg, #0D2B52 0%, #1A467D 50%, #2ECAD4 100%);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans TC', 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Ambient background glow */
+    .glow-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(circle 600px at 50% 50%, rgba(46, 202, 212, 0.06), transparent 70%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: min(440px, 90vw);
+      text-align: center;
+      padding: 2.5rem;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+      animation: card-in 0.8s var(--ease) both;
+    }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Logo Brand Header */
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+    }
+    .brand img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .brand-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Redirect Loader Animations */
+    .loader-ring {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 2.5rem;
+    }
+    .loader-ring::before,
+    .loader-ring::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+    }
+    .loader-ring::before {
+      border-top-color: var(--accent);
+      border-bottom-color: var(--accent);
+      animation: spin 1s linear infinite;
+    }
+    .loader-ring::after {
+      border-left-color: rgba(255,255,255,0.05);
+      border-right-color: rgba(255,255,255,0.05);
+    }
+    .loader-icon {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    .title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    
+    .desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Action Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.8rem 1.5rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 8px;
+      transition: all 0.2s var(--ease);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      box-shadow: 0 4px 12px rgba(46, 202, 212, 0.2);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: transparent;
+      margin-top: 0.5rem;
+    }
+    .btn-outline:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* Language Switcher */
+    .lang-switcher {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .lang-link {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: color 0.2s;
+    }
+    .lang-link:hover, .lang-link.active {
+      color: var(--accent);
+    }
+
+    body:not(.lang-en) .lang-en { display: none !important; }
+    body.lang-en .lang-zh { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="glow-bg"></div>
+
+  <div class="container">
+    <!-- Brand Header -->
+    <div class="brand">
+      <img src="assets/logo-real.png" alt="TTT Logo" />
+      <span class="brand-text">Taiwan Teen Trust</span>
+    </div>
+
+    <!-- Spinning indicator -->
+    <div class="loader-ring">
+      <div class="loader-icon">✨</div>
+    </div>
+
+    <!-- Dynamic Status Info -->
+    <div id="status-redirecting">
+      <h2 class="title lang-zh">嘖嘖群眾募資引導中</h2>
+      <h2 class="title lang-en">Redirecting to Zeczec</h2>
+      <p class="desc lang-zh">正在安全導向我們的嘖嘖募資專案頁面，請稍候...</p>
+      <p class="desc lang-en">Transferring you safely to our crowdfunding campaign. Please wait...</p>
+      
+      <a href="#" id="btn-manual" class="btn btn-primary">
+        <span class="lang-zh">手動前往專案頁面 →</span>
+        <span class="lang-en">Proceed Manually →</span>
+      </a>
+    </div>
+
+    <div id="status-upcoming" style="display: none;">
+      <h2 class="title lang-zh" style="color: var(--accent);">嘖嘖募資即將上線！</h2>
+      <h2 class="title lang-en" style="color: var(--accent);">Zeczec Campaign Launching Soon!</h2>
+      <p class="desc lang-zh">我們的群眾募資專案仍在籌備中。即將引導您返回首頁...</p>
+      <p class="desc lang-en">Our crowdfunding campaign is prepared and launching soon. Redirecting you to home...</p>
+      
+      <a href="index.html" class="btn btn-primary">
+        <span class="lang-zh">返回首頁</span>
+        <span class="lang-en">Return Home</span>
+      </a>
+    </div>
+
+    <a href="index.html" class="btn btn-outline">
+      <span class="lang-zh">取消並回首頁</span>
+      <span class="lang-en">Cancel & Exit</span>
+    </a>
+
+    <!-- Footer Language toggle -->
+    <div class="lang-switcher">
+      <button class="lang-link active" onclick="setLang('zh')">繁體中文</button>
+      <button class="lang-link" onclick="setLang('en')">English</button>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    /* Initialize Supabase client */
+    const sb = window.supabase.createClient(
+      'https://tpolpfulwsfqpghweasl.supabase.co',
+      'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J'
+    );
+
+    /* Language logic */
+    let lang = localStorage.getItem('ttt-lang') || 'zh';
+    function setLang(newLang) {
+      lang = newLang;
+      localStorage.setItem('ttt-lang', lang);
+      document.body.className = lang === 'en' ? 'lang-en' : 'lang-zh';
+      document.querySelectorAll('.lang-link').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase().includes(lang));
+      });
+    }
+    setLang(lang);
+
+    /* Fetch and redirect */
+    async function initRedirect() {
+      try {
+        const { data, error } = await sb
+          .from('site_content')
+          .select('value_zh')
+          .eq('key', 'social_zeczec')
+          .single();
+
+        const zeczecUrl = data?.value_zh ? data.value_zh.trim() : '';
+
+        // Validate URL
+        if (!error && zeczecUrl && zeczecUrl.startsWith('http')) {
+          document.getElementById('btn-manual').href = zeczecUrl;
+          
+          // Auto redirect after 1.5 seconds
+          setTimeout(() => {
+            window.location.href = zeczecUrl;
+          }, 1500);
+        } else {
+          // No URL or campaign not active yet
+          showUpcoming();
+        }
+      } catch (err) {
+        console.warn('[redirect] Supabase query failed:', err);
+        showUpcoming();
+      }
+    }
+
+    function showUpcoming() {
+      document.getElementById('status-redirecting').style.display = 'none';
+      document.getElementById('status-upcoming').style.display = 'block';
+      document.querySelector('.loader-icon').textContent = '🔔';
+      
+      // Auto redirect to homepage after 4 seconds
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 4000);
+    }
+
+    document.addEventListener('DOMContentLoaded', initRedirect);
+  </script>
+</body>
+</html>
