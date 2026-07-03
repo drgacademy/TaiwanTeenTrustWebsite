@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/components.css" />
+  <script>if(sessionStorage.getItem('ttt-tr'))document.documentElement.classList.add('ttt-transitioning')</script>
   <style>
 :root{--r1:#0D2B52;--r2:#143867;--r3:#1A467D;--r4:#1D7B93;--r5:#2ECAD4;--r6:#27B4C1;--r7:#209EAE;--rainbow:linear-gradient(90deg,#0D2B52 0%,#1A467D 50%,#2ECAD4 100%);--black:#0a0a0a;--white:#fff;--gray:#f5f5f5;--gray-2:#e8e8e8;--text-2:rgba(10,10,10,.5);--text-3:rgba(10,10,10,.28);--ease:cubic-bezier(0.16,1,0.3,1);--gutter:clamp(1.25rem,5vw,5rem);--ttt-cyan:#2ECAD4;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -147,6 +149,31 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 </head>
 <body>
 
+<!-- ════ PAGE LOADER ════ -->
+<div class="page-loader">
+  <div class="page-loader__inner">
+    <img class="page-loader__logo" src="assets/logo-real.png" alt="Taiwan Teen Trust" data-site-logo />
+    <div class="page-loader__bar">
+      <div class="page-loader__bar-fill"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PAGE TRANSITION OVERLAY ════ -->
+<div id="ttt-ov" aria-hidden="true">
+  <div class="ttt-p ttt-p1"></div>
+  <div class="ttt-p ttt-p2"></div>
+  <div class="ttt-p ttt-p3"></div>
+  <div class="ttt-lg">
+    <img src="assets/logo-real.png" alt="TTT" data-site-logo />
+    <span>Taiwan Teen Trust</span>
+  </div>
+</div>
+
+<!-- ════ CURSOR ════ -->
+<div class="cursor-dot"></div>
+<div class="cursor-ring"></div>
+
 <nav class="nav" id="nav">
   <a href="index.html" class="nav__logo" aria-label="Taiwan Teen Trust">
     <img src="assets/logo-real.png" alt="TTT Logo" data-site-logo style="width:38px;height:38px;border-radius:9px;object-fit:cover;object-position:left center;flex-shrink:0" />
@@ -159,6 +186,7 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
     <a href="projects.html" class="nav__link" data-zh="專案" data-en="Projects">專案</a>
     <a href="focus.html" class="nav__link" data-zh="年度主題" data-en="Focus">年度主題</a>
     <a href="blog.html" class="nav__link" data-zh="部落格" data-en="Blog">部落格</a>
+    <a href="donate.html"   class="nav__link" data-zh="支持我們" data-en="Support Us">支持我們</a>
   </div>
   <div class="nav__actions">
     <div class="nav__lang">
@@ -180,6 +208,7 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
   <a href="projects.html" class="nav__link" data-zh="專案" data-en="Projects">專案</a>
   <a href="focus.html" class="nav__link" data-zh="年度主題" data-en="Focus">年度主題</a>
   <a href="blog.html" class="nav__link" data-zh="部落格" data-en="Blog">部落格</a>
+  <a href="donate.html"   class="nav__link" data-zh="支持我們" data-en="Support Us">支持我們</a>
 </div>
 
 <!-- HERO -->
@@ -333,26 +362,17 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script>
 gsap.registerPlugin(ScrollTrigger);
-window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40));
-const LANG_KEY = 'ttt-lang';
-let langReady = false;
-function setLang(l) {
-  document.body.classList.toggle('lang-en', l==='en');
-  document.querySelectorAll('.nav__lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang===l));
-  document.querySelectorAll('[data-zh],[data-en]').forEach(el => {
-    if (el.dataset[l]) el.textContent = el.dataset[l];
-  });
-  localStorage.setItem(LANG_KEY, l);
-  if (langReady) {
-    const cls = l==='en' ? '.li.lang-en' : '.li.lang-zh';
-    document.querySelectorAll(cls).forEach(el => el.style.transform = 'translateY(0px)');
-  }
-}
-document.querySelectorAll('.nav__lang-btn').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
-setLang(localStorage.getItem(LANG_KEY)||'zh');
-const ham = document.getElementById('hamburger');
-const drawer = document.getElementById('nav-drawer');
-if (ham) ham.addEventListener('click', () => { ham.classList.toggle('open'); drawer.classList.toggle('open'); });
+
+// Language-dependent animation trigger helper
+document.querySelectorAll('.nav__lang-btn').forEach(b => b.addEventListener('click', () => {
+  const l = b.dataset.lang;
+  const cls = l==='en' ? '.li.lang-en' : '.li.lang-zh';
+  document.querySelectorAll(cls).forEach(el => el.style.transform = 'translateY(0px)');
+}));
+const initialLang = localStorage.getItem('ttt-lang') || 'zh';
+const cls = initialLang==='en' ? '.li.lang-en' : '.li.lang-zh';
+document.querySelectorAll(cls).forEach(el => el.style.transform = 'translateY(0px)');
+
 gsap.utils.toArray('.li').forEach(el => {
   if (getComputedStyle(el).display === 'none') { el.style.transform = 'translateY(0px)'; return; }
   gsap.to(el, { y:'0%', duration:1.2, ease:'power4.out',
@@ -363,7 +383,6 @@ gsap.utils.toArray('.page-hero .li').forEach(el => {
   if (getComputedStyle(el).display === 'none') { el.style.transform = 'translateY(0px)'; return; }
   gsap.to(el, { y:'0%', duration:1.2, ease:'power4.out', delay:.2 });
 });
-langReady = true;
 // Animate focus blocks
 gsap.utils.toArray('.focus-left').forEach(el => {
   gsap.from(el, { x:-30, opacity:0, duration:.9, ease:'power3.out',
@@ -381,16 +400,14 @@ gsap.utils.toArray('.how-item').forEach((el, i) => {
   });
 });
 </script>
+<script src="js/app.js"></script>
 <script src="js/aurora.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script>
 (async function loadFocusThemes() {
-  if (!window.supabase || !window.supabase.createClient) return;
-  const sb = window.supabase.createClient(
-    'https://tpolpfulwsfqpghweasl.supabase.co',
-    'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J',
-    { auth:{ persistSession:false } }
-  );
+  const sb = window.supabaseClient;
+  if (!sb) return;
   const { data, error } = await sb.from('focus_themes').select('year, status, color, video_url, image_url, title_zh, title_en, icon, why_zh, why_en, response_zh, response_en').order('year', { ascending:false });
   if (error || !data || !data.length) return; // 沒資料時保留靜態 blocks
 
