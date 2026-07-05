@@ -378,6 +378,10 @@ body.lang-en .hero__title {
   font-weight: 900; letter-spacing: -.05em; line-height: .9;
   background: var(--rainbow);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  white-space: nowrap;
+}
+body:not(.lang-en) .mission-word {
+  font-size: clamp(6rem, 15vw, 16rem);
 }
 .mission-sub {
   font-size: clamp(1.2rem, 2vw, 2rem); font-weight: 800;
