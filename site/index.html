@@ -651,12 +651,8 @@ body.lang-en .hero__title {
 /* ═══════════════════════════════════════════════
    LANG TOGGLE
 ═══════════════════════════════════════════════ */
-.lang-en { display: none; }
+body:not(.lang-en) .lang-en { display: none; }
 body.lang-en .lang-zh { display: none; }
-body.lang-en .lang-en { display: block; }
-span.lang-en { display: none; }
-body.lang-en span.lang-zh { display: none; }
-body.lang-en span.lang-en { display: inline; }
   </style>
 </head>
 <body>

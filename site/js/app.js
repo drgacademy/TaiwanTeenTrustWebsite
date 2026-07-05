@@ -207,7 +207,9 @@ function initAnimations() {
     });
   }
 
-  // Hero text entrance
+  // Hero text entrance — skip if the page defines its own (e.g. index.html's playHeroEntrance)
+  if (typeof playHeroEntrance === 'function') return;
+
   const heroTitle = document.querySelector('.hero__title');
   const heroSub   = document.querySelector('.hero__subtitle');
   const heroCtAs  = document.querySelector('.hero__ctas');
