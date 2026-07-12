@@ -2,6 +2,17 @@
 
 請於 Supabase Dashboard → SQL Editor 中執行下列 SQL 以新增本次需要的欄位與資料表。
 
+## 0. ⚠️ 尚未執行 — 請立即執行（2026-07-12 確認 production 缺少這兩個欄位）
+
+缺少這兩個欄位會讓「團隊」與「專案」頁面的查詢整個失敗，前台顯示空白（成員 / 專案不出現），後台儲存成員也會失敗：
+
+```sql
+ALTER TABLE members  ADD COLUMN IF NOT EXISTS school text;
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS video_url text;
+```
+
+執行後開啟 https://taiwanteentrust.org/team.html 確認成員出現。
+
 ## 1. `posts` 表新增 `image_url` 欄位（部落格特色圖片）
 
 ```sql

@@ -4,8 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
-  <title>Taiwan Teen Trust</title>
+  <title data-zh="Taiwan Teen Trust — 台灣青少年社會創新組織" data-en="Taiwan Teen Trust — Youth-Led Social Innovation">Taiwan Teen Trust — 台灣青少年社會創新組織</title>
   <meta name="description" content="Taiwan Teen Trust 是台灣第一個由青少年完全主導的社會創新組織，致力於動物福利、青年倡議與環境永續。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Taiwan Teen Trust" />
+  <meta property="og:title" content="Taiwan Teen Trust" />
+  <meta property="og:description" content="Taiwan Teen Trust 是台灣第一個由青少年完全主導的社會創新組織，致力於動物福利、青年倡議與環境永續。" />
+  <meta property="og:url" content="https://taiwanteentrust.org/" />
+  <meta property="og:image" content="https://taiwanteentrust.org/assets/logo-real.png" />
+  <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
@@ -46,8 +53,8 @@ img, svg { display: block; max-width: 100%; }
   --white: #ffffff;
   --gray: #f5f5f5;
   --gray-2: #e8e8e8;
-  --text-2: rgba(10,10,10,.5);
-  --text-3: rgba(10,10,10,.28);
+  --text-2: rgba(10,10,10,.66);
+  --text-3: rgba(10,10,10,.55);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --gutter: clamp(1.25rem, 5vw, 5rem);
   --ttt-cyan: #2ECAD4;
@@ -197,8 +204,9 @@ img, svg { display: block; max-width: 100%; }
    LINE REVEAL — cargokite style
    Each .lw (line-wrap) clips; .li (line-inner) slides up
 ═══════════════════════════════════════════════ */
-.lw { overflow: hidden; display: block; }
-.li { display: block; transform: translateY(110%); will-change: transform; }
+/* padding-bottom keeps descenders (g, y, p) inside the clip; negative margin cancels the extra spacing */
+.lw { overflow: hidden; display: block; padding-bottom: .12em; margin-bottom: -.12em; }
+.li { display: block; transform: translateY(115%); will-change: transform; }
 
 /* ═══════════════════════════════════════════════
    HERO
@@ -525,34 +533,6 @@ body:not(.lang-en) .mission-word {
 }
 
 /* ═══════════════════════════════════════════════
-   PARTNERS
-═══════════════════════════════════════════════ */
-.partners-section {
-  padding: clamp(4rem, 7vw, 7rem) 0;
-  border-top: 1px solid var(--gray-2);
-  border-bottom: 1px solid var(--gray-2);
-  overflow: hidden;
-}
-.partners-label {
-  text-align: center; font-size: .68rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-3); margin-bottom: 2.5rem;
-}
-.partners-row { display: flex; overflow: hidden; }
-.partners-track {
-  display: inline-flex; flex-shrink: 0;
-  animation: marquee 22s linear infinite;
-}
-.partners-track--rev { animation-direction: reverse; }
-.partner-item {
-  padding: .55rem 2.5rem; font-size: .8rem; font-weight: 600;
-  letter-spacing: .06em; text-transform: uppercase; color: var(--text-3);
-  border-right: 1px solid var(--gray-2); white-space: nowrap;
-  transition: color .2s;
-}
-.partner-item:hover { color: var(--black); }
-
-/* ═══════════════════════════════════════════════
    JOIN CTA
 ═══════════════════════════════════════════════ */
 .join-section {
@@ -735,8 +715,8 @@ body.lang-en .lang-zh { display: none; }
       <span class="lang-zh">Taiwan Teen Trust</span>
       <span class="lang-en">Taiwan Teen Trust</span>
       <span class="hero__meta-sep"></span>
-      <span class="lang-zh">台灣・2024</span>
-      <span class="lang-en">Taiwan・2024</span>
+      <span class="lang-zh">台灣・2020</span>
+      <span class="lang-en">Taiwan・2020</span>
       <span class="hero__meta-sep"></span>
       <span class="lang-zh">青年社會創新</span>
       <span class="lang-en">Youth Social Innovation</span>
@@ -822,28 +802,28 @@ body.lang-en .lang-zh { display: none; }
     <div class="stats-grid">
       <div class="stat-item">
         <div class="stat-num">
-          <span class="counter" data-target="50" data-site-key="stat_members" data-site-attr="data-target">0</span><span class="stat-suf">+</span>
+          <span class="counter" data-target="40" data-site-key="stat_members" data-site-attr="data-target">0</span><span class="stat-suf">+</span>
         </div>
         <div class="stat-label lang-zh">現任／歷任成員</div>
         <div class="stat-label lang-en">Current & Alumni Members</div>
       </div>
       <div class="stat-item">
         <div class="stat-num">
-          <span class="counter" data-target="12" data-site-key="stat_projects" data-site-attr="data-target">0</span>
+          <span class="counter" data-target="1" data-site-key="stat_projects" data-site-attr="data-target">0</span>
         </div>
         <div class="stat-label lang-zh">進行中專案</div>
         <div class="stat-label lang-en">Active Projects</div>
       </div>
       <div class="stat-item">
         <div class="stat-num">
-          <span class="counter" data-target="5" data-site-key="stat_themes" data-site-attr="data-target">0</span>
+          <span class="counter" data-target="1" data-site-key="stat_themes" data-site-attr="data-target">0</span>
         </div>
         <div class="stat-label lang-zh">年度主題</div>
         <div class="stat-label lang-en">Annual Themes</div>
       </div>
       <div class="stat-item">
         <div class="stat-num">
-          <span class="counter" data-target="10000" data-reach-counter>0</span><span class="stat-suf">+</span>
+          <span class="counter" data-target="0" data-reach-counter>0</span><span class="stat-suf">+</span>
         </div>
         <div class="stat-label lang-zh">觸及人次</div>
         <div class="stat-label lang-en">People Reached</div>
@@ -975,60 +955,9 @@ body.lang-en .lang-zh { display: none; }
         <a href="projects/stray-aid-delivery.html" class="proj-link lang-zh">開啟外送平台 →</a>
         <a href="projects/stray-aid-delivery.html" class="proj-link lang-en">Open Delivery Portal →</a>
       </div>
-      <div class="proj-card">
-        <div class="proj-top">
-          <span class="proj-tag tag-advocacy lang-zh">倡議</span>
-          <span class="proj-tag tag-advocacy lang-en">Advocacy</span>
-          <span class="proj-year">2025-2026</span>
-        </div>
-        <div class="proj-title lang-zh">流浪動物 TNR 政策倡議</div>
-        <div class="proj-title lang-en">Stray Animal TNR Advocacy</div>
-        <p class="proj-desc lang-zh">推廣人道捕捉、絕育、回置政策，改變台灣的流浪動物管理方式。</p>
-        <p class="proj-desc lang-en">Promoting trap-neuter-return policy to transform stray animal management in Taiwan.</p>
-        <a href="projects.html" class="proj-link lang-zh">了解更多 →</a>
-        <a href="projects.html" class="proj-link lang-en">Learn More →</a>
-      </div>
     </div>
   </div>
 </section>
-
-<!-- ════ PARTNERS ════ -->
-<div class="partners-section" aria-hidden="true">
-  <p class="partners-label lang-zh">合作夥伴與支持機構</p>
-  <p class="partners-label lang-en">Partners &amp; Supporting Organizations</p>
-  <div class="partners-row">
-    <div class="partners-track">
-      <span class="partner-item">台灣動物保護協會</span>
-      <span class="partner-item">教育部青年發展署</span>
-      <span class="partner-item">農業部動物保護科</span>
-      <span class="partner-item">台大附設動物醫院</span>
-      <span class="partner-item">關懷生命協會</span>
-      <span class="partner-item">台灣之心愛護動物協會</span>
-      <span class="partner-item">台灣動物保護協會</span>
-      <span class="partner-item">教育部青年發展署</span>
-      <span class="partner-item">農業部動物保護科</span>
-      <span class="partner-item">台大附設動物醫院</span>
-      <span class="partner-item">關懷生命協會</span>
-      <span class="partner-item">台灣之心愛護動物協會</span>
-    </div>
-  </div>
-  <div class="partners-row" style="margin-top:.5rem">
-    <div class="partners-track partners-track--rev">
-      <span class="partner-item">Animal Welfare Alliance</span>
-      <span class="partner-item">Youth Development Fund</span>
-      <span class="partner-item">NTU Vet Hospital</span>
-      <span class="partner-item">Taiwan SPCA</span>
-      <span class="partner-item">TEARE Rescue</span>
-      <span class="partner-item">HOTAC Foundation</span>
-      <span class="partner-item">Animal Welfare Alliance</span>
-      <span class="partner-item">Youth Development Fund</span>
-      <span class="partner-item">NTU Vet Hospital</span>
-      <span class="partner-item">Taiwan SPCA</span>
-      <span class="partner-item">TEARE Rescue</span>
-      <span class="partner-item">HOTAC Foundation</span>
-    </div>
-  </div>
-</div>
 
 <!-- ════ JOIN CTA ════ -->
 <section class="join-section" id="join">
@@ -1055,9 +984,9 @@ body.lang-en .lang-zh { display: none; }
         <span class="lang-zh">申請加入 →</span>
         <span class="lang-en">Apply Now →</span>
       </a>
-      <a href="about.html" class="join-btn-o">
-        <span class="lang-zh">了解更多</span>
-        <span class="lang-en">Learn More</span>
+      <a href="donate.html" class="join-btn-o">
+        <span class="lang-zh">支持我們</span>
+        <span class="lang-en">Support Us</span>
       </a>
     </div>
   </div>
@@ -1157,12 +1086,21 @@ function playHeroEntrance() {
    SCROLL LINE REVEALS
 ═══════════════════════════════════════════════ */
 // Collect all .lw > .li that are NOT inside hero-title (already animated)
+// Hidden-language lines get revealed immediately (same guard as the subpages) —
+// their ScrollTriggers would otherwise hold stale zero-height positions and
+// leave every heading invisible after a language toggle.
 document.querySelectorAll('.mission-title .li, .sec-title .li, .join-title .li, .mission-word.li').forEach(li => {
+  if (getComputedStyle(li).display === 'none') { li.style.transform = 'translateY(0)'; return; }
   ScrollTrigger.create({
     trigger: li.closest('.lw'),
     start: 'top 88%',
     onEnter: () => gsap.to(li, { y: '0%', duration: 1.1, ease: 'power4.out' })
   });
+});
+
+// Language toggle changes element sizes (zh vs en) — recompute trigger positions
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-lang]')) setTimeout(() => ScrollTrigger.refresh(), 80);
 });
 
 /* ── Stats fade in ── */
@@ -1222,14 +1160,12 @@ gsap.utils.toArray('.proj-card').forEach((el, i) => {
 /* ═══════════════════════════════════════════════
    COUNTERS
 ═══════════════════════════════════════════════ */
-// Reach counter: (real site_stats.reach_count from Supabase) + 10000 base.
+// Reach counter: real site_stats.reach_count from Supabase.
 // Every page load calls RPC increment_reach() which atomically +1 and returns
-// the new value. The +10000 base is a display-only vanity offset.
-const REACH_BASE = 10000;
 const REACH_SUPABASE_URL = 'https://tpolpfulwsfqpghweasl.supabase.co';
 const REACH_SUPABASE_KEY = 'sb_publishable_grN4TNJpPS7xNBQeiStUmQ_WNc0u8_J';
 const reachEl = document.querySelector('.counter[data-reach-counter]');
-let reachCurrent = REACH_BASE;  // fallback if RPC fails
+let reachCurrent = 0;  // fallback if RPC fails
 
 async function fetchReach() {
   if (!window.supabase || !window.supabase.createClient) return null;
@@ -1244,7 +1180,7 @@ async function fetchReach() {
 (async () => {
   const real = await fetchReach();
   if (real != null) {
-    reachCurrent = REACH_BASE + real;
+    reachCurrent = real;
     if (reachEl) reachEl.dataset.target = reachCurrent;
   }
 

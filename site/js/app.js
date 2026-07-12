@@ -7,8 +7,7 @@
 
 /* ─── Language System ─── */
 const LANG_KEY = 'ttt-lang';
-const isHomepage = window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/');
-let currentLang = isHomepage ? 'zh' : (localStorage.getItem(LANG_KEY) || 'zh');
+let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
 
 const t = {
   zh: {

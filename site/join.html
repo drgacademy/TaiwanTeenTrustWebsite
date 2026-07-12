@@ -4,15 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
-  <title>加入我們 — Taiwan Teen Trust</title>
+  <title data-zh="加入我們 — Taiwan Teen Trust" data-en="Join Us — Taiwan Teen Trust">加入我們 — Taiwan Teen Trust</title>
   <meta name="description" content="申請加入 Taiwan Teen Trust，與來自台灣各地的青年一起為社會帶來改變。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Taiwan Teen Trust" />
+  <meta property="og:title" content="加入我們 — Taiwan Teen Trust" />
+  <meta property="og:description" content="申請加入 Taiwan Teen Trust，與來自台灣各地的青年一起為社會帶來改變。" />
+  <meta property="og:url" content="https://taiwanteentrust.org/join.html" />
+  <meta property="og:image" content="https://taiwanteentrust.org/assets/logo-real.png" />
+  <meta name="twitter:card" content="summary" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/components.css" />
   <script>if(sessionStorage.getItem('ttt-tr'))document.documentElement.classList.add('ttt-transitioning')</script>
   <style>
-:root{--rainbow:linear-gradient(90deg,#0D2B52 0%,#1A467D 50%,#2ECAD4 100%);--black:#0a0a0a;--white:#fff;--gray:#f5f5f5;--gray-2:#e8e8e8;--text-2:rgba(10,10,10,.5);--text-3:rgba(10,10,10,.28);--ease:cubic-bezier(0.16,1,0.3,1);--gutter:clamp(1.25rem,5vw,5rem);--ttt-cyan:#2ECAD4;}
+:root{--rainbow:linear-gradient(90deg,#0D2B52 0%,#1A467D 50%,#2ECAD4 100%);--black:#0a0a0a;--white:#fff;--gray:#f5f5f5;--gray-2:#e8e8e8;--text-2:rgba(10,10,10,.66);--text-3:rgba(10,10,10,.55);--ease:cubic-bezier(0.16,1,0.3,1);--gutter:clamp(1.25rem,5vw,5rem);--ttt-cyan:#2ECAD4;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body{font-family:'Inter','Noto Sans TC',sans-serif;background:#fff;color:#0a0a0a;overflow-x:hidden;line-height:1.6}
@@ -71,9 +78,9 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
 /* Form section */
 .form-wrap{max-width:700px;margin:0 auto;padding:4rem var(--gutter) 6rem}
 .form-group{margin-bottom:1.75rem}
-.form-label{display:block;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:.5rem}
+.form-label{display:block;font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:.5rem}
 .form-label .req{color:#ff3b3b;margin-left:2px}
-.form-sublabel{font-size:.8rem;color:var(--text-2);margin-bottom:.65rem;line-height:1.6}
+.form-sublabel{font-size:.875rem;color:var(--text-2);margin-bottom:.65rem;line-height:1.6}
 .form-input,.form-select,.form-textarea{width:100%;padding:.78rem 1rem;border:1.5px solid var(--gray-2);border-radius:8px;font-size:.95rem;font-family:inherit;color:#0a0a0a;background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none;appearance:none}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--ttt-cyan);box-shadow:0 0 0 3px rgba(46,202,212,.13)}
 .form-textarea{resize:vertical;min-height:130px;line-height:1.7}
@@ -189,6 +196,9 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
   <div id="form-container">
     <form id="join-form" novalidate>
 
+      <!-- honeypot: invisible to humans, bots fill it -->
+      <input type="text" id="hp_website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;height:0;opacity:0" />
+
       <div class="form-row">
         <div class="form-group" id="fg-name_zh">
           <label class="form-label" for="name_zh">
@@ -302,6 +312,11 @@ footer{background:#0a0a0a;color:#fff;padding:4rem var(--gutter) 2.5rem}
         <span class="lang-en">Submit Application</span>
       </button>
 
+      <p style="font-size:.78rem;color:var(--text-3);margin-top:.85rem;text-align:center">
+        <span class="lang-zh">提交即表示您同意我們的<a href="privacy.html" target="_blank" style="text-decoration:underline">隱私權政策</a>。</span>
+        <span class="lang-en">By submitting, you agree to our <a href="privacy.html" target="_blank" style="text-decoration:underline">Privacy Policy</a>.</span>
+      </p>
+
     </form>
   </div>
 
@@ -392,6 +407,11 @@ function validate() {
 form.addEventListener('submit', async e => {
   e.preventDefault();
   submitErr.style.display = 'none';
+  if (val('hp_website')) { // honeypot filled → bot; pretend success, insert nothing
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('success-state').classList.add('show');
+    return;
+  }
   if (!validate()) return;
   btnSubmit.disabled = true;
   try {
