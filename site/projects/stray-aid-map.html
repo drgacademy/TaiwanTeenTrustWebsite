@@ -976,6 +976,7 @@
     <div class="modal-box__sub lang-en">Submit your donation info. A volunteer rider will pick it up!</div>
     <form id="pledge-form">
       <input type="hidden" name="shelter_id" id="pledge-shelter-id" />
+      <input type="text" name="website" id="pledge-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;height:0;opacity:0" />
       <div class="form-field">
         <label class="lang-zh">您的姓名 <span style="color:rgba(255,255,255,.3)">(必填)</span></label>
         <label class="lang-en">Name <span style="color:rgba(255,255,255,.3)">(required)</span></label>
@@ -1907,6 +1908,12 @@ document.getElementById('modal-pledge-success').addEventListener('click', e => {
 document.getElementById('pledge-form').addEventListener('submit', async e => {
   e.preventDefault();
   const form = e.target;
+  if (form.website && form.website.value) { // honeypot → bot; fake success, insert nothing
+    document.getElementById('modal-pledge').classList.remove('open');
+    setTimeout(() => document.getElementById('modal-pledge-success').classList.add('open'), 150);
+    form.reset();
+    return;
+  }
   const submitBtn = form.querySelector('.form-submit');
   if (submitBtn) {
     submitBtn.disabled = true;
@@ -1916,11 +1923,13 @@ document.getElementById('pledge-form').addEventListener('submit', async e => {
   const formData = new FormData(form);
   const address = formData.get('pickup_address');
 
-  let lat = 23.8;
-  let lng = 121.0;
+  // Geocode the pickup address. A courier is dispatched to these coords, so a bad
+  // geocode must block the pledge — never guess a fallback pin.
+  let lat = null;
+  let lng = null;
 
   try {
-    const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+    const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=tw&q=${encodeURIComponent(address)}`;
     const response = await fetch(geoUrl, {
       headers: {
         'Accept': 'application/json',
@@ -1936,6 +1945,17 @@ document.getElementById('pledge-form').addEventListener('submit', async e => {
     }
   } catch (err) {
     console.warn('[pledge-geocode] Geocoding API failed:', err);
+  }
+
+  if (lat == null || lng == null || Number.isNaN(lat) || Number.isNaN(lng)) {
+    alert(currentLang === 'zh'
+      ? '無法定位這個取貨地址，請填寫更完整的地址（含縣市、區、路名與門牌）。'
+      : "We couldn't locate that pickup address. Please enter a more complete address (city, district, street, and number).");
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = currentLang === 'zh' ? '確認提交外送' : 'Confirm Pledge';
+    }
+    return;
   }
 
   const payload = {

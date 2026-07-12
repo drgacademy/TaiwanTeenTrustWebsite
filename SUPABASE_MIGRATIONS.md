@@ -40,6 +40,46 @@ CREATE POLICY "admin_users_delete_admin_only" ON admin_users
 
 執行後用一個「團員」帳號登入後台，確認無法變更任何人的角色。
 
+## 0.6 ⚠️ 安全性：鎖定「內容資料表」寫入權限（因為外送志工可公開註冊）
+
+Stray Aid Delivery 開放任何人註冊志工帳號（signup enabled）。一旦驗證 email，
+該帳號即擁有 `authenticated` 角色。若下列內容資料表沿用
+`FOR ALL TO authenticated USING(true)` 的寬鬆 policy，任何註冊志工都能改網站內容。
+改成只有「後台使用者」（管理員或團員，即出現在 admin_users 的人）能寫。
+
+```sql
+-- 是否為後台使用者（管理員或團員）
+CREATE OR REPLACE FUNCTION is_staff() RETURNS boolean
+LANGUAGE sql SECURITY DEFINER STABLE SET search_path = public AS
+$$ SELECT EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid()) $$;
+
+-- 先看每張表現有的 policy：
+--   SELECT tablename, policyname, cmd, qual FROM pg_policies
+--   WHERE schemaname='public' ORDER BY tablename;
+-- 針對每張內容表，DROP 掉寬鬆的 authenticated 寫入 policy（名稱依查詢結果），
+-- 例如： DROP POLICY IF EXISTS "members_write_authenticated" ON members;
+
+-- 對每張內容表建立「後台才能寫、公開可讀」的 policy：
+DO $$
+DECLARE t text;
+BEGIN
+  FOREACH t IN ARRAY ARRAY[
+    'members','posts','projects','focus_themes',
+    'departments','project_categories','site_content','map_locations'
+  ] LOOP
+    EXECUTE format('DROP POLICY IF EXISTS "%1$s_write_staff" ON %1$I;', t);
+    EXECUTE format(
+      'CREATE POLICY "%1$s_write_staff" ON %1$I FOR ALL TO authenticated '
+      'USING (is_staff()) WITH CHECK (is_staff());', t);
+  END LOOP;
+END $$;
+```
+
+注意：`donation_pledges` 與 `map_location_submissions` 是「公開投稿」資料表，
+其寫入 policy 已在 §14–16 針對匿名/志工設計，**不要**套用上面的 is_staff 限制。
+
+執行後用一個外送志工帳號（非 admin_users）登入，嘗試改 members／projects，應被拒絕。
+
 ## 1. `posts` 表新增 `image_url` 欄位（部落格特色圖片）
 
 ```sql
