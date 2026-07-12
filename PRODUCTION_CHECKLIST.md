@@ -2,6 +2,29 @@
 
 Code-side work is done (see git log). These need dashboard access:
 
+## 0. Stray Aid Map / Delivery — missing tables (verified 2026-07-12)
+
+The map loads (5 shelters, full bilingual data), but two features are 100% broken
+because their tables were never created in production:
+
+- `donation_pledges` — MISSING. The entire **Stray Aid Delivery portal** and the
+  "live logistics" overlay on the map fail on every load. Run **SUPABASE_MIGRATIONS.md §16**.
+- `map_location_submissions` — MISSING. The map's "suggest a location" feature fails
+  silently. Run **SUPABASE_MIGRATIONS.md §14/§15** (submissions table + policies).
+
+After running, hard-refresh both pages and confirm no console errors.
+
+### ⚠️ Security: public signup is ENABLED
+Anyone can create an account via the delivery portal's courier signup. It is gated by
+email confirmation (a fresh signup gets NO session until the email is confirmed), but a
+confirmed user has the `authenticated` role. If any CONTENT table (members, posts,
+projects, focus_themes, departments, project_categories) uses a
+`FOR ALL TO authenticated USING(true)` policy, a confirmed courier can edit site content.
+Fix: change those tables' write policies to `is_admin()` (or an admin-OR-member check),
+same pattern as admin_users §0.5. Verify with:
+`SELECT tablename, policyname, cmd, qual FROM pg_policies WHERE schemaname='public';`
+
+
 ## 1. Run the SQL migration (fixes team + projects pages) — URGENT
 Supabase Dashboard → SQL Editor → run **section 0** of `SUPABASE_MIGRATIONS.md`:
 ```sql
