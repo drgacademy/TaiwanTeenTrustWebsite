@@ -318,7 +318,7 @@ document.getElementById('btn-set-password').addEventListener('click', async () =
 
   if (!userId) { showToast(t('users.msg.password_set_fail'), 'error'); return; }
   if (!password) { showToast(t('users.msg.password_required'), 'error'); return; }
-  if (password.length < 6) { showToast(t('users.msg.password_too_short'), 'error'); return; }
+  if (password.length < 10) { showToast(t('users.msg.password_too_short'), 'error'); return; }
   if (password !== passwordConfirm) { showToast(t('users.msg.password_mismatch'), 'error'); return; }
 
   const btn = document.getElementById('btn-set-password');

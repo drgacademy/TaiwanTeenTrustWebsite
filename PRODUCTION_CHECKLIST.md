@@ -39,7 +39,28 @@ widget in join.html, and verify the token in an edge function before insert.
 - Review the homepage partners marquee (`index.html`, "合作夥伴與支持機構"):
   only list organizations with a real formalized relationship.
 
-## RLS status (verified 2026-07-12, as anonymous key)
-- ✅ public tables readable, writes blocked (tested members, posts, departments)
-- ✅ `join_applications` / `admin_users` not readable by anon
-- ✅ join form INSERT works for anon
+## Security audit (2026-07-12)
+
+Verified good:
+- ✅ Anon key: public tables readable, all writes blocked (tested members, posts,
+  departments, storage uploads); `join_applications` / `admin_users` not readable
+- ✅ admin-users edge function checks JWT + admin role server-side
+- ✅ All user/DB content rendered with esc() — no XSS found (blog, team, admin applications)
+- ✅ No secrets committed to the repo (only the public anon key, which is by design)
+- ✅ Live headers: CSP, HSTS, X-Frame-Options DENY, nosniff, admin noindex
+- ✅ 404 page, /admin + /map redirects working
+
+Action needed:
+- ⚠️ **Run SUPABASE_MIGRATIONS.md §0.5** — if `admin_users` is writable by any
+  authenticated user (the admin UI edits roles via direct DB update, so it likely is),
+  an invited *member* can promote themselves to admin. §0.5 locks writes to admins.
+- Redeploy the admin-users edge function (`npx supabase functions deploy admin-users`)
+  to pick up the 10-character password minimum.
+
+Known/accepted risks:
+- Content tables are writable by ALL authenticated users (member role incl.) — the
+  admin/member split is UI-only. Acceptable while all invited users are trusted;
+  add is_admin()-based policies per table if that changes.
+- `increment_reach` RPC can be spammed to inflate the visit counter (vanity metric).
+- Join form can be flooded via direct API (honeypot is client-side); Turnstile is the fix (§5).
+- CSP allows 'unsafe-inline' scripts — required by the current inline-script architecture.

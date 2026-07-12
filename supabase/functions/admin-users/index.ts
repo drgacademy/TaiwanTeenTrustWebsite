@@ -195,8 +195,8 @@ async function handleSetPassword(supabase: SupabaseClient, body: any): Promise<R
 
   if (!userId) return jsonResponse({ error: 'userId is required' }, 400);
   if (!password) return jsonResponse({ error: 'password is required' }, 400);
-  if (typeof password !== 'string' || password.length < 6) {
-    return jsonResponse({ error: 'Password must be at least 6 characters' }, 400);
+  if (typeof password !== 'string' || password.length < 10) {
+    return jsonResponse({ error: 'Password must be at least 10 characters' }, 400);
   }
 
   const { data: targetRow } = await supabase

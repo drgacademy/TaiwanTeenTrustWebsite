@@ -13,6 +13,33 @@ ALTER TABLE projects ADD COLUMN IF NOT EXISTS video_url text;
 
 執行後開啟 https://taiwanteentrust.org/team.html 確認成員出現。
 
+## 0.5 ⚠️ 安全性：鎖定 admin_users 寫入權限（防止團員自行升級為管理員）
+
+後台以 `admin_users.role` 判斷管理員身分，但若 `admin_users` 的 RLS 允許所有已登入
+使用者寫入（與其他資料表相同的 policy 模式），任何受邀「團員」都能把自己的 role
+改成 admin，進而透過 admin-users edge function 重設他人密碼或刪除帳號。
+
+```sql
+-- 以 SECURITY DEFINER 函式判斷是否為管理員（避免 RLS 自我遞迴）
+CREATE OR REPLACE FUNCTION is_admin() RETURNS boolean
+LANGUAGE sql SECURITY DEFINER STABLE SET search_path = public AS
+$$ SELECT EXISTS (SELECT 1 FROM admin_users WHERE user_id = auth.uid() AND role = 'admin') $$;
+
+-- 先查看現有 policy 名稱：
+--   SELECT policyname, cmd FROM pg_policies WHERE tablename = 'admin_users';
+-- 刪除所有允許 authenticated 寫入的 policy（名稱依查詢結果調整），例如：
+-- DROP POLICY IF EXISTS "admin_users_write_authenticated" ON admin_users;
+
+-- 只有管理員能改 admin_users（讀取維持原本 policy 不動）
+CREATE POLICY "admin_users_update_admin_only" ON admin_users
+  FOR UPDATE TO authenticated USING (is_admin()) WITH CHECK (is_admin());
+CREATE POLICY "admin_users_delete_admin_only" ON admin_users
+  FOR DELETE TO authenticated USING (is_admin());
+-- INSERT 一律走 edge function（service role），不需要 authenticated insert policy。
+```
+
+執行後用一個「團員」帳號登入後台，確認無法變更任何人的角色。
+
 ## 1. `posts` 表新增 `image_url` 欄位（部落格特色圖片）
 
 ```sql
