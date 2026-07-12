@@ -213,6 +213,16 @@
       </div>
 
       <div class="field">
+        <label class="field-label">地點類型 *</label>
+        <select class="field-input" id="l-type">
+          <option value="shelter">🏠 收容所 Shelter</option>
+          <option value="vet">🏥 動物醫院 Vet Clinic</option>
+          <option value="feeding_station">🍚 餵食站 Feeding Station</option>
+        </select>
+        <div class="field-hint">「飼料存量」僅收容所需要填寫。</div>
+      </div>
+
+      <div class="field">
         <label class="field-label">中心主圖</label>
         <div style="display:flex;gap:1rem;align-items:flex-start">
           <div style="flex:1">
@@ -430,6 +440,7 @@ function openNewModal() {
   ['name','name-en','address','address-en','phone','hours','hours-en','lat','lng','food-weeks','custom-needs'].forEach(f => {
     const el = document.getElementById('l-'+f); if (el) el.value = '';
   });
+  document.getElementById('l-type').value = 'shelter';
   document.getElementById('l-image-url').value = '';
   document.getElementById('loc-image-preview').innerHTML = '';
   document.getElementById('l-video-url').value = '';
@@ -461,6 +472,7 @@ async function editLoc(id) {
   document.getElementById('l-lat').value = l.lat || '';
   document.getElementById('l-lng').value = l.lng || '';
   document.getElementById('l-food-weeks').value = l.food_weeks || '';
+  document.getElementById('l-type').value = l.type || 'shelter';
   document.getElementById('l-image-url').value = l.image_url || '';
   document.getElementById('l-video-url').value = l.video_url || '';
   document.getElementById('l-custom-needs').value = l.custom_needs || '';
@@ -491,7 +503,7 @@ async function deleteLoc(id) {
   if (confirm(`確認刪除「${l.name}」？此動作無法復原。`)) {
     const ok = await DB.delete('map_locations', id);
     if (!ok) return;
-    allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
+    allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || ['shelter','vet','feeding_station'].includes(l.type));
     applyFilter();
     showToast('已刪除', 'success');
   }
@@ -533,7 +545,7 @@ document.getElementById('btn-save-loc').addEventListener('click', async () => {
   const data = {
     name:        document.getElementById('l-name').value.trim(),
     name_en:     document.getElementById('l-name-en').value.trim(),
-    type:        'shelter',
+    type:        document.getElementById('l-type').value || 'shelter',
     status:      'active',
     address:     document.getElementById('l-address').value.trim(),
     address_en:  document.getElementById('l-address-en').value.trim(),
@@ -548,8 +560,12 @@ document.getElementById('btn-save-loc').addEventListener('click', async () => {
     needs:       currentNeeds,
     custom_needs:document.getElementById('l-custom-needs').value.trim() || null
   };
-  if (!data.name || !data.address || isNaN(data.lat) || isNaN(data.lng) || !data.food_weeks) {
-    showToast('請填入必填欄位：名稱、地址、座標、飼料週數', 'error');
+  if (!data.name || !data.address || isNaN(data.lat) || isNaN(data.lng)) {
+    showToast('請填入必填欄位：名稱、地址、座標', 'error');
+    return;
+  }
+  if (data.type === 'shelter' && !data.food_weeks) {
+    showToast('收容所需填寫飼料存量（週）', 'error');
     return;
   }
   const btn = document.getElementById('btn-save-loc');
@@ -561,7 +577,7 @@ document.getElementById('btn-save-loc').addEventListener('click', async () => {
   if (!result) return;
   showToast(id ? '已更新' : '已新增', 'success');
   closeModal('loc-modal');
-  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
+  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || ['shelter','vet','feeding_station'].includes(l.type));
   applyFilter();
 });
 
@@ -571,7 +587,7 @@ document.getElementById('search-locs').addEventListener('input', applyFilter);
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
-  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || l.type === 'shelter');
+  allLocs = (await DB.getAll('map_locations')).filter(l => !l.type || ['shelter','vet','feeding_station'].includes(l.type));
   filteredLocs = allLocs;
   renderTable();
   if (new URLSearchParams(location.search).get('action') === 'new') openNewModal();

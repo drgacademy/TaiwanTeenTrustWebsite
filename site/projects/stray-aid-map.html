@@ -445,6 +445,14 @@
       font-size: .62rem; color: rgba(255,255,255,.38); letter-spacing: .03em;
     }
     .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .type-filter { padding: 0 1.25rem; }
+    .type-filter-btn {
+      font-size: .68rem; font-weight: 600; padding: .32rem .7rem; border-radius: 2rem;
+      border: 1px solid var(--border); background: transparent; color: rgba(255,255,255,.55);
+      cursor: pointer; font-family: inherit; transition: all .18s; white-space: nowrap;
+    }
+    .type-filter-btn:hover { color: var(--text); border-color: rgba(255,255,255,.3); }
+    .type-filter-btn.active { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
 
     /* Sidebar card left-border food status */
     .location-card { padding-left: .85rem; border-left: 3px solid transparent; }
@@ -798,11 +806,27 @@
 
           <div class="map-stats">
             <div class="map-stat">
-              <div class="map-stat__dot"></div>
+              <div class="map-stat__dot" style="background:#22c55e"></div>
               <div>
                 <div class="map-stat__num" id="count-shelter">0</div>
                 <div class="map-stat__label lang-zh">收容所</div>
                 <div class="map-stat__label lang-en">Shelters</div>
+              </div>
+            </div>
+            <div class="map-stat">
+              <div class="map-stat__dot" style="background:#38bdf8"></div>
+              <div>
+                <div class="map-stat__num" id="count-vet">0</div>
+                <div class="map-stat__label lang-zh">動物醫院</div>
+                <div class="map-stat__label lang-en">Vet Clinics</div>
+              </div>
+            </div>
+            <div class="map-stat">
+              <div class="map-stat__dot" style="background:#f59e0b"></div>
+              <div>
+                <div class="map-stat__num" id="count-feeding">0</div>
+                <div class="map-stat__label lang-zh">餵食站</div>
+                <div class="map-stat__label lang-en">Feeding Stations</div>
               </div>
             </div>
           </div>
@@ -843,8 +867,17 @@
             </svg>
           </span>
         </div>
-        <!-- Food status legend -->
+        <!-- Type filter -->
+        <div class="type-filter" style="display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.75rem">
+          <button class="type-filter-btn active" data-type="all" onclick="setTypeFilter('all')"><span class="lang-zh">全部</span><span class="lang-en">All</span></button>
+          <button class="type-filter-btn" data-type="shelter" onclick="setTypeFilter('shelter')">🏠 <span class="lang-zh">收容所</span><span class="lang-en">Shelters</span></button>
+          <button class="type-filter-btn" data-type="vet" onclick="setTypeFilter('vet')">🏥 <span class="lang-zh">醫院</span><span class="lang-en">Vets</span></button>
+          <button class="type-filter-btn" data-type="feeding_station" onclick="setTypeFilter('feeding_station')">🍚 <span class="lang-zh">餵食站</span><span class="lang-en">Feeding</span></button>
+        </div>
+
+        <!-- Shelter food-status legend -->
         <div class="food-legend">
+          <div class="legend-item" style="width:100%;font-weight:700;opacity:.6"><span class="lang-zh">收容所糧食狀態</span><span class="lang-en">Shelter food status</span></div>
           <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div><span class="lang-zh">≥4週充足</span><span class="lang-en">≥4wks OK</span></div>
           <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div><span class="lang-zh">2–4週偏低</span><span class="lang-en">2–4wks Low</span></div>
           <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div><span class="lang-zh">&lt;2週緊急</span><span class="lang-en">&lt;2wks Critical</span></div>
@@ -1455,7 +1488,7 @@ async function loadLocations() {
     const { data, error } = await window.supabaseClient
       .from('map_locations')
       .select('id, name, name_en, type, status, address, address_en, phone, hours, hours_en, lat, lng, food_weeks, needs, custom_needs, image_url, video_url')
-      .eq('type', 'shelter')
+      .in('type', ['shelter', 'vet', 'feeding_station'])
       .eq('status', 'active')
       .order('name', { ascending: true });
 
@@ -1464,6 +1497,7 @@ async function loadLocations() {
     // Map DB fields to frontend format
     LOCATIONS = data.map(loc => ({
       id: loc.id,
+      type: loc.type || 'shelter',
       name: { zh: loc.name, en: loc.name_en || loc.name },
       addr: { zh: loc.address, en: loc.address_en || loc.address },
       phone: loc.phone || '',
@@ -1527,8 +1561,17 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 /* ════════════════════ STATE ════════════════════ */
 let searchQuery = '';
+let typeFilter = 'all';  // 'all' | 'shelter' | 'vet' | 'feeding_station'
 let markers = {};
 let activeCardId = null;
+
+/* ════════════════════ LOCATION TYPES ════════════════════ */
+const TYPE_META = {
+  shelter:         { emoji: '🏠', color: '#22c55e', label: { zh: '收容所',   en: 'Shelter' },         hasFood: true,  canDonate: true  },
+  vet:             { emoji: '🏥', color: '#38bdf8', label: { zh: '動物醫院', en: 'Vet Clinic' },      hasFood: false, canDonate: false },
+  feeding_station: { emoji: '🍚', color: '#f59e0b', label: { zh: '餵食站',   en: 'Feeding Station' }, hasFood: false, canDonate: true  },
+};
+function typeMeta(loc) { return TYPE_META[loc.type] || TYPE_META.shelter; }
 
 /* ════════════════════ FOOD STATUS HELPER ════════════════════ */
 function foodStatus(weeks) {
@@ -1537,19 +1580,27 @@ function foodStatus(weeks) {
   return           { color: '#ef4444', cls: 'status-red',    label: { zh: `緊急缺糧`, en: `CRITICAL`     }, weeks };
 }
 
+// Marker/accent color: shelters signal food status; other types use their own color.
+function markerColor(loc) {
+  const tm = typeMeta(loc);
+  return tm.hasFood ? foodStatus(loc.foodWeeks).color : tm.color;
+}
+
 /* ════════════════════ MARKER FACTORY ════════════════════ */
 function makeIcon(loc) {
-  const fs = foodStatus(loc.foodWeeks);
+  const c = markerColor(loc);
   return L.divIcon({
     className: '',
-    html: `<div class="custom-marker" style="border-color:${fs.color};color:${fs.color};box-shadow:0 0 14px ${fs.color}55">🏠</div>`,
+    html: `<div class="custom-marker" style="border-color:${c};color:${c};box-shadow:0 0 14px ${c}55">${typeMeta(loc).emoji}</div>`,
     iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -18]
   });
 }
 
 /* ════════════════════ POPUP FACTORY ════════════════════ */
 function makePopupHTML(loc, lang) {
+  const tm    = typeMeta(loc);
   const fs    = foodStatus(loc.foodWeeks);
+  const accent = markerColor(loc);
   const name  = esc(loc.name[lang]  || loc.name.zh);
   const addr  = esc(loc.addr[lang]  || loc.addr.zh);
   const hours = esc(loc.hours[lang] || loc.hours.zh);
@@ -1559,27 +1610,29 @@ function makePopupHTML(loc, lang) {
   const weeksLabel  = lang === 'zh' ? `${loc.foodWeeks} 週` : `${loc.foodWeeks} wks`;
 
   const infoBtn = `<button class="popup-btn popup-btn--outline" onclick="openShelterInfoModal('${loc.id}')">${infoLabel}</button>`;
-
-  return `
-    <div class="popup-inner">
-      <div class="popup-type">🏠 ${lang === 'zh' ? '收容所' : 'Shelter'}</div>
-      <div class="popup-name">${name}</div>
+  const foodBadge = tm.hasFood ? `
       <div class="food-badge" style="color:${fs.color}">
         <div class="food-badge__dot"></div>
         ${esc(fs.label[lang])}
         <span class="food-badge__weeks">${weeksLabel}</span>
-      </div>
+      </div>` : '';
+
+  return `
+    <div class="popup-inner">
+      <div class="popup-type">${tm.emoji} ${esc(tm.label[lang])}</div>
+      <div class="popup-name">${name}</div>
+      ${foodBadge}
       <div class="popup-row">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${fs.color}" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${accent}" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span>${addr}</span>
       </div>
       <div class="popup-row">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${fs.color}" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${accent}" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         <span>${hours}</span>
       </div>
       ${loc.phone ? `
       <div class="popup-row">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${fs.color}" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${accent}" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         <span>${esc(loc.phone)}</span>
       </div>` : ''}
     </div>
@@ -1595,6 +1648,7 @@ function openShelterInfoModal(id) {
   const loc = LOCATIONS.find(l => l.id === id);
   if (!loc) return;
   const lang = currentLang;
+  const tm = typeMeta(loc);
   const fs = foodStatus(loc.foodWeeks);
   const name = esc(loc.name[lang] || loc.name.zh);
   const addr = esc(loc.addr[lang] || loc.addr.zh);
@@ -1687,15 +1741,15 @@ function openShelterInfoModal(id) {
     ${imageHtml}
     ${videoHtml}
     <div class="popup-type" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem;">
-      🏠 ${lang === 'zh' ? '收容所詳細資訊' : 'Shelter Details'}
+      ${tm.emoji} ${esc(tm.label[lang])}${lang === 'zh' ? '詳細資訊' : ' Details'}
     </div>
     <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--text);">${name}</h3>
-    
+    ${tm.hasFood ? `
     <div class="food-badge" style="color:${fs.color}; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; margin-bottom: 1.25rem;">
       <div class="food-badge__dot" style="width: 8px; height: 8px; border-radius: 50%; background: ${fs.color};"></div>
       ${esc(fs.label[lang])}
       <span style="font-weight: normal; opacity: 0.75;">(${weeksLabel})</span>
-    </div>
+    </div>` : ''}
 
     <div style="display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-2); font-size: 0.95rem;">
       <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
@@ -1718,7 +1772,7 @@ function openShelterInfoModal(id) {
 
     <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
       <a href="${mapUrl}" target="_blank" class="popup-btn popup-btn--primary" style="flex: 1; min-width: 120px; text-align: center; display: inline-block; padding: 0.75rem; border-radius: 6px; background: var(--accent); color: var(--bg); font-weight: 700;">${dirLabel}</a>
-      <button class="popup-btn popup-btn--outline" style="flex: 1; min-width: 120px; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--accent); color: var(--accent); background: transparent; font-weight: 700;" onclick="openPledgeModal('${loc.id}')">${lang === 'zh' ? '🐾 捐贈物資' : '🐾 Donate Supplies'}</button>
+      ${tm.canDonate ? `<button class="popup-btn popup-btn--outline" style="flex: 1; min-width: 120px; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--accent); color: var(--accent); background: transparent; font-weight: 700;" onclick="openPledgeModal('${loc.id}')">${lang === 'zh' ? '🐾 捐贈物資' : '🐾 Donate Supplies'}</button>` : ''}
     </div>
   `;
 
@@ -1728,12 +1782,13 @@ function openShelterInfoModal(id) {
 /* ════════════════════ FILTERED LIST ════════════════════ */
 function getFilteredLocations() {
   const q = searchQuery.toLowerCase();
-  if (!q) return LOCATIONS;
-  return LOCATIONS.filter(loc =>
-    loc.name.zh.toLowerCase().includes(q) ||
-    loc.name.en.toLowerCase().includes(q) ||
-    loc.addr.zh.toLowerCase().includes(q)
-  );
+  return LOCATIONS.filter(loc => {
+    if (typeFilter !== 'all' && loc.type !== typeFilter) return false;
+    if (!q) return true;
+    return loc.name.zh.toLowerCase().includes(q) ||
+           loc.name.en.toLowerCase().includes(q) ||
+           loc.addr.zh.toLowerCase().includes(q);
+  });
 }
 
 /* ════════════════════ RENDER MARKERS ════════════════════ */
@@ -1812,7 +1867,20 @@ function scrollToCard(id) {
 
 /* ════════════════════ STAT COUNTER ════════════════════ */
 function updateStats() {
-  document.getElementById('count-shelter').textContent = LOCATIONS.length;
+  const by = t => LOCATIONS.filter(l => l.type === t).length;
+  const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n; };
+  set('count-shelter', by('shelter'));
+  set('count-vet', by('vet'));
+  set('count-feeding', by('feeding_station'));
+}
+
+/* ════════════════════ TYPE FILTER ════════════════════ */
+function setTypeFilter(t) {
+  typeFilter = t;
+  document.querySelectorAll('.type-filter-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.type === t));
+  renderMarkers();
+  renderList();
 }
 
 /* ════════════════════ SEARCH ════════════════════ */
