@@ -1454,7 +1454,7 @@ async function loadLocations() {
   try {
     const { data, error } = await window.supabaseClient
       .from('map_locations')
-      .select('id, name, name_en, type, status, address, address_en, phone, hours, hours_en, lat, lng, food_weeks, needs, custom_needs, image_url')
+      .select('id, name, name_en, type, status, address, address_en, phone, hours, hours_en, lat, lng, food_weeks, needs, custom_needs, image_url, video_url')
       .eq('type', 'shelter')
       .eq('status', 'active')
       .order('name', { ascending: true });
@@ -1474,7 +1474,8 @@ async function loadLocations() {
       foodWeeks: parseFloat(loc.food_weeks) || 0,
       needs: convertNeeds(loc.needs),
       customNeeds: loc.custom_needs || '',
-      imageUrl: loc.image_url || ''
+      imageUrl: loc.image_url || '',
+      videoUrl: loc.video_url || ''
     }));
 
     return true;
@@ -1672,9 +1673,19 @@ function openShelterInfoModal(id) {
     `;
   }
 
+  let videoHtml = '';
+  if (loc.videoUrl) {
+    videoHtml = `
+      <div style="width: 100%; border-radius: 6px; overflow: hidden; margin-bottom: 1.25rem;">
+        <video src="${esc(loc.videoUrl)}" controls preload="metadata" style="width: 100%; display: block; background: #000;"></video>
+      </div>
+    `;
+  }
+
   const contentEl = document.getElementById('shelter-info-content');
   contentEl.innerHTML = `
     ${imageHtml}
+    ${videoHtml}
     <div class="popup-type" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.5rem;">
       🏠 ${lang === 'zh' ? '收容所詳細資訊' : 'Shelter Details'}
     </div>

@@ -224,6 +224,19 @@
         <input type="hidden" id="l-image-url" />
       </div>
 
+      <div class="field">
+        <label class="field-label">中心影片</label>
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="flex:1">
+            <input type="file" id="loc-video-input" accept="video/*" style="display:none" />
+            <button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('loc-video-input').click()">選擇影片</button>
+            <div id="loc-video-status" style="margin-top:.4rem;font-size:.8rem;color:var(--text-2)"></div>
+            <div id="loc-video-preview" style="margin-top:.5rem;border-radius:.3rem;overflow:hidden;max-width:260px"></div>
+          </div>
+        </div>
+        <input type="hidden" id="l-video-url" />
+      </div>
+
       <div class="needs-section">
         <label class="field-label">飼料存量（週） *</label>
         <input class="field-input" id="l-food-weeks" type="number" step="0.1" placeholder="1.5" required />
@@ -419,6 +432,9 @@ function openNewModal() {
   });
   document.getElementById('l-image-url').value = '';
   document.getElementById('loc-image-preview').innerHTML = '';
+  document.getElementById('l-video-url').value = '';
+  document.getElementById('loc-video-preview').innerHTML = '';
+  document.getElementById('loc-video-status').textContent = '';
   currentNeeds = [];
   renderNeedsAll();
   openModal('loc-modal');
@@ -446,11 +462,18 @@ async function editLoc(id) {
   document.getElementById('l-lng').value = l.lng || '';
   document.getElementById('l-food-weeks').value = l.food_weeks || '';
   document.getElementById('l-image-url').value = l.image_url || '';
+  document.getElementById('l-video-url').value = l.video_url || '';
   document.getElementById('l-custom-needs').value = l.custom_needs || '';
   if (l.image_url) {
     document.getElementById('loc-image-preview').innerHTML = `<img src="${l.image_url}" style="width:100%;height:100%;object-fit:cover">`;
   } else {
     document.getElementById('loc-image-preview').innerHTML = '';
+  }
+  document.getElementById('loc-video-status').textContent = '';
+  if (l.video_url) {
+    document.getElementById('loc-video-preview').innerHTML = `<video src="${l.video_url}" controls preload="metadata" style="width:100%;display:block;background:#000"></video>`;
+  } else {
+    document.getElementById('loc-video-preview').innerHTML = '';
   }
   currentNeeds = normalizeLevels(Array.isArray(l.needs) ? JSON.parse(JSON.stringify(l.needs)) : []);
   renderNeedsAll();
@@ -485,6 +508,26 @@ document.getElementById('loc-image-input').addEventListener('change', async (e) 
   e.target.value = '';
 });
 
+document.getElementById('loc-video-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('loc-video-status');
+  if (file.size > 50 * 1024 * 1024) { // ponytail: 50MB ceiling; use a hosted embed if larger
+    statusEl.textContent = '影片過大（上限 50MB），請壓縮後再上傳。';
+    e.target.value = ''; return;
+  }
+  statusEl.textContent = '上傳中…';
+  const url = await uploadToMedia(file, 'map_locations', { compress: false });
+  if (url) {
+    document.getElementById('l-video-url').value = url;
+    document.getElementById('loc-video-preview').innerHTML = `<video src="${url}" controls preload="metadata" style="width:100%;display:block;background:#000"></video>`;
+    statusEl.textContent = '';
+  } else {
+    statusEl.textContent = '上傳失敗，請再試一次。';
+  }
+  e.target.value = '';
+});
+
 document.getElementById('btn-save-loc').addEventListener('click', async () => {
   const id = document.getElementById('loc-id').value || null;
   const data = {
@@ -500,6 +543,7 @@ document.getElementById('btn-save-loc').addEventListener('click', async () => {
     lat:         parseFloat(document.getElementById('l-lat').value) || null,
     lng:         parseFloat(document.getElementById('l-lng').value) || null,
     image_url:   document.getElementById('l-image-url').value || null,
+    video_url:   document.getElementById('l-video-url').value || null,
     food_weeks:  parseFloat(document.getElementById('l-food-weeks').value) || null,
     needs:       currentNeeds,
     custom_needs:document.getElementById('l-custom-needs').value.trim() || null

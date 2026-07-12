@@ -4,14 +4,15 @@
 
 ## 0. ⚠️ 尚未執行 — 請立即執行（2026-07-12 確認 production 缺少這兩個欄位）
 
-缺少這兩個欄位會讓「團隊」與「專案」頁面的查詢整個失敗，前台顯示空白（成員 / 專案不出現），後台儲存成員也會失敗：
+缺少這些欄位會讓「團隊」「專案」與「浪浪地圖」的查詢整個失敗，前台顯示空白，後台儲存也會失敗：
 
 ```sql
-ALTER TABLE members  ADD COLUMN IF NOT EXISTS school text;
-ALTER TABLE projects ADD COLUMN IF NOT EXISTS video_url text;
+ALTER TABLE members       ADD COLUMN IF NOT EXISTS school text;
+ALTER TABLE projects      ADD COLUMN IF NOT EXISTS video_url text;
+ALTER TABLE map_locations ADD COLUMN IF NOT EXISTS video_url text;  -- 收容所影片
 ```
 
-執行後開啟 https://taiwanteentrust.org/team.html 確認成員出現。
+執行後開啟 https://taiwanteentrust.org/team.html 確認成員出現，並於後台「地圖地點」為收容所上傳圖片／影片。
 
 ## 0.5 ⚠️ 安全性：鎖定 admin_users 寫入權限（防止團員自行升級為管理員）
 
