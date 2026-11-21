@@ -546,6 +546,30 @@ body:not(.lang-en) .mission-word { font-size: clamp(5.5rem, 14vw, 15rem); }
 }
 .proj-link:hover { gap: .9rem; transform: rotate(-2deg); }
 .proj-card .sticker { top: -16px; right: 26px; }
+/* 「籌備中」 status pills */
+.status-pill {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-fun); font-size: .85rem; white-space: nowrap;
+  padding: .3rem .85rem; border-radius: 999px; border: 2px solid var(--ink);
+}
+.status-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; }
+.status-pill--live { background: #fff; }
+.status-pill--live::before { background: #22C55E; box-shadow: 0 0 0 3px rgba(34,197,94,.25); }
+.status-pill--soon { background: repeating-linear-gradient(-45deg, #fff 0 8px, var(--sun-tint) 8px 16px); }
+.status-pill--soon::before { background: var(--sun); border: 1.5px solid var(--ink); }
+.pillar-top .status-pill { margin-left: auto; margin-right: .9rem; }
+.proj-card--soon .proj-title, .proj-card--soon .proj-desc { opacity: .72; }
+.proj-soon {
+  margin-top: auto; width: fit-content;
+  font-size: .95rem; font-weight: 800; color: var(--text-3);
+  padding: .55rem 1.2rem; border-radius: 999px; border: 2px dashed rgba(22,33,62,.35);
+}
+.polaroid__soon {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  font-family: var(--font-fun); font-size: .75rem; color: var(--ink);
+  background: var(--sun); border: 2px solid var(--ink); border-radius: 999px;
+  padding: .15rem .6rem; rotate: 8deg;
+}
 .tag-animals  { background: var(--coral-tint); color: var(--ink); }
 .tag-advocacy { background: var(--violet-tint); color: var(--ink); }
 .tag-research { background: var(--cyan-tint); color: var(--ink); }
@@ -795,6 +819,7 @@ body.lang-en .lang-zh { display: none; }
         </figure>
         <figure class="polaroid polaroid--2" data-pop-hero>
           <span class="tape"></span>
+          <span class="polaroid__soon"><span class="lang-zh">籌備中</span><span class="lang-en">Coming soon</span></span>
           <div class="polaroid__img polaroid__img--violet">
             <svg viewBox="0 0 64 64" fill="#fff"><path d="M8 25h9l22-12v38L17 39H8z"/><path d="M17 39l5 14h7l-4-13z"/><path d="M46 22c5 3 5 17 0 20" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/><path d="M52 16c9 6 9 26 0 32" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/></svg>
           </div>
@@ -802,6 +827,7 @@ body.lang-en .lang-zh { display: none; }
         </figure>
         <figure class="polaroid polaroid--3" data-pop-hero>
           <span class="tape"></span>
+          <span class="polaroid__soon"><span class="lang-zh">籌備中</span><span class="lang-en">Coming soon</span></span>
           <div class="polaroid__img polaroid__img--cyan">
             <svg viewBox="0 0 64 64" fill="#fff"><path d="M54 8C24 8 10 24 12 52c28 2 44-14 42-44z"/><path d="M12 52L38 26" fill="none" stroke="#16213E" stroke-width="4" stroke-linecap="round"/></svg>
           </div>
@@ -954,6 +980,7 @@ body.lang-en .lang-zh { display: none; }
       <div class="pillar-card">
         <div class="pillar-top">
           <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="#fff"><ellipse cx="32" cy="43" rx="13" ry="11"/><circle cx="15" cy="28" r="6.5"/><circle cx="25" cy="16" r="6.5"/><circle cx="39" cy="16" r="6.5"/><circle cx="49" cy="28" r="6.5"/></svg></div>
+          <span class="status-pill status-pill--live"><span class="lang-zh">進行中</span><span class="lang-en">Active</span></span>
           <div class="pillar-num">01</div>
         </div>
         <div class="pillar-title lang-zh" data-site-key="pillar_1_title" data-site-lang="zh">動物福利</div>
@@ -964,6 +991,7 @@ body.lang-en .lang-zh { display: none; }
       <div class="pillar-card">
         <div class="pillar-top">
           <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="#fff"><path d="M8 25h9l22-12v38L17 39H8z"/><path d="M17 39l5 14h7l-4-13z"/><path d="M46 22c5 3 5 17 0 20" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/><path d="M52 16c9 6 9 26 0 32" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/></svg></div>
+          <span class="status-pill status-pill--soon"><span class="lang-zh">籌備中</span><span class="lang-en">Coming soon</span></span>
           <div class="pillar-num">02</div>
         </div>
         <div class="pillar-title lang-zh" data-site-key="pillar_2_title" data-site-lang="zh">青年倡議</div>
@@ -974,6 +1002,7 @@ body.lang-en .lang-zh { display: none; }
       <div class="pillar-card">
         <div class="pillar-top">
           <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="#fff"><path d="M54 8C24 8 10 24 12 52c28 2 44-14 42-44z"/><path d="M12 52L38 26" fill="none" stroke="#16213E" stroke-width="4" stroke-linecap="round"/></svg></div>
+          <span class="status-pill status-pill--soon"><span class="lang-zh">籌備中</span><span class="lang-en">Coming soon</span></span>
           <div class="pillar-num">03</div>
         </div>
         <div class="pillar-title lang-zh" data-site-key="pillar_3_title" data-site-lang="zh">環境永續</div>
@@ -1020,8 +1049,8 @@ body.lang-en .lang-zh { display: none; }
         <a href="projects/stray-aid-map.html" class="proj-link lang-zh">開啟地圖 →</a>
         <a href="projects/stray-aid-map.html" class="proj-link lang-en">Open Map →</a>
       </div>
-      <div class="proj-card">
-        <span class="sticker sticker--violet" data-pop style="--pop-rest:-5deg;--pop-delay:.1s" aria-hidden="true"><span class="lang-zh">全新！</span><span class="lang-en">New!</span></span>
+      <div class="proj-card proj-card--soon">
+        <span class="sticker" data-pop style="--pop-rest:-5deg;--pop-delay:.1s" aria-hidden="true"><span class="lang-zh">籌備中</span><span class="lang-en">Coming soon</span></span>
         <div class="proj-top">
           <span class="proj-tag tag-advocacy lang-zh">動物 & 物流</span>
           <span class="proj-tag tag-advocacy lang-en">Animals & Logistics</span>
@@ -1031,8 +1060,8 @@ body.lang-en .lang-zh { display: none; }
         <div class="proj-title lang-en">Stray Aid Delivery<br>Donation Delivery & Logistics Tracker</div>
         <p class="proj-desc lang-zh">首創流浪動物物資「外送與追蹤系統」，媒合愛心物資（包含飼料、藥品、保暖棚、發電機與工具等）與志工外送員，即時規劃路線並追蹤進度。</p>
         <p class="proj-desc lang-en">A DoorDash-like donation delivery matching and routing portal. Claim pickups of food, water, tools, and shelter equipment and track them in real time.</p>
-        <a href="projects/stray-aid-delivery.html" class="proj-link lang-zh">開啟外送平台 →</a>
-        <a href="projects/stray-aid-delivery.html" class="proj-link lang-en">Open Delivery Portal →</a>
+        <span class="proj-soon lang-zh">籌備中，敬請期待</span>
+        <span class="proj-soon lang-en">Coming soon — stay tuned</span>
       </div>
     </div>
   </div>
