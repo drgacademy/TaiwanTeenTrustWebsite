@@ -120,11 +120,12 @@
         <div style="display:grid;gap:.75rem;margin-bottom:1rem">
           <div>
             <label style="display:block;font-size:.8rem;color:var(--text-2);margin-bottom:.35rem" data-i18n="users.f.password">新密碼</label>
-            <input class="field-input" id="e-password" type="password" data-i18n-ph="users.f.password.ph" placeholder="輸入新密碼" />
+            <input class="field-input" id="e-password" type="password" minlength="10" autocomplete="new-password" data-i18n-ph="users.f.password.ph" placeholder="輸入新密碼（至少 10 個字元）" />
+            <div class="field-hint" id="e-password-hint" style="margin-top:.3rem">至少 10 個字元</div>
           </div>
           <div>
             <label style="display:block;font-size:.8rem;color:var(--text-2);margin-bottom:.35rem" data-i18n="users.f.password.confirm">確認密碼</label>
-            <input class="field-input" id="e-password-confirm" type="password" data-i18n-ph="users.f.password.confirm.ph" placeholder="確認密碼" />
+            <input class="field-input" id="e-password-confirm" type="password" minlength="10" autocomplete="new-password" data-i18n-ph="users.f.password.confirm.ph" placeholder="確認密碼" />
           </div>
           <button type="button" class="btn btn--primary btn--sm" id="btn-set-password" data-i18n="users.password.set">直接設定密碼</button>
         </div>
@@ -143,6 +144,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/admin.js?v=6"></script>
 <script>
+/* Local bilingual helper for strings not (yet) in admin.js I18N */
+function L(zh, en) { return getLang() === 'en' ? en : zh; }
+/* Safe JS string literal for inline onclick="fn(...)" attributes */
+function jsArg(v) { return esc(JSON.stringify(String(v ?? ''))); }
+const PASSWORD_MIN = 10;
+function applyLocalLabels() {
+  document.getElementById('e-password-hint').textContent = L(`至少 ${PASSWORD_MIN} 個字元`, `At least ${PASSWORD_MIN} characters`);
+}
+
 let adminList = [];
 let currentUserId = null;
 
@@ -156,14 +166,14 @@ function fmtCreated(iso) {
 function renderTable() {
   const tbody = document.getElementById('users-tbody');
   if (!adminList.length) {
-    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state__icon">👤</div><div class="empty-state__title">${t('users.empty.title')}</div><div class="empty-state__text">${t('users.empty.text')}</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-state__icon">👤</div><div class="empty-state__title">${esc(t('users.empty.title'))}</div><div class="empty-state__text">${esc(t('users.empty.text'))}</div></div></td></tr>`;
     return;
   }
-  const tRemove = t('btn.delete');
-  const tEdit = t('users.edit');
-  const tRoleAdmin = t('users.role.admin');
-  const tRoleMember = t('users.role.member');
-  const tYou = t('users.badge.you');
+  const tRemove = esc(t('btn.delete'));
+  const tEdit = esc(t('users.edit'));
+  const tRoleAdmin = esc(t('users.role.admin'));
+  const tRoleMember = esc(t('users.role.member'));
+  const tYou = esc(t('users.badge.you'));
 
   tbody.innerHTML = adminList.map(u => {
     const isSelf = u.user_id && u.user_id === currentUserId;
@@ -172,23 +182,19 @@ function renderTable() {
     const roleBadge = role === 'admin'
       ? `<span class="badge badge--green">${tRoleAdmin}</span>`
       : `<span class="badge badge--gray">${tRoleMember}</span>`;
-    const editBtn = `<button class="btn btn--ghost btn--sm" onclick="openEditModal('${u.id}')">${tEdit}</button>`;
+    const editBtn = `<button class="btn btn--ghost btn--sm" onclick="openEditModal(${jsArg(u.id)})">${tEdit}</button>`;
     const removeBtn = isSelf
       ? ''
-      : `<button class="btn btn--danger-ghost btn--sm" onclick="removeAdmin('${u.id}')">${tRemove}</button>`;
+      : `<button class="btn btn--danger-ghost btn--sm" onclick="removeAdmin(${jsArg(u.id)})">${tRemove}</button>`;
     return `
       <tr>
-        <td class="td-mono">${escapeHtml(u.email)}${youBadge}</td>
-        <td>${u.name ? escapeHtml(u.name) : '—'}</td>
+        <td class="td-mono">${esc(u.email || '—')}${youBadge}</td>
+        <td>${u.name ? esc(u.name) : '—'}</td>
         <td>${roleBadge}</td>
-        <td>${fmtCreated(u.created_at)}</td>
+        <td>${esc(fmtCreated(u.created_at))}</td>
         <td style="text-align:right"><div class="td-actions" style="justify-content:flex-end;gap:.4rem">${editBtn}${removeBtn}</div></td>
       </tr>`;
   }).join('');
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 
 async function loadAdmins() {
@@ -210,7 +216,7 @@ function openInviteModal() {
 }
 
 function openEditModal(id) {
-  const u = adminList.find(a => a.id === id);
+  const u = adminList.find(a => String(a.id) === String(id));
   if (!u) return;
   document.getElementById('e-id').value    = u.id;
   document.getElementById('e-user-id').value = u.user_id || '';
@@ -265,12 +271,13 @@ document.getElementById('btn-save-edit').addEventListener('click', async () => {
 
 document.getElementById('btn-set-password').addEventListener('click', async () => {
   const userId = document.getElementById('e-user-id').value;
-  const password = document.getElementById('e-password').value.trim();
-  const passwordConfirm = document.getElementById('e-password-confirm').value.trim();
+  const password = document.getElementById('e-password').value;
+  const passwordConfirm = document.getElementById('e-password-confirm').value;
 
   if (!userId) { showToast(t('users.msg.password_set_fail'), 'error'); return; }
   if (!password) { showToast(t('users.msg.password_required'), 'error'); return; }
-  if (password.length < 10) { showToast(t('users.msg.password_too_short'), 'error'); return; }
+  // Message inline: admin.js's zh string for users.msg.password_too_short still says 6
+  if (password.length < PASSWORD_MIN) { showToast(L(`密碼至少需要 ${PASSWORD_MIN} 個字元`, `Password must be at least ${PASSWORD_MIN} characters`), 'error'); return; }
   if (password !== passwordConfirm) { showToast(t('users.msg.password_mismatch'), 'error'); return; }
 
   const btn = document.getElementById('btn-set-password');
@@ -308,7 +315,7 @@ document.getElementById('btn-reset-password').addEventListener('click', async ()
 });
 
 async function removeAdmin(id) {
-  const admin = adminList.find(a => a.id === id);
+  const admin = adminList.find(a => String(a.id) === String(id));
   if (!admin) return;
   if (admin.user_id === currentUserId) { showToast(t('users.msg.self_remove'), 'error'); return; }
 
@@ -321,6 +328,7 @@ async function removeAdmin(id) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  applyLocalLabels();
   const user = await Auth.get();
   if (!user) return;
   currentUserId = user.id;
@@ -337,7 +345,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadAdmins();
 });
-document.addEventListener('admin-lang-changed', () => renderTable());
+document.addEventListener('admin-lang-changed', () => { applyLocalLabels(); renderTable(); });
 </script>
 </body>
 </html>
