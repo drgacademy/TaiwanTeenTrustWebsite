@@ -823,7 +823,7 @@ const I18N = {
     'users.password.reset': '寄送密碼重設信',
     'users.password.resetting': '寄送中…',
     'users.msg.password_required': '請輸入新密碼',
-    'users.msg.password_too_short': '密碼至少需要 6 個字元',
+    'users.msg.password_too_short': '密碼至少需要 10 個字元',
     'users.msg.password_mismatch': '兩次輸入的密碼不一致',
     'users.msg.password_set': '密碼已設定',
     'users.msg.password_set_fail': '設定密碼失敗',
