@@ -1,0 +1,349 @@
+/* ============================================================
+   Taiwan Teen Trust — Vibrant Theme Layer
+   Loaded LAST on every public page so it overrides the older
+   per-page styles. Palette: TTT cyan + sun yellow + coral + violet
+   on warm cream, deep navy ink instead of pure black.
+   ============================================================ */
+
+/* Fonts load as separate requests so one unavailable family
+   can't break the others. Everything falls back to Noto Sans TC. */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Huninn&display=swap');
+
+:root {
+  /* Brand palette */
+  --ttt-cyan:  #2ECAD4;
+  --sun:       #FFD23F;
+  --coral:     #FF5D8F;
+  --violet:    #7B5CFF;
+  --cream:     #FFF8EE;
+  --cream-2:   #FFEFD6;
+  --ink:       #16213E;
+
+  /* Soft tints for card backgrounds (ink text stays readable) */
+  --cyan-tint:   #D6F6F8;
+  --sun-tint:    #FFF1C2;
+  --coral-tint:  #FFE0EA;
+  --violet-tint: #E7E1FF;
+
+  /* Remap the old tokens used by every page */
+  --black:  #16213E;
+  --white:  #ffffff;
+  --gray:   #FFEFD6;
+  --gray-2: rgba(22, 33, 62, .12);
+  --text-2: rgba(22, 33, 62, .74);
+  --text-3: rgba(22, 33, 62, .58);
+  --r1: #2ECAD4;
+  --r2: #4FB8F0;
+  --r3: #7B5CFF;
+  --r4: #B45CEB;
+  --r5: #FF5D8F;
+  --r6: #FF8A5C;
+  --r7: #FFD23F;
+  --rainbow: linear-gradient(90deg, #2ECAD4 0%, #7B5CFF 52%, #FF5D8F 100%);
+  --rainbow-full: linear-gradient(90deg, #2ECAD4, #7B5CFF, #FF5D8F, #FFD23F);
+
+  /* Bouncy easing */
+  --bounce: cubic-bezier(.34, 1.56, .64, 1);
+  --pop-shadow: 4px 4px 0 var(--ink);
+  --pop-shadow-lg: 7px 7px 0 var(--ink);
+
+  --font-display: 'Bricolage Grotesque', 'Noto Sans TC', sans-serif;
+  --font-fun: 'Huninn', 'Noto Sans TC', sans-serif;
+}
+
+/* ─── Base ─── */
+html { background: var(--cream); }
+body { color: var(--ink); }
+::selection { background: var(--sun); color: var(--ink); }
+
+h1, h2, h3,
+.hero__title, .sec-title, .page-hero__title, .mission-title, .join-title,
+.pillar-title, .proj-title, .stat-num, .mission-word, .lead-card__name,
+.featured-card__title, .featured-post__title, .post-card__title,
+.proj-card__title, .value-item__title, .t-item__title, .focus-left__title,
+.success-title, .dept__name, .stat-block__num, .focus-stat__num {
+  font-family: var(--font-display);
+}
+
+.rainbow-text {
+  background: var(--rainbow);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Hand-drawn underline that can sit under any highlighted word */
+.scribble { position: relative; display: inline-block; }
+.scribble__line {
+  position: absolute; left: -4%; bottom: -.12em; width: 108%; height: .32em;
+  pointer-events: none; overflow: visible;
+}
+.scribble__line path {
+  fill: none; stroke: var(--sun); stroke-width: 9; stroke-linecap: round;
+  stroke-dasharray: 600; stroke-dashoffset: 600;
+}
+/* draws when an ancestor gets .is-drawn (or immediately on pages that don't set it) */
+.is-drawn .scribble__line path, .scribble--auto .scribble__line path {
+  animation: scribble-draw 1.1s var(--bounce) forwards;
+}
+@keyframes scribble-draw { to { stroke-dashoffset: 0; } }
+
+/* ─── Navbar (both .nav and the older .navbar) ─── */
+.nav.scrolled, .navbar.scrolled {
+  background: rgba(255, 248, 238, .92);
+  border-bottom: 2px solid var(--ink);
+}
+.nav__logo, .navbar__logo { color: var(--ink); }
+.nav__link, .navbar__link { color: var(--text-2); font-weight: 600; }
+.nav__link:hover, .navbar__link:hover { color: var(--ink); }
+.nav__link::after, .navbar__link::after {
+  height: 4px; border-radius: 4px; bottom: -6px;
+  background: var(--rainbow-full);
+  transition: width .45s var(--bounce);
+}
+.nav__lang, .lang-toggle { background: rgba(22, 33, 62, .08); }
+.nav__lang-btn.active, .lang-btn.active { background: var(--ink); color: #fff; }
+.nav__cta {
+  background: var(--coral); color: #fff;
+  border-radius: 999px; border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform .25s var(--bounce), box-shadow .25s var(--bounce);
+}
+.nav__cta::before { display: none; }
+.nav__cta:hover { transform: translate(-2px, -2px) rotate(-2deg); box-shadow: 5px 5px 0 var(--ink); }
+.nav__hamburger span { height: 2.5px; border-radius: 3px; background: var(--ink); }
+.nav__drawer, .navbar__mobile {
+  background: var(--cream);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(255, 210, 63, .45) 0 14%, transparent 15%),
+    radial-gradient(circle at 85% 80%, rgba(255, 93, 143, .30) 0 18%, transparent 19%),
+    radial-gradient(circle at 80% 15%, rgba(46, 202, 212, .30) 0 10%, transparent 11%);
+}
+.nav__drawer .nav__link { font-family: var(--font-display); }
+.nav__drawer .nav__link:nth-child(4n+1):hover { color: var(--ttt-cyan); }
+.nav__drawer .nav__link:nth-child(4n+2):hover { color: var(--violet); }
+.nav__drawer .nav__link:nth-child(4n+3):hover { color: var(--coral); }
+.nav__drawer .nav__link:nth-child(4n+4):hover { color: #E0A800; }
+
+/* ─── Buttons: chunky, rounded, springy ─── */
+.btn-fill, .join-btn-r, .form-submit, .btn--primary, .success-back,
+.newsletter-form button {
+  background: var(--coral); color: #fff;
+  border-radius: 999px; border: 2.5px solid var(--ink);
+  box-shadow: var(--pop-shadow);
+  transition: transform .3s var(--bounce), box-shadow .3s var(--bounce), background .2s;
+}
+.btn-fill::before, .form-submit::before { display: none; }
+.btn-fill:hover, .join-btn-r:hover, .form-submit:hover:not(:disabled), .btn--primary:hover,
+.success-back:hover, .newsletter-form button:hover {
+  transform: translate(-3px, -3px) rotate(-1.5deg);
+  box-shadow: var(--pop-shadow-lg);
+  background: #FF4A80;
+}
+.btn-fill:active, .join-btn-r:active, .form-submit:active, .btn-stroke:active {
+  transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink);
+}
+.btn-stroke, .btn--outline {
+  background: #fff; color: var(--ink);
+  border: 2.5px solid var(--ink); border-radius: 999px;
+  box-shadow: var(--pop-shadow);
+  transition: transform .3s var(--bounce), box-shadow .3s var(--bounce), background .2s;
+}
+.btn-stroke:hover, .btn--outline:hover {
+  background: var(--sun); border-color: var(--ink);
+  transform: translate(-3px, -3px) rotate(1.5deg);
+  box-shadow: var(--pop-shadow-lg);
+}
+
+/* ─── Section labels become tilted sticker pills ─── */
+.sec-tag, .page-hero__tag, .stats-eyebrow, .focus-section-label {
+  /* no !important on display: the language toggle must still hide these */
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--font-fun); font-weight: 400;
+  font-size: .85rem; letter-spacing: .06em; text-transform: none;
+  color: var(--ink); background: var(--sun);
+  padding: .4rem 1rem; border-radius: 999px;
+  border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+  rotate: -2deg; width: fit-content;
+}
+.sec-tag::before, .stats-eyebrow::before {
+  content: '✦' !important; width: auto !important; height: auto !important;
+  background: none !important; color: var(--coral); font-size: 1em;
+}
+
+/* ─── Page hero (sub-pages) ─── */
+.page-hero {
+  position: relative; overflow: hidden;
+  border-bottom: 3px solid var(--ink) !important;
+  background:
+    radial-gradient(circle at 92% 18%, rgba(255, 210, 63, .55) 0 7rem, transparent 7.05rem),
+    radial-gradient(circle at 78% 85%, rgba(255, 93, 143, .22) 0 10rem, transparent 10.05rem),
+    radial-gradient(circle at 4% 90%, rgba(46, 202, 212, .25) 0 6rem, transparent 6.05rem),
+    var(--cream);
+}
+.page-hero__intro { border-top: 2px dashed rgba(22, 33, 62, .2) !important; }
+
+/* ─── Generic cards: round, bordered, springy hover ─── */
+.value-item, .lead-card, .member-card, .proj-card, .featured-card,
+.featured-post, .post-card, .how-item, .newsletter-card, .form-wrap,
+.focus-block__inner, .t-item, .stat-block, .card {
+  border-radius: 24px;
+  transition: transform .35s var(--bounce), box-shadow .35s var(--bounce), background .25s;
+}
+.value-item:hover, .lead-card:hover, .member-card:hover, .proj-card:hover,
+.featured-card:hover, .featured-post:hover, .post-card:hover, .how-item:hover, .card:hover {
+  box-shadow: var(--pop-shadow-lg);
+}
+
+/* ─── Filter pills (projects / blog) ─── */
+.filter-btn {
+  border-radius: 999px !important; border: 2px solid var(--ink) !important;
+  font-weight: 700; transition: transform .25s var(--bounce), background .2s !important;
+}
+.filter-btn:hover { transform: translateY(-2px) rotate(-2deg); background: var(--sun-tint) !important; }
+.filter-btn.active { background: var(--ink) !important; color: #fff !important; }
+
+/* ─── Form fields ─── */
+.form-input, .form-select, .form-textarea, .newsletter-input {
+  border-radius: 14px !important; border: 2px solid rgba(22, 33, 62, .18) !important;
+  background: #fff !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus, .newsletter-input:focus {
+  border-color: var(--ttt-cyan) !important;
+  box-shadow: 0 0 0 4px rgba(46, 202, 212, .25) !important;
+  outline: none;
+}
+
+/* ─── Call-to-action bands on sub-pages ─── */
+.cta-sec, .join-cta {
+  background: linear-gradient(135deg, var(--coral) 0%, var(--violet) 100%) !important;
+  color: #fff;
+}
+
+/* ─── Footer ─── */
+footer, .footer { background: var(--ink) !important; }
+.footer-rainbow { height: 6px !important; background: var(--rainbow-full) !important; border-radius: 6px; }
+.footer-col a:hover, .footer-links a:hover { color: var(--sun) !important; }
+
+/* ─── Loader + page transition ─── */
+.loader { background: var(--ink) !important; }
+.loader__fill { background: var(--rainbow-full) !important; }
+.ttt-p1 { background: var(--ttt-cyan) !important; }
+.ttt-p2 { background: var(--violet) !important; }
+.ttt-p3 { background: var(--coral) !important; }
+
+/* ─── Custom cursor ─── */
+.cursor-ring { border-color: var(--coral) !important; }
+.cursor-ring.hovering { background: rgba(255, 210, 63, .35) !important; border-color: var(--ink) !important; }
+.cursor-dot { background: var(--coral) !important; }
+
+/* ─── Stickers (decorative tilted labels) ─── */
+.sticker {
+  position: absolute; z-index: 2; pointer-events: none;
+  font-family: var(--font-fun); font-size: clamp(.8rem, 1.1vw, 1.05rem);
+  padding: .45rem 1rem; border-radius: 999px;
+  border: 2.5px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+  background: var(--sun); color: var(--ink); white-space: nowrap;
+}
+.sticker--coral  { background: var(--coral);  color: #fff; }
+.sticker--violet { background: var(--violet); color: #fff; }
+.sticker--cyan   { background: var(--ttt-cyan); }
+.sticker--round {
+  width: 5.5rem; height: 5.5rem; padding: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  line-height: 1.15; white-space: normal;
+}
+.shape { position: absolute; pointer-events: none; z-index: 1; }
+
+/* ─── Pop-in entrance (driven by js/vibrant.js) ─── */
+[data-pop], [data-pop-hero] {
+  opacity: 0; scale: .3; rotate: var(--pop-from, -18deg);
+  transition: opacity .5s ease, scale .7s var(--bounce), rotate .7s var(--bounce);
+  transition-delay: var(--pop-delay, 0s);
+}
+[data-pop].is-in, [data-pop-hero].is-in { opacity: 1; scale: 1; rotate: var(--pop-rest, 0deg); }
+
+/* Gentle idle float for stickers and shapes */
+.float { animation: float 5s ease-in-out infinite; animation-delay: var(--float-delay, 0s); }
+@keyframes float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -12px; }
+}
+.spin-slow { animation: spin 18s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Wiggle on hover for anything marked .wiggle */
+.wiggle:hover { animation: wiggle .5s var(--bounce); }
+@keyframes wiggle {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -4deg; }
+  50% { rotate: 3deg; }
+  75% { rotate: -2deg; }
+}
+
+/* Wave divider between sections */
+.wave { display: block; width: 100%; height: clamp(40px, 6vw, 90px); margin: -1px 0; position: relative; z-index: 2; }
+.wave path { fill: var(--wave-fill, var(--cream)); }
+
+/* ─── Respect reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important;
+  }
+  [data-pop], [data-pop-hero] { opacity: 1; scale: 1; rotate: var(--pop-rest, 0deg); }
+  .scribble__line path { stroke-dashoffset: 0; }
+}
+
+/* ─── Letter split (js/vibrant.js) ─── */
+.split-ch {
+  display: inline-block; opacity: 0; translate: 0 .55em; rotate: 12deg;
+  transition: opacity .4s ease, translate .7s var(--bounce), rotate .7s var(--bounce);
+  transition-delay: calc(var(--i) * 45ms);
+}
+.split-in .split-ch { opacity: 1; translate: 0 0; rotate: 0deg; }
+
+/* 3D depth for tilting cards */
+.pillars-grid, .projects-grid, .stats-grid, .values-grid, .lead-grid,
+.members-grid, .posts-grid, .how-grid, .featured, .featured-sec { perspective: 1100px; }
+
+/* ─── CTA bands: buttons must stand out on the coral→violet gradient ─── */
+.cta-sec .btn-fill, .join-cta .btn-fill { background: var(--sun); color: var(--ink); }
+.cta-sec .btn-fill:hover, .join-cta .btn-fill:hover { background: #fff; }
+.cta-sec p, .join-cta p { color: rgba(255, 255, 255, .92) !important; }
+.join-cta h2, .cta-sec h2 { color: #fff; }
+
+/* ─── About: stats band as colourful bubble cards ─── */
+.stats-band { background: var(--cream) !important; color: var(--ink) !important; }
+.stats-band__inner {
+  background: none !important; gap: clamp(1rem, 2vw, 1.75rem) !important;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)) !important;
+}
+.stat-block {
+  border: 3px solid var(--ink); border-radius: 30px !important; box-shadow: 6px 6px 0 var(--ink);
+}
+.stat-block:nth-child(4n+1) { background: var(--ttt-cyan) !important; rotate: -1.5deg; }
+.stat-block:nth-child(4n+2) { background: var(--sun) !important; rotate: 1.5deg; }
+.stat-block:nth-child(4n+3) { background: var(--coral) !important; rotate: -1deg; }
+.stat-block:nth-child(4n+4) { background: var(--violet) !important; rotate: 1deg; color: #fff; }
+.stat-block__num {
+  background: none !important; -webkit-text-fill-color: currentColor !important; color: var(--ink) !important;
+}
+.stat-block:nth-child(4n+4) .stat-block__num { color: #fff !important; }
+.stat-block__label { color: inherit !important; opacity: .85; font-weight: 700; }
+
+/* ─── 404 page ─── */
+body > .code, .code {
+  font-family: var(--font-display);
+  background: var(--rainbow-full); -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: float 4s ease-in-out infinite;
+}
+a.btn {
+  background: var(--coral) !important; color: #fff !important;
+  border: 2.5px solid var(--ink); box-shadow: var(--pop-shadow);
+  transition: transform .3s var(--bounce), box-shadow .3s var(--bounce) !important;
+}
+a.btn:hover { transform: translate(-3px, -3px) rotate(-2deg); box-shadow: var(--pop-shadow-lg); opacity: 1 !important; }
+.focus-section-label { color: var(--ink) !important; }
