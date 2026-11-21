@@ -42,11 +42,33 @@ const Auth = {
   }
 };
 
+/* ════════════════════ SAFETY + ERRORS ════════════════════ */
+
+/* Escape any DB/user string before putting it into innerHTML. */
+function esc(v) {
+  return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* Turn a Supabase/Postgres error into a sentence people can act on. */
+function friendlyError(error) {
+  const msg = (error && (error.message || error.error_description)) || String(error || '');
+  const code = error && error.code;
+  if (code === '23505' || /duplicate key/i.test(msg)) return t('err.duplicate');
+  if (code === '42501' || /row-level security|permission denied/i.test(msg)) return t('err.permission');
+  if (code === '23502' || /null value in column "([^"]+)"/i.test(msg)) {
+    const m = msg.match(/column "([^"]+)"/); return t('err.required') + (m ? `（${m[1]}）` : '');
+  }
+  if (code === '42703' || /column .* does not exist|Could not find the '.*' column/i.test(msg)) return t('err.column') + ' ' + msg;
+  if (/Failed to fetch|NetworkError|network/i.test(msg)) return t('err.network');
+  if (/JWT|session|not authenticated/i.test(msg)) return t('err.session');
+  return msg;
+}
+
 /* ════════════════════ DATA LAYER (async) ════════════════════ */
 const DB = {
   async getAll(table, { orderBy = 'created_at', ascending = false } = {}) {
     const { data, error } = await sb.from(table).select('*').order(orderBy, { ascending });
-    if (error) { console.error('[DB.getAll]', table, error); showToast('讀取失敗：' + error.message, 'error'); return []; }
+    if (error) { console.error('[DB.getAll]', table, error); showToast(t('err.load') + friendlyError(error), 'error'); return []; }
     return data || [];
   },
 
@@ -58,26 +80,26 @@ const DB = {
 
   async insert(table, row) {
     const { data, error } = await sb.from(table).insert(row).select().single();
-    if (error) { console.error('[DB.insert]', table, error); showToast('新增失敗：' + error.message, 'error'); return null; }
+    if (error) { console.error('[DB.insert]', table, error); showToast(t('err.insert') + friendlyError(error), 'error'); return null; }
     return data;
   },
 
   async update(table, id, patch) {
     const { data, error } = await sb.from(table).update(patch).eq('id', id).select().single();
-    if (error) { console.error('[DB.update]', table, id, error); showToast('更新失敗：' + error.message, 'error'); return null; }
+    if (error) { console.error('[DB.update]', table, id, error); showToast(t('err.update') + friendlyError(error), 'error'); return null; }
     return data;
   },
 
   async delete(table, id) {
     const { error } = await sb.from(table).delete().eq('id', id);
-    if (error) { console.error('[DB.delete]', table, id, error); showToast('刪除失敗：' + error.message, 'error'); return false; }
+    if (error) { console.error('[DB.delete]', table, id, error); showToast(t('err.delete') + friendlyError(error), 'error'); return false; }
     return true;
   },
 
   /* Upsert by key — useful for site_content (key-value) */
   async upsert(table, row, conflictKey = 'id') {
     const { data, error } = await sb.from(table).upsert(row, { onConflict: conflictKey }).select().single();
-    if (error) { console.error('[DB.upsert]', table, error); showToast('儲存失敗：' + error.message, 'error'); return null; }
+    if (error) { console.error('[DB.upsert]', table, error); showToast(t('err.save') + friendlyError(error), 'error'); return null; }
     return data;
   },
 
@@ -201,70 +223,214 @@ function initToasts() {
 
 function showToast(message, type = 'info') {
   if (!toastContainer) initToasts();
-  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const icons = { success: '✓', error: '✕', info: 'ℹ', warn: '!' };
   const toast = document.createElement('div');
   toast.className = `toast toast--${type}`;
-  toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
+  toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+  const icon = document.createElement('span'); icon.className = 'toast__icon'; icon.textContent = icons[type] || icons.info;
+  const text = document.createElement('span'); text.textContent = message;
+  toast.append(icon, text);
   toastContainer.appendChild(toast);
+  const remove = () => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 350); };
+  toast.addEventListener('click', remove);
   requestAnimationFrame(() => { requestAnimationFrame(() => toast.classList.add('show')); });
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 350);
-  }, 3000);
+  setTimeout(remove, type === 'error' ? 7000 : 3200);
 }
 
-/* ── Modal ── */
+/* ── Modal ──
+   Any input inside an open modal marks it "dirty". Closing it by the ✕,
+   the backdrop or Esc asks before throwing edits away. Pages close it
+   programmatically with closeModal(id) after a successful save. */
 function openModal(id) {
   const m = document.getElementById(id);
-  if (m) m.classList.add('open');
+  if (!m) return;
+  m.dataset.dirty = '';
+  m.classList.add('open');
+  clearFieldErrors(m);
+  setTimeout(() => { const f = m.querySelector('input:not([type=hidden]):not([type=file]), textarea, select'); if (f) f.focus(); }, 60);
 }
 function closeModal(id) {
   const m = document.getElementById(id);
-  if (m) m.classList.remove('open');
+  if (m) { m.classList.remove('open'); m.dataset.dirty = ''; }
 }
+function requestCloseModal(m) {
+  if (!m) return;
+  if (m.dataset.dirty) {
+    confirmAction(t('confirm.discard.title'), t('confirm.discard.text'), () => { m.classList.remove('open'); m.dataset.dirty = ''; },
+      { okLabel: t('confirm.discard.ok'), icon: '✋' });
+    return;
+  }
+  m.classList.remove('open');
+}
+let modalsReady = false;
 function initModals() {
-  document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-    backdrop.addEventListener('click', e => {
-      if (e.target === backdrop) backdrop.classList.remove('open');
-    });
+  if (modalsReady) return;   // pages sometimes call this again; listeners must be added once
+  modalsReady = true;
+  document.addEventListener('input', e => {
+    const m = e.target.closest && e.target.closest('.modal-backdrop');
+    if (m && m.id !== 'confirm-modal') m.dataset.dirty = '1';
+    const f = e.target.closest && e.target.closest('.field');
+    if (f) f.classList.remove('field--error');
   });
-  document.querySelectorAll('[data-close-modal]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const modal = btn.closest('.modal-backdrop');
-      if (modal) modal.classList.remove('open');
-    });
+  document.addEventListener('click', e => {
+    const backdrop = e.target.classList && e.target.classList.contains('modal-backdrop') ? e.target : null;
+    if (backdrop && backdrop.id !== 'confirm-modal') requestCloseModal(backdrop);
+    const closer = e.target.closest && e.target.closest('[data-close-modal]');
+    if (closer) requestCloseModal(closer.closest('.modal-backdrop'));
   });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+    if (e.key !== 'Escape') return;
+    const conf = document.getElementById('confirm-modal');
+    if (conf) { conf.remove(); return; }
+    const open = [...document.querySelectorAll('.modal-backdrop.open')].pop();
+    if (open) requestCloseModal(open);
+  });
+  window.addEventListener('beforeunload', e => {
+    if (document.querySelector('.modal-backdrop.open[data-dirty="1"]') || document.body.dataset.dirty === '1') {
+      e.preventDefault(); e.returnValue = '';
     }
   });
 }
 
+/* ── Inline field validation ──
+   validateFields(container) checks every [required] input inside it,
+   marks empty ones in red with a message, focuses the first, and returns
+   true when everything is filled. */
+function clearFieldErrors(root) {
+  (root || document).querySelectorAll('.field--error').forEach(f => f.classList.remove('field--error'));
+}
+function validateFields(root) {
+  clearFieldErrors(root);
+  let first = null;
+  root.querySelectorAll('[required]').forEach(input => {
+    if (input.closest('[hidden]') || input.offsetParent === null) return;
+    if (String(input.value || '').trim()) return;
+    const field = input.closest('.field');
+    if (field) {
+      field.classList.add('field--error');
+      let msg = field.querySelector('.field-error-msg');
+      if (!msg) { msg = document.createElement('div'); msg.className = 'field-error-msg'; field.appendChild(msg); }
+      msg.textContent = t('err.field.required');
+    }
+    if (!first) first = input;
+  });
+  if (first) { first.focus(); showToast(t('err.fix.fields'), 'warn'); return false; }
+  return true;
+}
+
+/* ── Slug helper: "Stray Aid Map" → "stray-aid-map" ── */
+function slugify(str) {
+  return String(str || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+}
+/* <input data-slug-from="p-title-en"> fills itself from that field until
+   someone edits the slug by hand. */
+function initSlugFields() {
+  document.querySelectorAll('[data-slug-from]').forEach(slugEl => {
+    const sources = slugEl.dataset.slugFrom.split(',').map(id => document.getElementById(id.trim())).filter(Boolean);
+    if (!sources.length) return;
+    slugEl.addEventListener('input', () => { slugEl.dataset.manual = slugEl.value ? '1' : ''; });
+    sources.forEach(src => src.addEventListener('input', () => {
+      if (slugEl.dataset.manual) return;
+      const base = sources.map(s => slugify(s.value)).find(Boolean) || '';
+      slugEl.value = base;
+    }));
+    // when a modal opens with an existing slug, treat it as manual
+    new MutationObserver(() => { slugEl.dataset.manual = slugEl.value ? '1' : ''; })
+      .observe(slugEl.closest('.modal-backdrop') || document.body, { attributes: true, attributeFilter: ['class'] });
+  });
+}
+
 /* ── Confirm dialog ── */
-function confirmAction(title, text, onConfirm) {
+function confirmAction(title, text, onConfirm, opts = {}) {
   const existing = document.getElementById('confirm-modal');
   if (existing) existing.remove();
+  const okLabel = opts.okLabel || t('confirm.delete.ok');
+  const danger = opts.danger !== false;
 
   const modal = document.createElement('div');
   modal.id = 'confirm-modal';
   modal.className = 'modal-backdrop open';
   modal.innerHTML = `
-    <div class="modal confirm-dialog">
+    <div class="modal confirm-dialog" role="alertdialog" aria-modal="true">
       <div class="modal__body" style="text-align:center;padding:2rem 1.5rem">
-        <div class="confirm-icon">⚠️</div>
-        <div class="confirm-title">${title}</div>
-        <div class="confirm-text">${text}</div>
+        <div class="confirm-icon">${esc(opts.icon || '⚠️')}</div>
+        <div class="confirm-title">${esc(title)}</div>
+        <div class="confirm-text">${esc(text)}</div>
       </div>
       <div class="modal__footer" style="justify-content:center;gap:.75rem">
-        <button class="btn btn--outline" id="confirm-cancel">取消</button>
-        <button class="btn" style="background:var(--danger);color:#fff" id="confirm-ok">確認刪除</button>
+        <button class="btn btn--outline" id="confirm-cancel">${esc(t('btn.cancel'))}</button>
+        <button class="btn ${danger ? 'btn--danger' : 'btn--primary'}" id="confirm-ok">${esc(okLabel)}</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
   document.getElementById('confirm-cancel').onclick = () => modal.remove();
   document.getElementById('confirm-ok').onclick = () => { modal.remove(); onConfirm(); };
   modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  setTimeout(() => document.getElementById('confirm-cancel')?.focus(), 30);
+}
+
+/* ── Sidebar (single source of truth for every admin page) ── */
+const ICONS = {
+  dashboard: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+  settings: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  focus: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>',
+  projects: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',
+  categories: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
+  blog: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>',
+  members: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  map: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  applications: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  users: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/>',
+  external: '<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>',
+};
+const NAV = [
+  { group: 'nav.group.overview', items: [
+    { href: 'dashboard.html', icon: 'dashboard', key: 'nav.dashboard' },
+  ]},
+  { group: 'nav.group.content', items: [
+    { href: 'settings.html', icon: 'settings', key: 'nav.settings' },
+    { href: 'focus.html', icon: 'focus', key: 'nav.focus' },
+    { href: 'projects.html', icon: 'projects', key: 'nav.projects' },
+    { href: 'blog.html', icon: 'blog', key: 'nav.blog' },
+    { href: 'members.html', icon: 'members', key: 'nav.members' },
+    { href: 'categories.html', icon: 'categories', key: 'nav.categories' },
+  ]},
+  { group: 'nav.group.map', items: [
+    { href: 'map-locations.html', icon: 'map', key: 'nav.map' },
+    { href: '../projects/stray-aid-map.html', icon: 'external', key: 'nav.map.public', external: true },
+  ]},
+  { group: 'nav.group.people', items: [
+    { href: 'applications.html', icon: 'applications', key: 'nav.applications' },
+    { href: 'users.html', icon: 'users', key: 'nav.users', adminOnly: true },
+  ]},
+  { group: 'nav.system', items: [
+    { href: '../index.html', icon: 'external', key: 'nav.preview', external: true },
+  ]},
+];
+function renderSidebar() {
+  const aside = document.getElementById('admin-sidebar');
+  if (!aside) return;
+  const here = (location.pathname.split('/').pop() || 'dashboard.html');
+  const svg = name => `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
+  aside.innerHTML = `
+    <a class="sidebar-brand" href="dashboard.html">
+      <img src="../assets/logo-real.png" alt="TTT" style="width:30px;height:30px;border-radius:8px;object-fit:cover;object-position:left center;flex-shrink:0">
+      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
+    </a>
+    ${NAV.map(g => `
+      <div class="sidebar-section">
+        <div class="sidebar-section-label" data-i18n="${g.group}"></div>
+        ${g.items.map(it => `
+          <a href="${it.href}" class="sidebar-link${it.href === here ? ' active' : ''}"${it.external ? ' target="_blank" rel="noopener"' : ''}${it.adminOnly ? ' data-admin-only' : ''}${it.href === here ? ' aria-current="page"' : ''}>
+            ${svg(it.icon)}<span data-i18n="${it.key}"></span>${it.external ? '<span class="sidebar-ext">↗</span>' : ''}
+          </a>`).join('')}
+      </div>`).join('')}
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><div class="sidebar-avatar">·</div><div><div class="sidebar-user-name"></div><div class="sidebar-user-role" data-i18n="user.role.member"></div></div></div>
+      <button class="btn-logout" data-i18n="btn.logout">登出</button>
+    </div>`;
+  applyI18n();
 }
 
 /* ── Sidebar ── */
@@ -293,8 +459,7 @@ async function initSidebar() {
 
   // Hide the backend-users nav link for non-admins
   if (role !== 'admin') {
-    const usersLink = document.querySelector('.admin-sidebar a[href="users.html"]');
-    if (usersLink) usersLink.style.display = 'none';
+    document.querySelectorAll('.admin-sidebar [data-admin-only]').forEach(a => { a.style.display = 'none'; });
   }
 
   const logoutBtn = document.querySelector('.btn-logout');
@@ -399,6 +564,55 @@ const I18N = {
     'nav.preview': '前台預覽',
     'user.role.admin': '管理員',
     'user.role.member': '團員',
+    'nav.group.overview': '總覽',
+    'dash.todo.title': '待處理事項',
+    'settings.where.hero': '顯示位置：首頁最上方大標題下面的那段介紹文字。',
+    'settings.where.mission': '顯示位置：首頁黃色「信任」區塊右側的說明文字。',
+    'settings.where.pillars': '顯示位置：首頁「三大行動方向」的三張彩色卡片。',
+    'settings.where.stats': '顯示位置：首頁的四張彩色數字卡。「觸及人次」由網站自動計算，不用手動填。',
+    'settings.where.social': '顯示位置：每一頁的頁尾；嘖嘖連結是「支持我們」按鈕要轉去的募資頁。',
+    'settings.where.basic': '這幾欄目前只在後台記錄，前台還沒有用到。',
+    'settings.reach.auto': '自動計算（每次有人打開首頁 +1）',
+    'settings.nothing': '沒有任何變更需要儲存',
+    'dash.todo.apps': '份加入申請等你審核',
+    'dash.todo.drafts': '篇部落格文章還是草稿',
+    'dash.todo.proj_en': '個專案缺少英文名稱或簡介',
+    'dash.todo.members': '位成員缺少英文名字或照片',
+    'dash.todo.coords': '個地圖地點沒有座標',
+    'dash.todo.none': '目前沒有需要處理的事情',
+    'dash.map.title': '我想改前台的…',
+    'dash.map.home': '首頁簡介、使命、三大方向、數字',
+    'dash.map.footer': '頁尾社群連結、嘖嘖募資連結、Logo',
+    'dash.map.focus': '年度主題頁',
+    'dash.map.projects': '專案頁的專案卡片',
+    'dash.map.blog': '部落格文章',
+    'dash.map.team': '團隊頁的成員',
+    'dash.map.cats': '專案分類、團隊部門',
+    'dash.map.map': '浪浪地圖上的收容所與地點',
+    'dash.map.later': '首頁大標題、跑馬燈、首頁專案卡片與「關於我們」頁目前寫在程式裡，下一階段會開放在後台修改。',
+    'nav.group.content': '網站內容',
+    'nav.group.map': '浪浪地圖',
+    'nav.group.people': '人員',
+    'nav.map.public': '查看地圖前台',
+    'err.load': '讀取失敗：',
+    'err.insert': '新增失敗：',
+    'err.update': '更新失敗：',
+    'err.delete': '刪除失敗：',
+    'err.save': '儲存失敗：',
+    'err.duplicate': '已經有相同的資料（例如網址代稱重複），請換一個。',
+    'err.permission': '沒有權限：你的帳號不是後台成員，或需要管理員權限。',
+    'err.required': '有必填欄位沒有填寫',
+    'err.column': '資料庫缺少欄位，請通知管理員執行最新的 SQL。',
+    'err.network': '連線失敗，請檢查網路後再試一次。',
+    'err.session': '登入已過期，請重新登入。',
+    'err.field.required': '這一欄必填',
+    'err.fix.fields': '請先完成標示紅色的欄位',
+    'err.pass.short': '密碼長度至少 10 個字元',
+    'err.pass.mismatch': '兩次密碼不一致，請重新輸入',
+    'confirm.discard.title': '要放棄未儲存的變更嗎？',
+    'confirm.discard.text': '你剛才輸入的內容還沒有儲存，關閉後就會消失。',
+    'confirm.discard.ok': '放棄變更',
+    'confirm.delete.ok': '確認刪除',
     'btn.logout': '登出',
     'btn.view_site': '前台',
     'btn.save': '儲存',
@@ -731,6 +945,55 @@ const I18N = {
     'nav.preview': 'View Site',
     'user.role.admin': 'Administrator',
     'user.role.member': 'Member',
+    'nav.group.overview': 'Overview',
+    'dash.todo.title': 'Needs attention',
+    'settings.where.hero': 'Shown on: the intro paragraph under the big homepage headline.',
+    'settings.where.mission': 'Shown on: the text beside the yellow "TRUST" block on the homepage.',
+    'settings.where.pillars': 'Shown on: the three colour cards under "Three Core Pillars" on the homepage.',
+    'settings.where.stats': 'Shown on: the four number cards on the homepage. "People reached" is counted automatically.',
+    'settings.where.social': 'Shown on: every page footer; the zeczec link is where "Support Us" redirects.',
+    'settings.where.basic': 'These are stored for reference only; the public site does not use them yet.',
+    'settings.reach.auto': 'Counted automatically (+1 every homepage visit)',
+    'settings.nothing': 'Nothing has changed',
+    'dash.todo.apps': 'join applications waiting for review',
+    'dash.todo.drafts': 'blog posts still in draft',
+    'dash.todo.proj_en': 'projects missing an English title or summary',
+    'dash.todo.members': 'members missing an English name or photo',
+    'dash.todo.coords': 'map locations without coordinates',
+    'dash.todo.none': 'Nothing needs your attention right now',
+    'dash.map.title': 'I want to change…',
+    'dash.map.home': 'Homepage intro, mission, pillars, numbers',
+    'dash.map.footer': 'Footer social links, zeczec link, logo',
+    'dash.map.focus': 'Annual focus page',
+    'dash.map.projects': 'Project cards on the Projects page',
+    'dash.map.blog': 'Blog posts',
+    'dash.map.team': 'Members on the Team page',
+    'dash.map.cats': 'Project categories, departments',
+    'dash.map.map': 'Shelters and places on the Stray Aid Map',
+    'dash.map.later': 'The homepage headline, marquee, homepage project cards and the About page are still hard-coded; the next phase makes them editable here.',
+    'nav.group.content': 'Website content',
+    'nav.group.map': 'Stray Aid Map',
+    'nav.group.people': 'People',
+    'nav.map.public': 'Open public map',
+    'err.load': 'Could not load: ',
+    'err.insert': 'Could not create: ',
+    'err.update': 'Could not update: ',
+    'err.delete': 'Could not delete: ',
+    'err.save': 'Could not save: ',
+    'err.duplicate': 'This already exists (for example the slug is taken). Try another.',
+    'err.permission': 'Permission denied: your account is not staff, or this needs an admin.',
+    'err.required': 'A required field is empty',
+    'err.column': 'The database is missing a column. Ask an admin to run the latest SQL.',
+    'err.network': 'Connection failed. Check your network and try again.',
+    'err.session': 'Your session expired. Please log in again.',
+    'err.field.required': 'This field is required',
+    'err.fix.fields': 'Please fill in the fields marked in red',
+    'err.pass.short': 'Password must be at least 10 characters',
+    'err.pass.mismatch': 'The two passwords do not match',
+    'confirm.discard.title': 'Discard unsaved changes?',
+    'confirm.discard.text': 'What you typed has not been saved and will be lost.',
+    'confirm.discard.ok': 'Discard',
+    'confirm.delete.ok': 'Delete',
     'btn.logout': 'Log out',
     'btn.view_site': 'View site',
     'btn.save': 'Save',
@@ -1171,11 +1434,11 @@ document.addEventListener('DOMContentLoaded', async () => {
           spErr.classList.remove('show');
           const np = document.getElementById('sp-new-pass').value;
           const cp = document.getElementById('sp-confirm-pass').value;
-          if (np.length < 8) {
-            spErr.textContent = '密碼長度至少 8 位字元'; spErr.classList.add('show'); return;
+          if (np.length < 10) {
+            spErr.textContent = t('err.pass.short'); spErr.classList.add('show'); return;
           }
           if (np !== cp) {
-            spErr.textContent = '兩次密碼不一致，請重新輸入'; spErr.classList.add('show'); return;
+            spErr.textContent = t('err.pass.mismatch'); spErr.classList.add('show'); return;
           }
           spBtn.disabled = true; spBtn.textContent = '設定中…';
           const { error } = await sb.auth.updateUser({ password: np });
@@ -1198,6 +1461,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* ── All other admin pages: require auth ── */
   if (!document.querySelector('.login-page')) {
+    renderSidebar();
+    initSlugFields();
     const user = await Auth.check();
     if (user) {
       await initSidebar();
