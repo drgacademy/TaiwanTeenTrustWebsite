@@ -209,7 +209,7 @@ img, svg { display: block; max-width: 100%; }
 .li { display: block; transform: translateY(115%); will-change: transform; }
 
 /* ═══════════════════════════════════════════════
-   HERO
+   HERO — copy on the left, polaroid collage on the right
 ═══════════════════════════════════════════════ */
 .hero {
   min-height: 100svh;
@@ -220,208 +220,237 @@ img, svg { display: block; max-width: 100%; }
 .hero::before {
   content: '';
   position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(0,0,0,.06) 1px, transparent 1px);
-  background-size: 36px 36px;
+  background-image: radial-gradient(circle, rgba(22,33,62,.10) 1.5px, transparent 1.5px);
+  background-size: 34px 34px;
   pointer-events: none;
 }
+.hero__blob { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; }
+.hero__blob--sun    { width: clamp(14rem, 30vw, 30rem); height: clamp(14rem, 30vw, 30rem); background: var(--sun); top: -8%; right: -6%; opacity: .55; }
+.hero__blob--cyan   { width: clamp(8rem, 16vw, 16rem); height: clamp(8rem, 16vw, 16rem); background: var(--ttt-cyan); bottom: 6%; left: -4%; opacity: .35; }
+.hero__blob--coral  { width: clamp(5rem, 9vw, 9rem); height: clamp(5rem, 9vw, 9rem); background: var(--coral); top: 18%; left: 44%; opacity: .25; }
 .hero__inner {
   max-width: 1600px; margin: 0 auto; width: 100%;
   padding-top: 8rem; padding-bottom: 6rem;
   position: relative; z-index: 1;
 }
-.hero__meta {
-  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-  font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-3); margin-bottom: 2.5rem;
-  opacity: 0;
+.hero__grid {
+  display: grid; grid-template-columns: 1.25fr .75fr;
+  gap: clamp(2rem, 4vw, 5rem); align-items: center;
 }
-.hero__meta-sep { width: 20px; height: 1px; background: var(--gray-2); }
+.hero__meta {
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+  margin-bottom: 2rem; opacity: 0;
+}
+.hero__chip {
+  font-family: var(--font-fun); font-size: .85rem;
+  padding: .35rem .9rem; border-radius: 999px;
+  border: 2px solid var(--ink); background: #fff;
+}
+.hero__chip:nth-child(2) { background: var(--cyan-tint); rotate: 2deg; }
+.hero__chip:nth-child(3) { background: var(--coral-tint); rotate: -2deg; }
 
 .hero__title {
-  font-size: clamp(4.5rem, 11.5vw, 16rem);
-  font-weight: 900; line-height: .95;
-  letter-spacing: -.035em;
-  margin-bottom: 4rem;
+  font-size: clamp(3.4rem, 8vw, 10.5rem);
+  font-weight: 800; line-height: 1.02;
+  letter-spacing: -.03em;
+  margin-bottom: 2.75rem;
 }
-body.lang-en .hero__title {
-  font-size: clamp(2rem, 5.5vw, 7.5rem);
-  line-height: 1.0;
-}
+body.lang-en .hero__title { font-size: clamp(2.4rem, 5.6vw, 7rem); line-height: 1.02; }
+.hero__title .lw { padding-bottom: .22em; margin-bottom: -.22em; }
 
-.hero__body {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 3rem; align-items: flex-end;
-}
+.hero__body { display: flex; flex-direction: column; gap: 2rem; align-items: flex-start; }
 .hero__desc {
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-  color: var(--text-2); line-height: 1.8; max-width: 44ch;
+  font-size: clamp(1.05rem, 1.45vw, 1.3rem); font-weight: 500;
+  color: var(--text-2); line-height: 1.8; max-width: 40ch;
   opacity: 0; transform: translateY(1.5rem);
 }
 .hero__ctas {
-  display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;
+  display: flex; gap: 1rem; flex-wrap: wrap;
   opacity: 0; transform: translateY(1.5rem);
 }
-.btn-fill {
-  padding: .88rem 2.25rem; border-radius: 5px;
-  font-size: .85rem; font-weight: 700; letter-spacing: .02em;
-  background: var(--black); color: white;
-  transition: all .25s; position: relative; overflow: hidden;
-}
-.btn-fill::before {
-  content: ''; position: absolute; inset: 0;
-  background: var(--rainbow); opacity: 0; transition: opacity .3s;
+.btn-fill, .btn-stroke {
+  padding: .95rem 2.2rem;
+  font-size: .95rem; font-weight: 800; letter-spacing: .02em;
+  display: inline-flex; align-items: center; gap: .5rem;
 }
 .btn-fill span { position: relative; z-index: 1; }
-.btn-fill:hover::before { opacity: 1; }
-.btn-fill:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
-.btn-stroke {
-  padding: .88rem 2.25rem; border-radius: 5px;
-  font-size: .85rem; font-weight: 700; letter-spacing: .02em;
-  border: 1.5px solid rgba(0,0,0,.18); color: var(--black);
-  transition: all .25s;
+
+/* Polaroid collage — photo slots, illustrated until real photos arrive */
+.hero__collage { position: relative; height: clamp(26rem, 42vw, 40rem); }
+.polaroid {
+  position: absolute; width: clamp(11rem, 17vw, 17rem);
+  background: #fff; padding: .7rem .7rem 0;
+  border: 2.5px solid var(--ink); border-radius: 10px;
+  box-shadow: 6px 6px 0 var(--ink);
 }
-.btn-stroke:hover { border-color: var(--black); transform: translateY(-2px); }
+.polaroid__img {
+  aspect-ratio: 1; border-radius: 4px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.polaroid__img img { width: 100%; height: 100%; object-fit: cover; }
+.polaroid__img svg { width: 46%; height: 46%; }
+.polaroid__img--coral  { background: radial-gradient(circle at 30% 25%, #FF8CB0, var(--coral)); }
+.polaroid__img--violet { background: radial-gradient(circle at 30% 25%, #A48CFF, var(--violet)); }
+.polaroid__img--cyan   { background: radial-gradient(circle at 30% 25%, #7FE3EA, var(--ttt-cyan)); }
+.polaroid figcaption {
+  font-family: var(--font-fun); font-size: clamp(.9rem, 1.2vw, 1.15rem);
+  text-align: center; padding: .7rem 0 .8rem; color: var(--ink);
+}
+.polaroid--1 { top: 2%;  left: 4%;  z-index: 3; --pop-from: -30deg; --pop-rest: -7deg; }
+.polaroid--2 { top: 20%; right: 0;  z-index: 2; --pop-from: 25deg;  --pop-rest: 6deg; --pop-delay: .12s; }
+.polaroid--3 { bottom: 0; left: 20%; z-index: 4; --pop-from: -20deg; --pop-rest: -2deg; --pop-delay: .24s; }
+.polaroid .tape {
+  position: absolute; top: -14px; left: 50%; translate: -50% 0; rotate: -4deg;
+  width: 70px; height: 24px; background: rgba(255,210,63,.85);
+  border: 1.5px solid rgba(22,33,62,.25);
+}
+.hero__collage .sticker { z-index: 6; }
+.hero__collage .sticker--a { top: -2%; right: 8%; --pop-from: 40deg; --pop-rest: 8deg; --pop-delay: .4s; }
+.hero__collage .sticker--b { bottom: 14%; right: -2%; --pop-from: -40deg; --pop-rest: -6deg; --pop-delay: .5s; }
+.hero__collage .sticker--c { top: 44%; left: -6%; --pop-from: 30deg; --pop-rest: -10deg; --pop-delay: .6s; }
+.hero__spark { position: absolute; z-index: 5; }
 
 .hero__scroll {
-  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
-  font-size: .65rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-3); opacity: 0;
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  font-family: var(--font-fun); font-size: .85rem; color: var(--text-3); opacity: 0;
 }
-.hero__scroll-line {
-  width: 1px; height: 44px;
-  background: linear-gradient(to bottom, rgba(0,0,0,.2), transparent);
-  animation: scroll-bob 2s ease-in-out infinite;
+.hero__scroll-dot {
+  width: 26px; height: 42px; border: 2.5px solid var(--ink); border-radius: 20px; position: relative;
 }
-@keyframes scroll-bob {
-  0%,100% { transform: scaleY(1) translateY(0); opacity: 1; }
-  50% { transform: scaleY(.6) translateY(4px); opacity: .4; }
+.hero__scroll-dot::after {
+  content: ''; position: absolute; left: 50%; top: 7px; translate: -50% 0;
+  width: 6px; height: 9px; border-radius: 6px; background: var(--coral);
+  animation: scroll-bob 1.6s var(--bounce) infinite;
 }
-@media (max-width: 640px) {
-  .hero__body { grid-template-columns: 1fr; gap: 1.5rem; }
-  .hero__ctas { justify-content: flex-start; }
+@keyframes scroll-bob { 0%,100% { transform: translateY(0); opacity: 1; } 60% { transform: translateY(12px); opacity: .3; } }
+
+@media (max-width: 960px) {
+  .hero__grid { grid-template-columns: 1fr; }
+  .hero__collage { height: 22rem; max-width: 30rem; width: 100%; margin: 0 auto; }
+  .polaroid { width: 10.5rem; }
+}
+@media (max-width: 520px) {
+  .hero__collage { height: 18rem; }
+  .polaroid { width: 8.6rem; padding: .5rem .5rem 0; }
+  .hero__collage .sticker--c { display: none; }
 }
 
 /* ═══════════════════════════════════════════════
-   MARQUEE BAND
+   MARQUEE — two tilted bands crossing each other
 ═══════════════════════════════════════════════ */
+.marquee-zone { position: relative; z-index: 3; padding: 2.5rem 0; overflow: hidden; }
 .marquee-band {
-  background: var(--black); overflow: hidden;
-  padding: 1rem 0; position: relative;
+  overflow: hidden; padding: 1rem 0; position: relative;
+  border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+  width: 110%; margin-left: -5%;
 }
-.marquee-band::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 3px; background: var(--rainbow);
-}
+.marquee-band--ink   { background: var(--ink);   rotate: -2.5deg; z-index: 2; }
+.marquee-band--coral { background: var(--sun); rotate: 2deg; margin-top: -.6rem; z-index: 1; }
 .marquee-track {
   display: inline-flex; white-space: nowrap;
-  animation: marquee 30s linear infinite;
+  animation: marquee 34s linear infinite;
 }
+.marquee-band--coral .marquee-track { animation-direction: reverse; animation-duration: 40s; }
 .marquee-item {
-  font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: rgba(255,255,255,.35); padding: 0 2rem;
-  display: flex; align-items: center; gap: 2rem;
+  font-family: var(--font-fun);
+  font-size: clamp(1.1rem, 2vw, 1.75rem);
+  color: #fff; padding: 0 1.4rem;
+  display: flex; align-items: center; gap: 1.4rem;
 }
-.marquee-dot {
-  width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0;
-  background: var(--rainbow); opacity: .7;
-}
+.marquee-band--coral .marquee-item { color: var(--ink); }
+.marquee-dot { color: var(--sun); font-size: .9em; }
+.marquee-band--coral .marquee-dot { color: var(--coral); }
 @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
 /* ═══════════════════════════════════════════════
-   STATS
+   STATS — colourful bubble cards
 ═══════════════════════════════════════════════ */
-.stats-section {
-  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
-  background: rgba(255,255,255,0.82); border-top: 1px solid var(--gray-2);
-  backdrop-filter: blur(0px);
-}
-.stats-inner { max-width: 1200px; margin: 0 auto; }
-.stats-eyebrow {
-  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-3); margin-bottom: 3.5rem;
-  display: flex; align-items: center; gap: .9rem;
-}
-.stats-eyebrow::before { content: ''; width: 28px; height: 2px; background: var(--rainbow); }
-.stats-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
-}
+.stats-section { padding: clamp(4rem, 8vw, 9rem) var(--gutter); background: transparent; }
+.stats-inner { max-width: 1250px; margin: 0 auto; }
+.stats-eyebrow { margin-bottom: 2.5rem; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(1rem, 2vw, 1.75rem); }
 .stat-item {
-  padding: 2.5rem 2rem;
-  border-right: 1px solid var(--gray-2);
+  padding: 2.2rem 1.8rem; border-radius: 30px;
+  border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
   opacity: 0; transform: translateY(2rem);
+  position: relative;
 }
-.stat-item:last-child { border-right: none; }
+.stat-item:nth-child(1) { background: var(--ttt-cyan); rotate: -2deg; }
+.stat-item:nth-child(2) { background: var(--sun);      rotate: 1.5deg; }
+.stat-item:nth-child(3) { background: var(--coral);    rotate: -1deg; }
+.stat-item:nth-child(4) { background: var(--violet);   rotate: 2deg; color: #fff; }
 .stat-num {
-  font-size: clamp(3.5rem, 6vw, 7rem); font-weight: 900;
-  letter-spacing: -.04em; line-height: 1; margin-bottom: .6rem;
-  display: flex; align-items: baseline; gap: .1em;
+  font-size: clamp(3rem, 5.2vw, 6rem); font-weight: 800; color: var(--ink);
+  letter-spacing: -.03em; line-height: 1; margin-bottom: .7rem;
+  display: flex; align-items: baseline; gap: .08em;
 }
-.stat-suf { font-size: .42em; font-weight: 800; }
-.stat-label { font-size: .8rem; color: var(--text-2); font-weight: 500; }
-.stat-item:nth-child(1) .stat-num { color: var(--r1); }
-.stat-item:nth-child(2) .stat-num { color: var(--r3); }
-.stat-item:nth-child(3) .stat-num { color: var(--r4); }
-.stat-item:nth-child(4) .stat-num { color: var(--r5); }
-@media (max-width: 768px) {
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .stat-item { border-right: none; border-bottom: 1px solid var(--gray-2); padding: 2rem 1rem; }
-  .stat-item:nth-child(odd) { border-right: 1px solid var(--gray-2); }
+.stat-item:nth-child(4) .stat-num { color: #fff; }
+.stat-suf { font-size: .5em; font-weight: 800; }
+.stat-label { font-size: .95rem; font-weight: 700; color: inherit; opacity: .85; }
+.stat-item::after {
+  content: ''; position: absolute; top: 14px; right: 16px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; border: 2.5px solid var(--ink);
 }
+@media (max-width: 860px) { .stats-grid { grid-template-columns: 1fr 1fr; } }
 
 /* ═══════════════════════════════════════════════
-   MISSION
+   MISSION — sunny yellow block
 ═══════════════════════════════════════════════ */
 .mission-section {
-  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
-  background: var(--gray); overflow: hidden;
+  padding: clamp(4rem, 8vw, 9rem) var(--gutter);
+  background: var(--sun); overflow: hidden; position: relative;
 }
 .mission-inner {
   max-width: 1300px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr 1fr;
   gap: clamp(3rem, 7vw, 9rem); align-items: center;
+  position: relative; z-index: 1;
 }
 .mission-word {
-  font-size: clamp(7rem, 19vw, 22rem);
-  font-weight: 900; letter-spacing: -.05em; line-height: .9;
-  background: var(--rainbow);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  font-size: clamp(6rem, 17vw, 20rem);
+  font-weight: 800; letter-spacing: -.04em; line-height: .95;
+  color: var(--ink);
+  text-shadow: .045em .045em 0 var(--coral);
   white-space: nowrap;
 }
-body:not(.lang-en) .mission-word {
-  font-size: clamp(6rem, 15vw, 16rem);
-}
+body:not(.lang-en) .mission-word { font-size: clamp(5.5rem, 14vw, 15rem); }
 .mission-sub {
-  font-size: clamp(1.2rem, 2vw, 2rem); font-weight: 800;
-  letter-spacing: -.02em; color: rgba(10,10,10,.18); margin-top: .5rem;
+  font-family: var(--font-fun);
+  font-size: clamp(1.3rem, 2.2vw, 2.2rem);
+  color: rgba(22,33,62,.45); margin-top: .8rem; rotate: -3deg; width: fit-content;
 }
-.mission-right {}
 .mission-title {
-  font-size: clamp(1.6rem, 2.8vw, 3.2rem); font-weight: 900;
-  letter-spacing: -.03em; line-height: 1.15; margin-bottom: 1.75rem;
+  font-size: clamp(1.8rem, 3.2vw, 3.6rem); font-weight: 800;
+  letter-spacing: -.02em; line-height: 1.15; margin-bottom: 1.75rem;
 }
 .mission-body {
-  font-size: clamp(.9rem, 1.2vw, 1.1rem); color: var(--text-2);
-  line-height: 1.85; margin-bottom: 2.5rem;
+  font-size: clamp(.95rem, 1.2vw, 1.12rem); font-weight: 500; color: var(--text-2);
+  line-height: 1.9; margin-bottom: 2.5rem;
   opacity: 0; transform: translateY(1.5rem);
 }
 .mission-cta {
-  display: inline-flex; align-items: center; gap: .75rem;
-  font-size: .88rem; font-weight: 700; color: var(--black);
+  display: inline-flex; align-items: center; gap: .85rem;
+  font-size: 1rem; font-weight: 800; color: var(--ink);
   opacity: 0; transform: translateY(1.5rem);
 }
 .mission-cta-arr {
-  width: 34px; height: 34px; border-radius: 50%;
-  border: 1.5px solid rgba(0,0,0,.2);
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--ink); color: #fff;
   display: flex; align-items: center; justify-content: center;
-  transition: all .25s; font-size: .9rem;
+  transition: transform .35s var(--bounce), background .2s; font-size: 1.1rem;
 }
-.mission-cta:hover .mission-cta-arr {
-  background: var(--black); color: white; border-color: var(--black);
-  transform: translateX(5px);
+.mission-cta:hover .mission-cta-arr { background: var(--coral); transform: translateX(8px) rotate(-12deg) scale(1.1); }
+.mission-section .sticker--m1 { top: 12%; right: 6%; --pop-from: 30deg; --pop-rest: 8deg; }
+.mission-section .shape--ring {
+  width: clamp(10rem, 18vw, 18rem); height: clamp(10rem, 18vw, 18rem);
+  border: 3px dashed rgba(22,33,62,.25); border-radius: 50%;
+  bottom: -5rem; left: -4rem;
 }
 @media (max-width: 860px) {
   .mission-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .mission-section .sticker--m1 { top: 4%; }
 }
 
 /* ═══════════════════════════════════════════════
@@ -431,50 +460,50 @@ body:not(.lang-en) .mission-word {
   display: flex; align-items: flex-end; justify-content: space-between;
   margin-bottom: clamp(2.5rem, 4vw, 4.5rem); gap: 2rem; flex-wrap: wrap;
 }
-.sec-tag {
-  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-3); margin-bottom: .7rem;
-  display: flex; align-items: center; gap: .7rem;
-}
-.sec-tag::before { content: ''; width: 22px; height: 2px; background: var(--rainbow); }
+.sec-tag { margin-bottom: 1.1rem; }
 .sec-title {
-  font-size: clamp(2rem, 4.5vw, 5.5rem); font-weight: 900;
-  letter-spacing: -.035em; line-height: 1;
+  font-size: clamp(2.2rem, 4.6vw, 5.4rem); font-weight: 800;
+  letter-spacing: -.03em; line-height: 1.05;
 }
 
 /* ═══════════════════════════════════════════════
-   PILLARS
+   PILLARS — three colour-coded cards
 ═══════════════════════════════════════════════ */
-.pillars-section {
-  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
-  background: white;
-}
+.pillars-section { padding: clamp(4rem, 8vw, 9rem) var(--gutter); background: var(--cream); }
 .pillars-inner { max-width: 1300px; margin: 0 auto; }
-.pillars-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 0; background: var(--gray-2);
-}
+.pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.25rem, 2vw, 2rem); }
 .pillar-card {
-  background: white; padding: 3rem 2.5rem;
-  display: flex; flex-direction: column;
-  transition: background .2s; cursor: default;
+  padding: 2.4rem 2.2rem 2.6rem; border-radius: 30px;
+  border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+  display: flex; flex-direction: column; position: relative; overflow: hidden;
   opacity: 0; transform: translateY(2.5rem);
 }
-.pillar-card:hover { background: #fafafa; }
+.pillar-card:nth-child(1) { background: var(--coral-tint); }
+.pillar-card:nth-child(2) { background: var(--violet-tint); }
+.pillar-card:nth-child(3) { background: var(--cyan-tint); }
+.pillar-card:hover { box-shadow: 10px 10px 0 var(--ink); }
+.pillar-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+.pillar-icon {
+  width: 68px; height: 68px; border-radius: 22px;
+  border: 2.5px solid var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .45s var(--bounce);
+}
+.pillar-icon svg { width: 36px; height: 36px; }
+.pillar-card:nth-child(1) .pillar-icon { background: var(--coral); rotate: -6deg; }
+.pillar-card:nth-child(2) .pillar-icon { background: var(--violet); rotate: 5deg; }
+.pillar-card:nth-child(3) .pillar-icon { background: var(--ttt-cyan); rotate: -4deg; }
+.pillar-card:hover .pillar-icon { transform: scale(1.15) rotate(12deg); }
 .pillar-num {
-  font-size: .72rem; font-weight: 700; letter-spacing: .12em;
-  color: var(--text-3); margin-bottom: 2rem;
+  font-family: var(--font-display); font-size: 3.2rem; font-weight: 800; line-height: 1;
+  color: transparent; -webkit-text-stroke: 2px var(--ink);
 }
-.pillar-bar {
-  width: 36px; height: 3px; border-radius: 1px; margin-bottom: 2rem;
-  transition: width .4s var(--ease);
-}
-.pillar-card:hover .pillar-bar { width: 72px; }
+.pillar-bar { display: none; }
 .pillar-title {
-  font-size: clamp(1.5rem, 2.5vw, 2.6rem); font-weight: 900;
-  letter-spacing: -.025em; line-height: 1.1; margin-bottom: 1.25rem; flex: 1;
+  font-size: clamp(1.6rem, 2.4vw, 2.5rem); font-weight: 800;
+  letter-spacing: -.02em; line-height: 1.1; margin-bottom: 1rem;
 }
-.pillar-desc { font-size: .875rem; color: var(--text-2); line-height: 1.8; }
+.pillar-desc { font-size: .95rem; font-weight: 500; color: var(--text-2); line-height: 1.8; }
 @media (max-width: 768px) { .pillars-grid { grid-template-columns: 1fr; } }
 @media (max-width: 1024px) and (min-width: 769px) {
   .pillars-grid { grid-template-columns: 1fr 1fr; }
@@ -482,107 +511,105 @@ body:not(.lang-en) .mission-word {
 }
 
 /* ═══════════════════════════════════════════════
-   PROJECTS
+   PROJECTS — dark "stage" with bright cards
 ═══════════════════════════════════════════════ */
-.projects-section {
-  padding: clamp(5rem, 9vw, 11rem) var(--gutter);
-  background: var(--gray);
-}
+.projects-section { padding: clamp(4rem, 8vw, 9rem) var(--gutter); background: var(--ink); color: #fff; }
 .projects-inner { max-width: 1300px; margin: 0 auto; }
-.projects-grid {
-  display: grid; grid-template-columns: repeat(12, 1fr);
-  gap: 0; background: var(--gray-2);
-}
+.projects-section .sec-title { color: #fff; }
+.projects-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(1.25rem, 2vw, 2rem); }
 .proj-card {
-  background: white; padding: 2.5rem;
+  background: #fff; color: var(--ink); padding: 2.4rem;
+  border-radius: 30px; border: 3px solid var(--ink);
   display: flex; flex-direction: column; gap: 1rem;
-  transition: background .2s; min-height: 280px;
+  min-height: 300px; position: relative;
   opacity: 0; transform: translateY(2rem);
 }
-.proj-card:hover { background: #fafafa; }
-.proj-card:nth-child(1) { grid-column: span 7; }
-.proj-card:nth-child(2) { grid-column: span 5; }
-.proj-card:nth-child(3) { grid-column: span 12; }
-.proj-top { display: flex; align-items: center; justify-content: space-between; }
+.projects-section .proj-card:nth-child(1) { grid-column: span 7; box-shadow: 9px 9px 0 var(--sun); }
+.projects-section .proj-card:nth-child(2) { grid-column: span 5; box-shadow: 9px 9px 0 var(--coral); }
+.projects-section .proj-card:hover { box-shadow: 13px 13px 0 var(--ttt-cyan); }
+.proj-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .proj-tag {
-  font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  padding: .22rem .65rem; border-radius: 3px;
+  font-family: var(--font-fun); font-size: .85rem;
+  padding: .3rem .85rem; border-radius: 999px; border: 2px solid var(--ink);
 }
-.proj-year { font-size: .72rem; color: var(--text-3); }
+.proj-year { font-size: .85rem; font-weight: 700; color: var(--text-3); }
 .proj-title {
-  font-size: clamp(1.2rem, 2vw, 2.1rem); font-weight: 900;
+  font-size: clamp(1.4rem, 2.2vw, 2.3rem); font-weight: 800;
   letter-spacing: -.02em; line-height: 1.15; flex: 1;
 }
-.proj-desc { font-size: .84rem; color: var(--text-2); line-height: 1.75; }
+.proj-desc { font-size: .95rem; font-weight: 500; color: var(--text-2); line-height: 1.8; }
 .proj-link {
-  font-size: .78rem; font-weight: 700; display: inline-flex; align-items: center; gap: .4rem;
-  color: var(--black); margin-top: auto; transition: gap .25s;
+  font-size: .95rem; font-weight: 800; display: inline-flex; align-items: center; gap: .4rem;
+  color: var(--ink); margin-top: auto; width: fit-content;
+  padding: .55rem 1.2rem; border-radius: 999px; background: var(--sun); border: 2px solid var(--ink);
+  transition: gap .3s var(--bounce), transform .3s var(--bounce);
 }
-.proj-link:hover { gap: .8rem; }
-.tag-animals  { background: rgba(0,201,93,.1);  color: #00a849; }
-.tag-advocacy { background: rgba(0,153,255,.1);  color: #0077cc; }
-.tag-research { background: rgba(124,58,255,.1); color: #6320cc; }
-.tag-education{ background: rgba(255,214,0,.18); color: #996600; }
-@media (max-width: 768px) {
+.proj-link:hover { gap: .9rem; transform: rotate(-2deg); }
+.proj-card .sticker { top: -16px; right: 26px; }
+.tag-animals  { background: var(--coral-tint); color: var(--ink); }
+.tag-advocacy { background: var(--violet-tint); color: var(--ink); }
+.tag-research { background: var(--cyan-tint); color: var(--ink); }
+.tag-education{ background: var(--sun-tint); color: var(--ink); }
+.projects-section .btn-stroke { box-shadow: 4px 4px 0 var(--sun); border-color: #fff; }
+@media (max-width: 860px) {
   .projects-grid { grid-template-columns: 1fr; }
-  .proj-card:nth-child(n) { grid-column: span 1; }
-}
-@media (max-width: 1024px) and (min-width: 769px) {
-  .projects-grid { grid-template-columns: 1fr 1fr; }
-  .proj-card:nth-child(n) { grid-column: span 1; }
+  .projects-section .proj-card:nth-child(n) { grid-column: span 1; }
 }
 
 /* ═══════════════════════════════════════════════
-   JOIN CTA
+   JOIN CTA — coral to violet burst
 ═══════════════════════════════════════════════ */
 .join-section {
-  padding: clamp(7rem, 13vw, 16rem) var(--gutter);
-  background: var(--black); position: relative; overflow: hidden;
-  text-align: center;
-}
-.join-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 4px; background: var(--rainbow);
+  padding: clamp(6rem, 12vw, 14rem) var(--gutter);
+  background: linear-gradient(160deg, var(--coral) 0%, #C25CD6 55%, var(--violet) 100%);
+  position: relative; overflow: hidden; text-align: center;
 }
 .join-bg-word {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  font-size: clamp(8rem, 22vw, 28rem); font-weight: 900;
-  color: rgba(255,255,255,.03); white-space: nowrap; pointer-events: none;
-  user-select: none; letter-spacing: -.05em;
+  font-family: var(--font-display);
+  font-size: clamp(8rem, 24vw, 30rem); font-weight: 800;
+  color: transparent; -webkit-text-stroke: 3px rgba(255,255,255,.18);
+  white-space: nowrap; pointer-events: none; user-select: none; letter-spacing: -.04em;
 }
-.join-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+.join-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 2; }
 .join-eyebrow {
-  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: rgba(255,255,255,.28); margin-bottom: 2rem;
+  display: inline-block; font-family: var(--font-fun); font-size: 1rem;
+  color: var(--ink); background: #fff; padding: .45rem 1.1rem; border-radius: 999px;
+  border: 2.5px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+  margin-bottom: 2rem; rotate: -2deg;
   opacity: 0; transform: translateY(1.5rem);
 }
 .join-title {
-  font-size: clamp(2.8rem, 7vw, 9rem); font-weight: 900;
-  letter-spacing: -.04em; line-height: .95; margin-bottom: 2.5rem; color: white;
+  font-size: clamp(2.8rem, 7vw, 8.5rem); font-weight: 800;
+  letter-spacing: -.03em; line-height: 1.02; margin-bottom: 2.25rem; color: #fff;
 }
+.join-title .lw { padding-bottom: .2em; margin-bottom: -.2em; }
 .join-title .rainbow-text {
-  background: var(--rainbow);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  background: none; -webkit-text-fill-color: var(--sun); color: var(--sun);
+  text-shadow: none;
 }
 .join-desc {
-  font-size: clamp(.9rem, 1.3vw, 1.15rem); color: rgba(255,255,255,.4);
+  font-size: clamp(1rem, 1.35vw, 1.2rem); font-weight: 500; color: rgba(255,255,255,.92);
   line-height: 1.85; max-width: 46ch; margin: 0 auto 3rem;
   opacity: 0; transform: translateY(1.5rem);
 }
 .join-ctas { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; opacity: 0; transform: translateY(1.5rem); }
-.join-btn-r {
-  padding: 1rem 2.5rem; border-radius: 5px;
-  background: var(--rainbow); background-size: 200% 100%; background-position: 0 0;
-  color: white; font-size: .9rem; font-weight: 700; letter-spacing: .02em;
-  transition: background-position .5s, transform .2s;
+.join-section .join-btn-r {
+  padding: 1.05rem 2.6rem; background: var(--sun); color: var(--ink);
+  font-size: 1rem; font-weight: 800; letter-spacing: .02em;
 }
-.join-btn-r:hover { background-position: 100% 0; transform: translateY(-2px); }
+.join-section .join-btn-r:hover { background: #fff; }
 .join-btn-o {
-  padding: 1rem 2.5rem; border-radius: 5px;
-  border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.65);
-  font-size: .9rem; font-weight: 700; letter-spacing: .02em; transition: all .2s;
+  padding: 1.05rem 2.6rem; border-radius: 999px;
+  border: 2.5px solid #fff; color: #fff;
+  font-size: 1rem; font-weight: 800; letter-spacing: .02em;
+  transition: transform .3s var(--bounce), background .2s, color .2s;
 }
-.join-btn-o:hover { border-color: white; color: white; transform: translateY(-2px); }
+.join-btn-o:hover { background: #fff; color: var(--ink); transform: translateY(-3px) rotate(1.5deg); }
+.join-section .sticker--j1 { top: 14%; left: 8%; --pop-from: -30deg; --pop-rest: -9deg; }
+.join-section .sticker--j2 { bottom: 16%; right: 8%; --pop-from: 30deg; --pop-rest: 7deg; --pop-delay: .15s; }
+.join-section .join-spark { position: absolute; z-index: 1; }
+@media (max-width: 640px) { .join-section .sticker { display: none; } }
 
 /* ═══════════════════════════════════════════════
    FOOTER
@@ -638,6 +665,7 @@ body:not(.lang-en) .mission-word {
 body:not(.lang-en) .lang-en { display: none; }
 body.lang-en .lang-zh { display: none; }
   </style>
+  <link rel="stylesheet" href="css/vibrant.css?v=1" />
 </head>
 <body>
 
@@ -710,85 +738,120 @@ body.lang-en .lang-zh { display: none; }
 
 <!-- ════ HERO ════ -->
 <section class="hero">
+  <div class="hero__blob hero__blob--sun float" data-speed="0.12" aria-hidden="true"></div>
+  <div class="hero__blob hero__blob--cyan float" style="--float-delay:-2s" data-speed="-0.08" aria-hidden="true"></div>
+  <div class="hero__blob hero__blob--coral float" style="--float-delay:-3.5s" data-speed="0.2" aria-hidden="true"></div>
+
   <div class="hero__inner">
-    <div class="hero__meta" id="hero-meta">
-      <span class="lang-zh">Taiwan Teen Trust</span>
-      <span class="lang-en">Taiwan Teen Trust</span>
-      <span class="hero__meta-sep"></span>
-      <span class="lang-zh">台灣・2020</span>
-      <span class="lang-en">Taiwan・2020</span>
-      <span class="hero__meta-sep"></span>
-      <span class="lang-zh">青年社會創新</span>
-      <span class="lang-en">Youth Social Innovation</span>
-    </div>
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <div class="hero__meta" id="hero-meta">
+          <span class="hero__chip">Taiwan Teen Trust</span>
+          <span class="hero__chip"><span class="lang-zh">台灣・Since 2020</span><span class="lang-en">Taiwan・Since 2020</span></span>
+          <span class="hero__chip"><span class="lang-zh">100% 青少年主導</span><span class="lang-en">100% Teen-led</span></span>
+        </div>
 
-    <h1 class="hero__title" id="hero-title">
-      <span class="lw">
-        <span class="li">
-          <span class="lang-zh">改變台灣，</span>
-          <span class="lang-en">Changing Taiwan,</span>
-        </span>
-      </span>
-      <span class="lw">
-        <span class="li">
-          <span class="lang-zh">從<span class="rainbow-text">青年</span>開始。</span>
-          <span class="lang-en">Starting with <span class="rainbow-text">Youth.</span></span>
-        </span>
-      </span>
-    </h1>
+        <h1 class="hero__title" id="hero-title">
+          <span class="lw">
+            <span class="li">
+              <span class="lang-zh">改變台灣，</span>
+              <span class="lang-en">Changing Taiwan,</span>
+            </span>
+          </span>
+          <span class="lw">
+            <span class="li">
+              <span class="lang-zh">從<span class="scribble"><span class="rainbow-text">青年</span><svg class="scribble__line" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 12 C40 4, 80 18, 120 9 S180 6, 196 12"/></svg></span>開始。</span>
+              <span class="lang-en">Starting with <span class="scribble"><span class="rainbow-text">Youth.</span><svg class="scribble__line" viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 12 C40 4, 80 18, 120 9 S180 6, 196 12"/></svg></span></span>
+            </span>
+          </span>
+        </h1>
 
-    <div class="hero__body">
-      <p class="hero__desc" id="hero-desc">
-        <span class="lang-zh" data-site-key="hero_desc" data-site-lang="zh">Taiwan Teen Trust 是台灣第一個由青少年完全主導的社會創新組織。我們相信，改變不需要等到長大。</span>
-        <span class="lang-en" data-site-key="hero_desc" data-site-lang="en">Taiwan Teen Trust is Taiwan's first social innovation organization entirely led by teenagers. We believe change doesn't have to wait until you grow up.</span>
-      </p>
-      <div class="hero__ctas" id="hero-ctas">
-        <a href="join.html" class="btn-fill">
-          <span><span class="lang-zh">加入我們</span><span class="lang-en">Join Us</span></span>
-        </a>
-        <a href="about.html" class="btn-stroke">
-          <span class="lang-zh">了解更多 →</span>
-          <span class="lang-en">Learn More →</span>
-        </a>
+        <div class="hero__body">
+          <p class="hero__desc" id="hero-desc">
+            <span class="lang-zh" data-site-key="hero_desc" data-site-lang="zh">Taiwan Teen Trust 是台灣第一個由青少年完全主導的社會創新組織。我們相信，改變不需要等到長大。</span>
+            <span class="lang-en" data-site-key="hero_desc" data-site-lang="en">Taiwan Teen Trust is Taiwan's first social innovation organization entirely led by teenagers. We believe change doesn't have to wait until you grow up.</span>
+          </p>
+          <div class="hero__ctas" id="hero-ctas">
+            <a href="join.html" class="btn-fill">
+              <span><span class="lang-zh">加入我們 ✦</span><span class="lang-en">Join Us ✦</span></span>
+            </a>
+            <a href="about.html" class="btn-stroke">
+              <span class="lang-zh">了解更多 →</span>
+              <span class="lang-en">Learn More →</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo collage. To add real photos later, replace the <svg> inside each
+           .polaroid__img with: <img src="assets/photos/your-photo.jpg" alt="描述"> -->
+      <div class="hero__collage" aria-hidden="true">
+        <figure class="polaroid polaroid--1" data-pop-hero>
+          <span class="tape"></span>
+          <div class="polaroid__img polaroid__img--coral">
+            <svg viewBox="0 0 64 64" fill="#fff"><ellipse cx="32" cy="43" rx="13" ry="11"/><circle cx="15" cy="28" r="6.5"/><circle cx="25" cy="16" r="6.5"/><circle cx="39" cy="16" r="6.5"/><circle cx="49" cy="28" r="6.5"/></svg>
+          </div>
+          <figcaption><span class="lang-zh">#浪浪救援</span><span class="lang-en">#StrayRescue</span></figcaption>
+        </figure>
+        <figure class="polaroid polaroid--2" data-pop-hero>
+          <span class="tape"></span>
+          <div class="polaroid__img polaroid__img--violet">
+            <svg viewBox="0 0 64 64" fill="#fff"><path d="M8 25h9l22-12v38L17 39H8z"/><path d="M17 39l5 14h7l-4-13z"/><path d="M46 22c5 3 5 17 0 20" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/><path d="M52 16c9 6 9 26 0 32" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/></svg>
+          </div>
+          <figcaption><span class="lang-zh">#青年發聲</span><span class="lang-en">#YouthVoice</span></figcaption>
+        </figure>
+        <figure class="polaroid polaroid--3" data-pop-hero>
+          <span class="tape"></span>
+          <div class="polaroid__img polaroid__img--cyan">
+            <svg viewBox="0 0 64 64" fill="#fff"><path d="M54 8C24 8 10 24 12 52c28 2 44-14 42-44z"/><path d="M12 52L38 26" fill="none" stroke="#16213E" stroke-width="4" stroke-linecap="round"/></svg>
+          </div>
+          <figcaption><span class="lang-zh">#守護島嶼</span><span class="lang-en">#ProtectTaiwan</span></figcaption>
+        </figure>
+        <span class="sticker sticker--a" data-pop-hero><span class="lang-zh">我們在現場！</span><span class="lang-en">We show up!</span></span>
+        <span class="sticker sticker--coral sticker--b" data-pop-hero><span class="lang-zh">不等長大 ✦</span><span class="lang-en">No waiting ✦</span></span>
+        <span class="sticker sticker--violet sticker--round sticker--c" data-pop-hero><span class="lang-zh">一起<br>來！</span><span class="lang-en">Join<br>us!</span></span>
+        <svg class="hero__spark float spin-slow" style="top:58%;right:30%;width:42px" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0 C22 14 26 18 40 20 C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z" fill="#FFD23F" stroke="#16213E" stroke-width="2"/></svg>
+        <svg class="hero__spark float" style="top:4%;left:-4%;width:30px;--float-delay:-1.5s" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0 C22 14 26 18 40 20 C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z" fill="#2ECAD4" stroke="#16213E" stroke-width="2"/></svg>
       </div>
     </div>
   </div>
 
   <div class="hero__scroll" id="hero-scroll">
-    <div class="hero__scroll-line"></div>
-    <span class="lang-zh">滑動</span>
+    <div class="hero__scroll-dot"></div>
+    <span class="lang-zh">往下滑</span>
     <span class="lang-en">Scroll</span>
   </div>
 </section>
 
 <!-- ════ MARQUEE ════ -->
-<div class="marquee-band" aria-hidden="true">
-  <div class="marquee-track" id="mq">
-    <span class="marquee-item lang-zh">台灣青年社會創新<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">動物友善倡議<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">環境永續行動<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">流浪動物救援<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">青年賦權教育<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">政策研究倡議<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Youth Social Innovation<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Animal Welfare<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Environmental Action<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Stray Animal Rescue<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Youth Empowerment<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Policy Research<span class="marquee-dot"></span></span>
-    <!-- duplicate for seamless -->
-    <span class="marquee-item lang-zh">台灣青年社會創新<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">動物友善倡議<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">環境永續行動<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">流浪動物救援<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">青年賦權教育<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-zh">政策研究倡議<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Youth Social Innovation<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Animal Welfare<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Environmental Action<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Stray Animal Rescue<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Youth Empowerment<span class="marquee-dot"></span></span>
-    <span class="marquee-item lang-en">Policy Research<span class="marquee-dot"></span></span>
+<div class="marquee-zone" aria-hidden="true">
+  <div class="marquee-band marquee-band--ink">
+    <div class="marquee-track" id="mq">
+      <span class="marquee-item lang-zh">#青年社會創新<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-zh">#流浪動物救援<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-zh">#環境永續行動<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-zh">#青年賦權<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-zh">#政策倡議<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-zh">#一起來<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-en">#YouthInnovation<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-en">#StrayRescue<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-en">#ClimateAction<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-en">#YouthEmpowerment<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-en">#PolicyAdvocacy<span class="marquee-dot">✦</span></span>
+      <span class="marquee-item lang-en">#JoinUs<span class="marquee-dot">✦</span></span>
+    </div>
+  </div>
+  <div class="marquee-band marquee-band--coral">
+    <div class="marquee-track">
+      <span class="marquee-item lang-zh">改變不用等長大<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-zh">高中生也能做大事<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-zh">為浪浪發聲<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-zh">從校園走進社會<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-en">Change can't wait<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-en">Teens doing big things<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-en">A voice for strays<span class="marquee-dot">●</span></span>
+      <span class="marquee-item lang-en">From campus to community<span class="marquee-dot">●</span></span>
+    </div>
   </div>
 </div>
 
@@ -832,14 +895,18 @@ body.lang-en .lang-zh { display: none; }
   </div>
 </section>
 
+<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" style="--wave-fill:#FFD23F" aria-hidden="true"><path d="M0,50 C180,95 360,10 600,40 C840,70 1080,95 1260,45 C1350,20 1400,25 1440,35 L1440,90 L0,90 Z"/></svg>
+
 <!-- ════ MISSION ════ -->
 <section class="mission-section">
+  <span class="shape shape--ring spin-slow" aria-hidden="true"></span>
+  <span class="sticker sticker--coral sticker--m1" data-pop aria-hidden="true"><span class="lang-zh">Since 2020 ✦</span><span class="lang-en">Since 2020 ✦</span></span>
   <div class="mission-inner">
     <div class="mission-left">
       <div class="lw"><div class="li mission-word lang-zh">信任</div></div>
       <div class="lw"><div class="li mission-word lang-en">TRUST</div></div>
-      <div class="mission-sub lang-zh">TRUST</div>
-      <div class="mission-sub lang-en">信任</div>
+      <div class="mission-sub lang-zh">TRUST ✦</div>
+      <div class="mission-sub lang-en">信任 ✦</div>
     </div>
     <div class="mission-right">
       <h2 class="mission-title">
@@ -863,6 +930,8 @@ body.lang-en .lang-zh { display: none; }
   </div>
 </section>
 
+<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" style="--wave-fill:#FFF8EE;background:#FFD23F" aria-hidden="true"><path d="M0,40 C240,90 480,0 720,40 C960,80 1200,10 1440,50 L1440,90 L0,90 Z"/></svg>
+
 <!-- ════ PILLARS ════ -->
 <section class="pillars-section">
   <div class="pillars-inner">
@@ -883,24 +952,30 @@ body.lang-en .lang-zh { display: none; }
 
     <div class="pillars-grid">
       <div class="pillar-card">
-        <div class="pillar-num">01</div>
-        <div class="pillar-bar" style="background:var(--r1)"></div>
+        <div class="pillar-top">
+          <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="#fff"><ellipse cx="32" cy="43" rx="13" ry="11"/><circle cx="15" cy="28" r="6.5"/><circle cx="25" cy="16" r="6.5"/><circle cx="39" cy="16" r="6.5"/><circle cx="49" cy="28" r="6.5"/></svg></div>
+          <div class="pillar-num">01</div>
+        </div>
         <div class="pillar-title lang-zh" data-site-key="pillar_1_title" data-site-lang="zh">動物福利</div>
         <div class="pillar-title lang-en" data-site-key="pillar_1_title" data-site-lang="en">Animal Welfare</div>
         <p class="pillar-desc lang-zh" data-site-key="pillar_1_desc" data-site-lang="zh">從流浪動物救援到 TNR 政策倡議，推動台灣社會對動物生命的尊重與保護。</p>
         <p class="pillar-desc lang-en" data-site-key="pillar_1_desc" data-site-lang="en">From stray animal rescue to TNR policy advocacy, promoting respect and protection for animal lives across Taiwan.</p>
       </div>
       <div class="pillar-card">
-        <div class="pillar-num">02</div>
-        <div class="pillar-bar" style="background:var(--r4)"></div>
+        <div class="pillar-top">
+          <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="#fff"><path d="M8 25h9l22-12v38L17 39H8z"/><path d="M17 39l5 14h7l-4-13z"/><path d="M46 22c5 3 5 17 0 20" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/><path d="M52 16c9 6 9 26 0 32" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/></svg></div>
+          <div class="pillar-num">02</div>
+        </div>
         <div class="pillar-title lang-zh" data-site-key="pillar_2_title" data-site-lang="zh">青年倡議</div>
         <div class="pillar-title lang-en" data-site-key="pillar_2_title" data-site-lang="en">Youth Advocacy</div>
         <p class="pillar-desc lang-zh" data-site-key="pillar_2_desc" data-site-lang="zh">讓青少年的聲音進入政策討論，培養下一代公民參與社會議題的能力與勇氣。</p>
         <p class="pillar-desc lang-en" data-site-key="pillar_2_desc" data-site-lang="en">Bringing youth voices into policy discussions and developing the next generation's capacity to engage with social issues.</p>
       </div>
       <div class="pillar-card">
-        <div class="pillar-num">03</div>
-        <div class="pillar-bar" style="background:var(--r5)"></div>
+        <div class="pillar-top">
+          <div class="pillar-icon" aria-hidden="true"><svg viewBox="0 0 64 64" fill="#fff"><path d="M54 8C24 8 10 24 12 52c28 2 44-14 42-44z"/><path d="M12 52L38 26" fill="none" stroke="#16213E" stroke-width="4" stroke-linecap="round"/></svg></div>
+          <div class="pillar-num">03</div>
+        </div>
         <div class="pillar-title lang-zh" data-site-key="pillar_3_title" data-site-lang="zh">環境永續</div>
         <div class="pillar-title lang-en" data-site-key="pillar_3_title" data-site-lang="en">Environmental Sustainability</div>
         <p class="pillar-desc lang-zh" data-site-key="pillar_3_desc" data-site-lang="zh">透過研究、教育與實際行動，守護台灣的自然環境，為下一代留下更美好的島嶼。</p>
@@ -909,6 +984,8 @@ body.lang-en .lang-zh { display: none; }
     </div>
   </div>
 </section>
+
+<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" style="--wave-fill:#16213E;background:#FFF8EE" aria-hidden="true"><path d="M0,60 C200,10 420,90 720,50 C1020,10 1240,80 1440,30 L1440,90 L0,90 Z"/></svg>
 
 <!-- ════ PROJECTS ════ -->
 <section class="projects-section">
@@ -930,6 +1007,7 @@ body.lang-en .lang-zh { display: none; }
 
     <div class="projects-grid">
       <div class="proj-card">
+        <span class="sticker sticker--coral" data-pop style="--pop-rest:6deg" aria-hidden="true"><span class="lang-zh">上線中！</span><span class="lang-en">Live!</span></span>
         <div class="proj-top">
           <span class="proj-tag tag-animals lang-zh">動物</span>
           <span class="proj-tag tag-animals lang-en">Animals</span>
@@ -943,9 +1021,10 @@ body.lang-en .lang-zh { display: none; }
         <a href="projects/stray-aid-map.html" class="proj-link lang-en">Open Map →</a>
       </div>
       <div class="proj-card">
+        <span class="sticker sticker--violet" data-pop style="--pop-rest:-5deg;--pop-delay:.1s" aria-hidden="true"><span class="lang-zh">全新！</span><span class="lang-en">New!</span></span>
         <div class="proj-top">
-          <span class="proj-tag tag-animals lang-zh">動物 & 物流</span>
-          <span class="proj-tag tag-animals lang-en">Animals & Logistics</span>
+          <span class="proj-tag tag-advocacy lang-zh">動物 & 物流</span>
+          <span class="proj-tag tag-advocacy lang-en">Animals & Logistics</span>
           <span class="proj-year">2026</span>
         </div>
         <div class="proj-title lang-zh">Stray Aid Delivery<br>浪浪物資外送與追蹤平台</div>
@@ -959,9 +1038,15 @@ body.lang-en .lang-zh { display: none; }
   </div>
 </section>
 
+<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" style="--wave-fill:#FF5D8F;background:#16213E" aria-hidden="true"><path d="M0,45 C240,95 480,0 720,40 C960,80 1200,10 1440,50 L1440,90 L0,90 Z"/></svg>
+
 <!-- ════ JOIN CTA ════ -->
 <section class="join-section" id="join">
   <div class="join-bg-word" aria-hidden="true">TTT</div>
+  <span class="sticker sticker--j1" data-pop aria-hidden="true"><span class="lang-zh">歡迎加入 ✦</span><span class="lang-en">Come say hi ✦</span></span>
+  <span class="sticker sticker--cyan sticker--round sticker--j2" data-pop aria-hidden="true"><span class="lang-zh">就是<br>你！</span><span class="lang-en">Yes,<br>you!</span></span>
+  <svg class="join-spark float spin-slow" style="top:22%;right:18%;width:48px" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0 C22 14 26 18 40 20 C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z" fill="#FFD23F" stroke="#16213E" stroke-width="2"/></svg>
+  <svg class="join-spark float" style="bottom:20%;left:16%;width:34px;--float-delay:-2s" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0 C22 14 26 18 40 20 C26 22 22 26 20 40 C18 26 14 22 0 20 C14 18 18 14 20 0Z" fill="#fff" stroke="#16213E" stroke-width="2"/></svg>
   <div class="join-inner">
     <div class="join-eyebrow" id="join-ey">
       <span class="lang-zh">加入我們的行列</span>
@@ -991,6 +1076,8 @@ body.lang-en .lang-zh { display: none; }
     </div>
   </div>
 </section>
+
+<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" style="--wave-fill:#16213E;background:#7B5CFF" aria-hidden="true"><path d="M0,55 C240,10 520,90 760,45 C1000,0 1240,80 1440,40 L1440,90 L0,90 Z"/></svg>
 
 <!-- ════ FOOTER ════ -->
 <footer class="footer">
@@ -1066,20 +1153,19 @@ gsap.registerPlugin(ScrollTrigger);
 function playHeroEntrance() {
   const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
-  // Meta line fades in
   tl.to('#hero-meta', { opacity: 1, duration: .7 }, 0)
+    .to('#hero-title .li', { y: '0%', duration: 1.2, stagger: .14 }, .15)
+    .to('#hero-desc', { opacity: 1, y: 0, duration: .9, ease: 'back.out(1.8)' }, .75)
+    .to('#hero-ctas', { opacity: 1, y: 0, duration: .9, ease: 'back.out(2.2)' }, .9)
+    .to('#hero-scroll', { opacity: 1, duration: .8 }, 1.3);
 
-  // Title lines slide up — core cargokite animation
-    .to('#hero-title .li', {
-      y: '0%',
-      duration: 1.35,
-      stagger: .14
-    }, .2)
+  // Hand-drawn underline under 「青年」 draws itself once the title lands
+  setTimeout(() => document.querySelector('.hero')?.classList.add('is-drawn'), 700);
 
-  // Subtitle + CTA fade up
-    .to('#hero-desc', { opacity: 1, y: 0, duration: .9 }, .8)
-    .to('#hero-ctas', { opacity: 1, y: 0, duration: .9 }, .95)
-    .to('#hero-scroll', { opacity: 1, duration: .8 }, 1.2);
+  // Polaroids and stickers pop in one after another
+  document.querySelectorAll('[data-pop-hero]').forEach((el, i) => {
+    setTimeout(() => el.classList.add('is-in'), 450 + i * 130);
+  });
 }
 
 /* ═══════════════════════════════════════════════
@@ -1107,7 +1193,7 @@ document.addEventListener('click', e => {
 gsap.utils.toArray('.stat-item').forEach((el, i) => {
   ScrollTrigger.create({
     trigger: el, start: 'top 88%', once: true,
-    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', delay: i * .1 })
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .9, ease: 'back.out(2)', delay: i * .1 })
   });
 });
 
@@ -1117,7 +1203,7 @@ gsap.utils.toArray('.stat-item').forEach((el, i) => {
   if (!el) return;
   ScrollTrigger.create({
     trigger: el, start: 'top 88%', once: true,
-    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'power3.out', delay: i * .15 })
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .85, ease: 'back.out(1.8)', delay: i * .15 })
   });
 });
 
@@ -1125,7 +1211,7 @@ gsap.utils.toArray('.stat-item').forEach((el, i) => {
 gsap.utils.toArray('.pillar-card').forEach((el, i) => {
   ScrollTrigger.create({
     trigger: el, start: 'top 88%', once: true,
-    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .75, ease: 'power3.out', delay: i * .1 })
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .95, ease: 'back.out(1.8)', delay: i * .12 })
   });
 });
 
@@ -1133,7 +1219,7 @@ gsap.utils.toArray('.pillar-card').forEach((el, i) => {
 gsap.utils.toArray('.proj-card').forEach((el, i) => {
   ScrollTrigger.create({
     trigger: el, start: 'top 88%', once: true,
-    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', delay: i * .08 })
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .9, ease: 'back.out(1.8)', delay: i * .12 })
   });
 });
 
@@ -1143,7 +1229,7 @@ gsap.utils.toArray('.proj-card').forEach((el, i) => {
   if (!el) return;
   ScrollTrigger.create({
     trigger: el, start: 'top 88%', once: true,
-    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .7, ease: 'power3.out' })
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'back.out(2.2)' })
   });
 });
 
@@ -1153,7 +1239,7 @@ gsap.utils.toArray('.proj-card').forEach((el, i) => {
   if (!el) return;
   ScrollTrigger.create({
     trigger: el, start: 'top 88%', once: true,
-    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .8, ease: 'power3.out', delay: i * .15 })
+    onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: .85, ease: 'back.out(1.8)', delay: i * .15 })
   });
 });
 
@@ -1205,7 +1291,8 @@ async function fetchReach() {
 })();
 </script>
 <script src="js/app.js?v=2"></script>
-<script src="js/aurora.js"></script>
+<script src="js/aurora.js?v=2"></script>
+<script src="js/vibrant.js?v=1"></script>
 <script src="js/site-content.js?v=1"></script>
 
 </body>

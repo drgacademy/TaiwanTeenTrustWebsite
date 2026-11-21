@@ -7,7 +7,7 @@
   var css = document.createElement('style');
   css.textContent = [
     /* Make body transparent so aurora (fixed, z-index:0) bleeds through */
-    'html{background:#fff}',
+    'html{background:#FFF8EE}',
     'body{background:transparent!important}',
 
     /* Aurora container */
@@ -15,12 +15,12 @@
 
     /* Colour orbs — radial-gradient blobs that drift slowly */
     '.ao{position:absolute;border-radius:50%;animation:ao-float linear infinite alternate}',
-    '.ao1{width:75vw;height:75vw;background:radial-gradient(circle at 40% 40%,#0D2B52 0%,transparent 68%);opacity:.13;top:-25%;left:-18%;animation-duration:24s}',
-    '.ao2{width:62vw;height:62vw;background:radial-gradient(circle at 55% 45%,#2ECAD4 0%,transparent 68%);opacity:.12;top:20%;right:-18%;animation-duration:30s;animation-delay:-11s}',
-    '.ao3{width:58vw;height:58vw;background:radial-gradient(circle at 45% 50%,#1A467D 0%,transparent 68%);opacity:.11;bottom:0%;left:8%;animation-duration:21s;animation-delay:-17s}',
-    '.ao4{width:48vw;height:48vw;background:radial-gradient(circle at 50% 50%,#1D7B93 0%,transparent 68%);opacity:.10;top:52%;right:22%;animation-duration:26s;animation-delay:-8s}',
-    '.ao5{width:68vw;height:68vw;background:radial-gradient(circle at 50% 60%,#0D2B52 0%,transparent 68%);opacity:.11;bottom:-28%;right:-14%;animation-duration:35s;animation-delay:-23s}',
-    '.ao6{width:50vw;height:50vw;background:radial-gradient(circle at 50% 40%,#2ECAD4 0%,transparent 68%);opacity:.09;top:40%;left:30%;animation-duration:28s;animation-delay:-5s}',
+    '.ao1{width:75vw;height:75vw;background:radial-gradient(circle at 40% 40%,#2ECAD4 0%,transparent 66%);opacity:.20;top:-25%;left:-18%;animation-duration:24s}',
+    '.ao2{width:62vw;height:62vw;background:radial-gradient(circle at 55% 45%,#FFD23F 0%,transparent 66%);opacity:.30;top:20%;right:-18%;animation-duration:30s;animation-delay:-11s}',
+    '.ao3{width:58vw;height:58vw;background:radial-gradient(circle at 45% 50%,#FF5D8F 0%,transparent 66%);opacity:.16;bottom:0%;left:8%;animation-duration:21s;animation-delay:-17s}',
+    '.ao4{width:48vw;height:48vw;background:radial-gradient(circle at 50% 50%,#7B5CFF 0%,transparent 66%);opacity:.13;top:52%;right:22%;animation-duration:26s;animation-delay:-8s}',
+    '.ao5{width:68vw;height:68vw;background:radial-gradient(circle at 50% 60%,#FFD23F 0%,transparent 66%);opacity:.22;bottom:-28%;right:-14%;animation-duration:35s;animation-delay:-23s}',
+    '.ao6{width:50vw;height:50vw;background:radial-gradient(circle at 50% 40%,#2ECAD4 0%,transparent 66%);opacity:.14;top:40%;left:30%;animation-duration:28s;animation-delay:-5s}',
 
     /* Orb keyframe — gentle multi-direction drift */
     '@keyframes ao-float{',
@@ -46,9 +46,9 @@
     /* Footer neon rainbow top bar */
     'footer{position:relative}',
     'footer::before{content:\'\';position:absolute;top:0;left:0;right:0;height:3px;',
-    'background:linear-gradient(90deg,#0D2B52,#1A467D,#2ECAD4,#0D2B52);',
+    'background:linear-gradient(90deg,#2ECAD4,#7B5CFF,#FF5D8F,#FFD23F,#2ECAD4);',
     'background-size:200% 100%;animation:ttt-rainbow-shift 5s linear infinite;',
-    'box-shadow:0 0 8px rgba(46,202,212,.55),0 0 16px rgba(26,70,125,.4),0 0 24px rgba(13,43,82,.3)}',
+    'box-shadow:0 0 10px rgba(255,93,143,.45),0 0 18px rgba(123,92,255,.35)}',
     '@keyframes ttt-rainbow-shift{0%{background-position:0% 0%}100%{background-position:200% 0%}}',
     '.footer-rainbow{display:none}',
   ].join('');
@@ -72,12 +72,13 @@
   var cv = document.getElementById('ao-canvas');
   var cx = cv.getContext('2d');
   var frame = 0;
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Three waves at different Y positions, different rainbow color pairs */
   var WAVES = [
-    { amp: 115, freq: 0.00195, spd: 0.0045, yPct: 0.20, hue1: '#0D2B52', hue2: '#1A467D' },
-    { amp: 95,  freq: 0.00270, spd: 0.0060, yPct: 0.52, hue1: '#1A467D', hue2: '#2ECAD4' },
-    { amp: 135, freq: 0.00160, spd: 0.0075, yPct: 0.82, hue1: '#2ECAD4', hue2: '#0D2B52' },
+    { amp: 115, freq: 0.00195, spd: 0.0045, yPct: 0.20, hue1: '#2ECAD4', hue2: '#7B5CFF' },
+    { amp: 95,  freq: 0.00270, spd: 0.0060, yPct: 0.52, hue1: '#FF5D8F', hue2: '#FFD23F' },
+    { amp: 135, freq: 0.00160, spd: 0.0075, yPct: 0.82, hue1: '#7B5CFF', hue2: '#2ECAD4' },
   ];
 
   function resize() {
@@ -108,8 +109,9 @@
 
       cx.beginPath();
       cx.strokeStyle = g;
-      cx.lineWidth   = 1.5;
-      cx.globalAlpha = 0.38;
+      cx.lineWidth   = 3;
+      cx.lineCap     = 'round';
+      cx.globalAlpha = 0.45;
 
       for (var x = 0; x <= W; x += 3) {
         var y = H * w.yPct
@@ -124,7 +126,8 @@
     });
 
     frame++;
-    requestAnimationFrame(tick);
+    /* Draw a single still frame for visitors who prefer reduced motion */
+    if (!REDUCED) requestAnimationFrame(tick);
   }
 
   window.addEventListener('resize', resize);
