@@ -347,3 +347,13 @@ a.btn {
 }
 a.btn:hover { transform: translate(-3px, -3px) rotate(-2deg); box-shadow: var(--pop-shadow-lg); opacity: 1 !important; }
 .focus-section-label { color: var(--ink) !important; }
+
+/* ─── Footer: discreet link to the back office ─── */
+.footer-admin { max-width: 1400px; margin: 1.25rem auto 0; text-align: right; }
+.footer-admin a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .78rem; font-weight: 600; color: rgba(255, 255, 255, .55) !important;
+  padding: .4rem .9rem; border: 1.5px solid rgba(255, 255, 255, .2); border-radius: 999px;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.footer-admin a:hover { color: var(--ink) !important; background: var(--sun); border-color: var(--sun); }

@@ -12,73 +12,7 @@
 <div class="admin-layout">
 
   <!-- Sidebar -->
-  <aside class="admin-sidebar" id="admin-sidebar">
-    <div class="sidebar-brand">
-      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
-      <div>
-        <div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div>
-        <div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
-      <a href="dashboard.html" class="sidebar-link active">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        <span data-i18n="nav.dashboard">儀表板</span>
-      </a>
-      <a href="members.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span data-i18n="nav.members">團隊成員</span>
-      </a>
-      <a href="projects.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span data-i18n="nav.projects">專案管理</span>
-      </a>
-      <a href="categories.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span>
-      </a>
-      <a href="focus.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span>
-      </a>
-      <a href="blog.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <span data-i18n="nav.blog">部落格文章</span>
-      </a>
-      <a href="map-locations.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <span data-i18n="nav.map">地圖資料點</span>
-      </a>
-      <a href="applications.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="nav.applications">加入申請</span></a>
-      <a href="users.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg>
-        <span data-i18n="nav.users">管理員帳號</span>
-      </a>
-      <a href="settings.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span data-i18n="nav.settings">網站設定</span>
-      </a>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
-      <a href="../index.html" target="_blank" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        <span data-i18n="nav.preview">前台預覽</span>
-      </a>
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-avatar">A</div>
-        <div>
-          <div class="sidebar-user-name">admin@taiwanteentrust.org</div>
-          <div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div>
-        </div>
-      </div>
-      <button class="btn-logout" data-i18n="btn.logout">登出</button>
-    </div>
-  </aside>
+  <aside class="admin-sidebar" id="admin-sidebar" aria-label="管理選單"></aside>
 
   <!-- Main -->
   <div class="admin-main">
@@ -103,26 +37,26 @@
 
       <!-- Stats -->
       <div class="stats-grid" id="stats-grid">
-        <div class="stat-card">
+        <a class="stat-card" href="members.html">
           <div class="stat-card__icon">👥</div>
           <div class="stat-card__value" id="stat-members">—</div>
           <div class="stat-card__label" data-i18n="dash.stat.members">團隊成員</div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a class="stat-card" href="projects.html">
           <div class="stat-card__icon">📁</div>
           <div class="stat-card__value" id="stat-projects">—</div>
           <div class="stat-card__label" data-i18n="dash.stat.projects">進行中專案</div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a class="stat-card" href="blog.html">
           <div class="stat-card__icon">📝</div>
           <div class="stat-card__value" id="stat-posts">—</div>
           <div class="stat-card__label" data-i18n="dash.stat.posts">已發布文章</div>
-        </div>
-        <div class="stat-card">
+        </a>
+        <a class="stat-card" href="map-locations.html">
           <div class="stat-card__icon">📍</div>
           <div class="stat-card__value" id="stat-locations">—</div>
           <div class="stat-card__label" data-i18n="dash.stat.locations">地圖資料點</div>
-        </div>
+        </a>
       </div>
 
       <!-- Two-column panels -->
@@ -168,28 +102,28 @@
 
       </div>
 
-      <!-- Module shortcut cards -->
-      <div class="dash-grid--3 dash-grid" style="margin-top:1rem">
-        <a href="members.html" class="panel" style="padding:1.25rem;text-decoration:none;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(46,202,212,.3)'" onmouseleave="this.style.borderColor=''">
-          <div style="font-size:1.5rem;margin-bottom:.75rem">👥</div>
-          <div data-i18n="nav.members" style="font-weight:700;margin-bottom:.3rem">團隊成員</div>
-          <div data-i18n="dash.card.members.desc" style="font-size:.78rem;color:var(--text-2)">新增、編輯、停用成員帳號與個人資料。</div>
-        </a>
-        <a href="projects.html" class="panel" style="padding:1.25rem;text-decoration:none;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(46,202,212,.3)'" onmouseleave="this.style.borderColor=''">
-          <div style="font-size:1.5rem;margin-bottom:.75rem">📁</div>
-          <div data-i18n="nav.projects" style="font-weight:700;margin-bottom:.3rem">專案管理</div>
-          <div data-i18n="dash.card.projects.desc" style="font-size:.78rem;color:var(--text-2)">管理專案狀態、分類與展示資訊。</div>
-        </a>
-        <a href="blog.html" class="panel" style="padding:1.25rem;text-decoration:none;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(46,202,212,.3)'" onmouseleave="this.style.borderColor=''">
-          <div style="font-size:1.5rem;margin-bottom:.75rem">📝</div>
-          <div data-i18n="dash.card.blog" style="font-weight:700;margin-bottom:.3rem">部落格</div>
-          <div data-i18n="dash.card.blog.desc" style="font-size:.78rem;color:var(--text-2)">發布、編輯與管理所有文章。</div>
-        </a>
-        <a href="map-locations.html" class="panel" style="padding:1.25rem;text-decoration:none;transition:border-color .2s" onmouseenter="this.style.borderColor='rgba(46,202,212,.3)'" onmouseleave="this.style.borderColor=''">
-          <div style="font-size:1.5rem;margin-bottom:.75rem">📍</div>
-          <div data-i18n="nav.map" style="font-weight:700;margin-bottom:.3rem">地圖資料點</div>
-          <div data-i18n="dash.card.map.desc" style="font-size:.78rem;color:var(--text-2)">管理流浪動物地圖上的收容所、醫院等資料。</div>
-        </a>
+      <div class="dash-grid" style="margin-top:1rem">
+        <!-- To-do -->
+        <div class="panel">
+          <div class="panel__header"><div class="panel__title" data-i18n="dash.todo.title">待處理事項</div></div>
+          <div id="todo-list" class="todo-list"></div>
+        </div>
+
+        <!-- Where do I edit…? -->
+        <div class="panel">
+          <div class="panel__header"><div class="panel__title" data-i18n="dash.map.title">我想改前台的…</div></div>
+          <div class="edit-map">
+            <a href="settings.html"><span data-i18n="dash.map.home">首頁簡介、使命、三大方向、數字</span><b data-i18n="nav.settings">網站設定</b></a>
+            <a href="settings.html#social"><span data-i18n="dash.map.footer">頁尾社群連結、嘖嘖募資連結、Logo</span><b data-i18n="nav.settings">網站設定</b></a>
+            <a href="focus.html"><span data-i18n="dash.map.focus">年度主題頁</span><b data-i18n="nav.focus">年度主題</b></a>
+            <a href="projects.html"><span data-i18n="dash.map.projects">專案頁的專案卡片</span><b data-i18n="nav.projects">專案管理</b></a>
+            <a href="blog.html"><span data-i18n="dash.map.blog">部落格文章</span><b data-i18n="nav.blog">部落格文章</b></a>
+            <a href="members.html"><span data-i18n="dash.map.team">團隊頁的成員</span><b data-i18n="nav.members">團隊成員</b></a>
+            <a href="categories.html"><span data-i18n="dash.map.cats">專案分類、團隊部門</span><b data-i18n="nav.categories">分類管理</b></a>
+            <a href="map-locations.html"><span data-i18n="dash.map.map">浪浪地圖上的收容所與地點</span><b data-i18n="nav.map">地圖資料點</b></a>
+            <div class="edit-map__note" data-i18n="dash.map.later">首頁大標題、跑馬燈、首頁專案卡片與「關於我們」頁目前寫在程式裡，下一階段會開放在後台修改。</div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -203,24 +137,40 @@ async function renderDashboard() {
   const user = await Auth.get();
   if (!user) return;
 
-  const [members, projects, posts, locations] = await Promise.all([
+  const [members, projects, posts, locations, pending] = await Promise.all([
     DB.getAll('members'),
     DB.getAll('projects'),
     DB.getAll('posts'),
     DB.getAll('map_locations'),
+    sb.from('join_applications').select('id', { count: 'exact', head: true }).eq('status', 'pending')
+      .then(r => r.count || 0, () => 0),
   ]);
 
-  document.getElementById('stat-members').textContent   = members.length;
+  document.getElementById('stat-members').textContent   = members.filter(m => m.status !== 'alumni').length;
   document.getElementById('stat-projects').textContent  = projects.filter(p => p.status === 'active').length;
   document.getElementById('stat-posts').textContent     = posts.filter(p => p.status === 'published').length;
   document.getElementById('stat-locations').textContent = locations.length;
 
+  /* ── To-do list: things that need a person ── */
+  const todos = [
+    { n: pending, key: 'dash.todo.apps', href: 'applications.html', tone: 'coral' },
+    { n: posts.filter(p => p.status !== 'published').length, key: 'dash.todo.drafts', href: 'blog.html', tone: 'sun' },
+    { n: projects.filter(p => !p.title_en || !p.summary_en).length, key: 'dash.todo.proj_en', href: 'projects.html', tone: 'violet' },
+    { n: members.filter(m => m.status !== 'alumni' && (!m.name_en || !m.photo)).length, key: 'dash.todo.members', href: 'members.html', tone: 'cyan' },
+    { n: locations.filter(l => l.lat == null || l.lng == null || l.lat === '' || l.lng === '').length, key: 'dash.todo.coords', href: 'map-locations.html', tone: 'coral' },
+  ].filter(x => x.n > 0);
+  const todoEl = document.getElementById('todo-list');
+  todoEl.innerHTML = todos.length
+    ? todos.map(x => `<a class="todo todo--${x.tone}" href="${x.href}"><span class="todo__n">${esc(x.n)}</span><span>${esc(t(x.key))}</span><span class="todo__go">→</span></a>`).join('')
+    : `<div class="todo-empty">🎉 ${esc(t('dash.todo.none'))}</div>`;
+
+  /* ── Recent activity ── */
   const all = [
-    ...members.map(r => ({ type: 'member', name: r.name, time: r.updated_at, color: 'var(--accent)' })),
-    ...projects.map(r => ({ type: 'project', name: r.title, time: r.updated_at, color: '#7fb285' })),
-    ...posts.map(r => ({ type: 'post', name: r.title, time: r.updated_at, color: '#c9a96e' })),
-    ...locations.map(r => ({ type: 'location', name: r.name, time: r.updated_at, color: '#e07070' })),
-  ].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 8);
+    ...members.map(r => ({ type: 'member', name: r.name, time: r.updated_at || r.created_at, color: 'var(--accent-2)', href: 'members.html' })),
+    ...projects.map(r => ({ type: 'project', name: r.title, time: r.updated_at || r.created_at, color: 'var(--violet)', href: 'projects.html' })),
+    ...posts.map(r => ({ type: 'post', name: r.title, time: r.updated_at || r.created_at, color: 'var(--sun)', href: 'blog.html' })),
+    ...locations.map(r => ({ type: 'location', name: r.name, time: r.updated_at || r.created_at, color: 'var(--coral)', href: 'map-locations.html' })),
+  ].filter(a => a.time).sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 8);
 
   const typeLabel = {
     member: t('dash.type.member'),
@@ -230,16 +180,16 @@ async function renderDashboard() {
   };
   const actList = document.getElementById('activity-list');
   if (all.length === 0) {
-    actList.innerHTML = `<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:.8rem">${t('dash.activity.empty')}</div>`;
+    actList.innerHTML = `<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:.85rem">${esc(t('dash.activity.empty'))}</div>`;
   } else {
     actList.innerHTML = all.map(a => `
-      <div class="activity-item">
+      <a class="activity-item" href="${a.href}">
         <div class="activity-dot" style="background:${a.color}"></div>
         <div>
-          <div class="activity-text"><strong>${a.name}</strong> —— ${typeLabel[a.type]}${t('dash.activity.updated')}</div>
-          <div class="activity-time">${fmtDate(a.time)}</div>
+          <div class="activity-text"><strong>${esc(a.name || '—')}</strong> —— ${esc(typeLabel[a.type])}${esc(t('dash.activity.updated'))}</div>
+          <div class="activity-time">${esc(fmtDate(a.time))}</div>
         </div>
-      </div>`).join('');
+      </a>`).join('');
   }
 }
 document.addEventListener('DOMContentLoaded', renderDashboard);

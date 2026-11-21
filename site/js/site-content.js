@@ -40,7 +40,10 @@ window.escBio = function(str) {
       const attr = el.dataset.siteAttr;  // if set, patch this attribute
       const row = contentMap[key];
       if (!row) return;
-      const val = (lang === 'en' ? row.value_en : row.value_zh);
+      // Elements tagged data-site-lang="zh|en" always show that language
+      // (the page shows/hides them); untagged ones follow the current language.
+      const elLang = el.dataset.siteLang || lang;
+      const val = (elLang === 'en' ? row.value_en : row.value_zh);
       if (val == null || val === '') return;
       if (attr) el.setAttribute(attr, val);
       else      el.textContent = val;

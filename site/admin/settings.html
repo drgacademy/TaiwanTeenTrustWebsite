@@ -10,33 +10,7 @@
 <body>
 
 <div class="admin-layout">
-  <aside class="admin-sidebar" id="admin-sidebar">
-    <div class="sidebar-brand">
-      <img id="sidebar-logo" src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0" />
-      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
-      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
-      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
-      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
-      <a href="categories.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span></a>
-      <a href="focus.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
-      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
-      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
-      <a href="applications.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="nav.applications">加入申請</span></a>
-      <a href="users.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span></a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
-      <a href="settings.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
-      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
-    </div>
-    <div class="sidebar-footer">
-      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
-      <button class="btn-logout" data-i18n="btn.logout">登出</button>
-    </div>
-  </aside>
+  <aside class="admin-sidebar" id="admin-sidebar" aria-label="管理選單"></aside>
 
   <div class="admin-main">
     <div class="admin-topbar">
@@ -51,6 +25,7 @@
       <!-- ── 基本資訊 ── -->
       <div class="panel" style="margin-bottom:1.5rem">
         <div class="panel__header"><div class="panel__title" data-i18n="settings.section.basic">基本資訊</div></div>
+        <p class="where-hint" style="margin:1rem 2rem 0" data-i18n="settings.where.basic">這幾欄目前只在後台記錄，前台還沒有用到。</p>
         <div class="panel__body" style="padding:1.5rem 2rem">
           <div class="field-row">
             <div class="field">
@@ -107,7 +82,8 @@
       <div class="panel" style="margin-bottom:1.5rem">
         <div class="panel__header"><div class="panel__title" data-i18n="settings.section.hero">首頁 Hero 區塊</div></div>
         <div class="panel__body" style="padding:1.5rem 2rem">
-          <div class="field-row">
+          <p class="where-hint" data-i18n="settings.where.hero">顯示位置：首頁最上方大標題下面的那段介紹文字。</p>
+          <div class="field-row" hidden>
             <div class="field">
               <label class="field-label" data-i18n="settings.f.hero_tagline_zh">主標語（中文）</label>
               <input class="field-input" data-key="hero_tagline" data-lang="zh" />
@@ -132,7 +108,8 @@
       <div class="panel" style="margin-bottom:1.5rem">
         <div class="panel__header"><div class="panel__title" data-i18n="settings.section.mission">使命宣言</div></div>
         <div class="panel__body" style="padding:1.5rem 2rem">
-          <div class="field-row">
+          <p class="where-hint" data-i18n="settings.where.mission">顯示位置：首頁黃色「信任」區塊右側的說明文字。</p>
+          <div class="field-row" hidden>
             <div class="field">
               <label class="field-label" data-i18n="settings.f.mission_quote_zh">金句（中文）</label>
               <input class="field-input" data-key="mission_quote" data-lang="zh" />
@@ -157,6 +134,7 @@
       <div class="panel" style="margin-bottom:1.5rem">
         <div class="panel__header"><div class="panel__title" data-i18n="settings.section.pillars">三大支柱</div></div>
         <div class="panel__body" style="padding:1.5rem 2rem">
+          <p class="where-hint" data-i18n="settings.where.pillars">顯示位置：首頁「三大行動方向」的三張彩色卡片。</p>
           <div id="pillar-editors"></div>
         </div>
       </div>
@@ -165,6 +143,7 @@
       <div class="panel" style="margin-bottom:1.5rem">
         <div class="panel__header"><div class="panel__title" data-i18n="settings.section.stats">統計數字</div></div>
         <div class="panel__body" style="padding:1.5rem 2rem">
+          <p class="where-hint" data-i18n="settings.where.stats">顯示位置：首頁的四張彩色數字卡。「觸及人次」由網站自動計算，不用手動填。</p>
           <div class="field-row">
             <div class="field">
               <label class="field-label" data-i18n="settings.f.stat_members">現役成員</label>
@@ -182,16 +161,17 @@
             </div>
             <div class="field">
               <label class="field-label" data-i18n="settings.f.stat_reached">觸及人次</label>
-              <input class="field-input" type="number" data-key="stat_reached" data-lang="zh" />
+              <div class="field-static" data-i18n="settings.reach.auto">自動計算（每次有人打開首頁 +1）</div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- ── Social ── -->
-      <div class="panel" style="margin-bottom:1.5rem">
+      <div class="panel" style="margin-bottom:1.5rem" id="social">
         <div class="panel__header"><div class="panel__title" data-i18n="settings.section.social">社群連結</div></div>
         <div class="panel__body" style="padding:1.5rem 2rem">
+          <p class="where-hint" data-i18n="settings.where.social">顯示位置：每一頁的頁尾；嘖嘖連結是「支持我們」按鈕要轉去的募資頁。</p>
           <div class="field">
             <label class="field-label" data-i18n="settings.f.instagram">Instagram 連結</label>
             <input class="field-input" type="url" data-key="social_instagram" data-lang="zh" placeholder="https://instagram.com/..." />
@@ -273,14 +253,19 @@ function renderPillarEditors() {
   wireDirtyTracking(c);
 }
 
-function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function wireDirtyTracking(root = document) {
   root.querySelectorAll('[data-key]').forEach(el => {
     if (el.dataset.wired) return;
     el.dataset.wired = '1';
-    el.addEventListener('input', () => dirtyKeys.add(el.dataset.key));
+    el.addEventListener('input', () => { dirtyKeys.add(el.dataset.key); markDirty(true); });
   });
+}
+
+function markDirty(on) {
+  document.body.dataset.dirty = on ? '1' : '';
+  const btn = document.getElementById('btn-save-all');
+  btn.classList.toggle('btn--pulse', !!on);
 }
 
 /* ── Logo upload ── */
@@ -306,6 +291,7 @@ async function handleLogoFile(file) {
   if (!url) return;
   pendingLogoUrl = url;
   logoCleared = false;
+  markDirty(true);
   document.getElementById('logo-preview-img').src = url;
   showToast(t('msg.logo_uploaded'), 'success');
 }
@@ -313,6 +299,7 @@ async function handleLogoFile(file) {
 document.getElementById('btn-reset-logo').addEventListener('click', () => {
   pendingLogoUrl = null;
   logoCleared = true;
+  markDirty(true);
   document.getElementById('logo-preview-img').src = '../assets/logo-real.png';
   showToast(t('msg.logo_will_clear'), 'info');
 });
@@ -326,6 +313,7 @@ document.getElementById('btn-save-all').addEventListener('click', async () => {
   const byKey = {};
   document.querySelectorAll('[data-key]').forEach(el => {
     const key = el.dataset.key;
+    if (!dirtyKeys.has(key)) return;   // only send what changed
     const lang = el.dataset.lang;
     byKey[key] = byKey[key] || { key, value_zh: null, value_en: null };
     if (lang === 'en') byKey[key].value_en = el.value;
@@ -339,13 +327,26 @@ document.getElementById('btn-save-all').addEventListener('click', async () => {
   }
 
   const rows = Object.values(byKey);
+  if (!rows.length) {
+    btn.disabled = false; btn.textContent = t('settings.save_all');
+    showToast(t('settings.nothing'), 'info');
+    return;
+  }
+  // keep the other language's value when only one side of a key was edited
+  rows.forEach(r => {
+    const prev = siteMap[r.key] || {};
+    const zhEl = document.querySelector(`[data-key="${r.key}"][data-lang="zh"]`);
+    const enEl = document.querySelector(`[data-key="${r.key}"][data-lang="en"]`);
+    if (r.value_zh === null) r.value_zh = zhEl ? zhEl.value : (prev.value_zh ?? null);
+    if (r.value_en === null) r.value_en = enEl ? enEl.value : (prev.value_en ?? null);
+  });
   const results = await Promise.all(rows.map(r => DB.upsert('site_content', r, 'key')));
   const failed = results.filter(r => !r).length;
 
   btn.disabled = false;
   btn.textContent = t('settings.save_all');
   if (failed) showToast(`${t('msg.save_partial_fail')}（${failed}）`, 'error');
-  else        showToast(t('msg.settings_saved'), 'success');
+  else        { showToast(t('msg.settings_saved'), 'success'); markDirty(false); }
 
   pendingLogoUrl = null;
   logoCleared = false;
@@ -354,6 +355,11 @@ document.getElementById('btn-save-all').addEventListener('click', async () => {
 
 /* ── Re-render pillars + save button when language changes ── */
 document.addEventListener('admin-lang-changed', () => {
+  // copy what's typed into the cache first so re-rendering doesn't wipe edits
+  document.querySelectorAll('#pillar-editors [data-key]').forEach(el => {
+    const row = siteMap[el.dataset.key] = siteMap[el.dataset.key] || {};
+    row[el.dataset.lang === 'en' ? 'value_en' : 'value_zh'] = el.value;
+  });
   renderPillarEditors();
   // restore values (renderPillarEditors uses siteMap which is cached, good)
 });
