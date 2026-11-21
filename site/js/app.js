@@ -167,8 +167,10 @@ function initAnimations() {
     );
   });
 
-  // Counter animation
-  document.querySelectorAll('.counter').forEach(el => {
+  // Counter animation. The reach counter is animated in index.html once the
+  // real value arrives from Supabase; animating it here (target still 0 at
+  // load) would overwrite it back to 0.
+  document.querySelectorAll('.counter:not([data-reach-counter])').forEach(el => {
     const target = parseInt(el.dataset.target, 10);
     const suffix = el.dataset.suffix || '';
     ScrollTrigger.create({
