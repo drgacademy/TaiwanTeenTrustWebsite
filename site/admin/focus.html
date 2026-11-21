@@ -6,36 +6,21 @@
   <title data-i18n-title-key="nav.focus">TTT Admin — 年度主題</title>
   <link rel="icon" href="../assets/favicon.png" type="image/png" />
   <link rel="stylesheet" href="css/admin.css?v=5" />
+  <style>
+    .color-swatch { width:24px;height:24px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--border-2);cursor:pointer;padding:0;transition:transform .15s,box-shadow .15s }
+    .color-swatch:hover { transform:scale(1.1) }
+    .color-swatch.selected { box-shadow:0 0 0 2px var(--ink) }
+    .color-swatch:focus-visible { outline:2px solid var(--accent);outline-offset:2px }
+    #f-color-picker { width:48px;height:42px;border:1px solid var(--border-2);border-radius:8px;cursor:pointer;padding:2px;background:var(--surface) }
+    .focus-upload { border:2px dashed var(--border-2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2);background:var(--surface-2) }
+    .focus-upload:hover, .focus-upload.drag-over, .focus-upload.dragover { border-color:var(--accent);background:var(--accent-dim) }
+    .focus-dot { display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.45rem;vertical-align:middle;border:1px solid var(--border-2) }
+  </style>
 </head>
 <body>
 
 <div class="admin-layout">
-  <aside class="admin-sidebar" id="admin-sidebar">
-    <div class="sidebar-brand">
-      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
-      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
-      <a href="dashboard.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span></a>
-      <a href="members.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span data-i18n="nav.members">團隊成員</span></a>
-      <a href="projects.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span></a>
-      <a href="categories.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span data-i18n="nav.categories">分類管理</span></a>
-      <a href="focus.html" class="sidebar-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="nav.focus">年度主題</span></a>
-      <a href="blog.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span></a>
-      <a href="map-locations.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span></a>
-      <a href="users.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">後台使用者</span></a>
-      <a href="settings.html" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span></a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
-      <a href="../index.html" target="_blank" class="sidebar-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span></a>
-    </div>
-    <div class="sidebar-footer">
-      <div class="sidebar-user"><div class="sidebar-avatar">A</div><div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div></div>
-      <button class="btn-logout" data-i18n="btn.logout">登出</button>
-    </div>
-  </aside>
+  <aside class="admin-sidebar" id="admin-sidebar" aria-label="管理選單"></aside>
 
   <div class="admin-main">
     <div class="admin-topbar">
@@ -52,6 +37,12 @@
       <div class="panel">
         <div class="panel__header">
           <div class="panel__title" data-i18n="focus.title">所有年度主題</div>
+          <div class="panel__toolbar">
+            <div class="search-input">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="search-focus" placeholder="搜尋年份、主題…" aria-label="搜尋年度主題" />
+            </div>
+          </div>
         </div>
         <div class="table-wrap">
           <table>
@@ -114,18 +105,18 @@
         <div class="field">
           <label class="field-label" data-i18n="focus.f.color">主色</label>
           <div style="display:flex;gap:.5rem;align-items:center">
-            <input type="color" id="f-color-picker" value="#00c95d" style="width:48px;height:42px;border:1px solid rgba(0,0,0,.1);border-radius:6px;cursor:pointer;padding:2px;background:transparent" />
+            <input type="color" id="f-color-picker" value="#00c95d" aria-label="選擇主色" />
             <input class="field-input" id="f-color" placeholder="#00c95d" style="flex:1" />
           </div>
           <div class="field-hint" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem">
-            <button type="button" class="color-swatch" data-color="#00c95d" style="width:22px;height:22px;border-radius:50%;background:#00c95d;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="動物綠"></button>
-            <button type="button" class="color-swatch" data-color="#008800" style="width:22px;height:22px;border-radius:50%;background:#008800;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="環境綠"></button>
-            <button type="button" class="color-swatch" data-color="#0099ff" style="width:22px;height:22px;border-radius:50%;background:#0099ff;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="天空藍"></button>
-            <button type="button" class="color-swatch" data-color="#7c3aff" style="width:22px;height:22px;border-radius:50%;background:#7c3aff;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="紫"></button>
-            <button type="button" class="color-swatch" data-color="#ff2dca" style="width:22px;height:22px;border-radius:50%;background:#ff2dca;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="桃紅"></button>
-            <button type="button" class="color-swatch" data-color="#ff3b3b" style="width:22px;height:22px;border-radius:50%;background:#ff3b3b;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="紅"></button>
-            <button type="button" class="color-swatch" data-color="#ff8c00" style="width:22px;height:22px;border-radius:50%;background:#ff8c00;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="橘"></button>
-            <button type="button" class="color-swatch" data-color="#ffd600" style="width:22px;height:22px;border-radius:50%;background:#ffd600;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);cursor:pointer" title="黃"></button>
+            <button type="button" class="color-swatch" data-color="#00c95d" style="background:#00c95d" title="動物綠"></button>
+            <button type="button" class="color-swatch" data-color="#008800" style="background:#008800" title="環境綠"></button>
+            <button type="button" class="color-swatch" data-color="#0099ff" style="background:#0099ff" title="天空藍"></button>
+            <button type="button" class="color-swatch" data-color="#7c3aff" style="background:#7c3aff" title="紫"></button>
+            <button type="button" class="color-swatch" data-color="#ff2dca" style="background:#ff2dca" title="桃紅"></button>
+            <button type="button" class="color-swatch" data-color="#ff3b3b" style="background:#ff3b3b" title="紅"></button>
+            <button type="button" class="color-swatch" data-color="#ff8c00" style="background:#ff8c00" title="橘"></button>
+            <button type="button" class="color-swatch" data-color="#ffd600" style="background:#ffd600" title="黃"></button>
           </div>
         </div>
       </div>
@@ -149,14 +140,14 @@
       <!-- 媒體：圖片 -->
       <div class="field">
         <label class="field-label">封面圖片</label>
-        <div class="upload-zone" id="f-image-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+        <div class="upload-zone focus-upload" id="f-image-zone">
           <div style="font-size:2rem;margin-bottom:.4rem">🖼️</div>
           <div style="font-weight:500">點擊或拖曳上傳圖片</div>
           <div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">建議尺寸 16:9，JPG/PNG</div>
           <input type="hidden" id="f-image-url" />
         </div>
         <div id="f-image-preview" style="margin-top:.75rem;display:none">
-          <img id="f-image-thumb" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid rgba(0,0,0,.1)" />
+          <img id="f-image-thumb" style="max-width:100%;max-height:180px;border-radius:8px;border:1px solid var(--border)" />
           <button type="button" class="btn btn--danger-ghost btn--sm" id="f-image-clear" style="margin-top:.5rem">移除圖片</button>
         </div>
       </div>
@@ -164,14 +155,14 @@
       <!-- 媒體：影片 -->
       <div class="field">
         <label class="field-label">封面影片</label>
-        <div class="upload-zone" id="f-video-zone" style="border:2px dashed rgba(0,0,0,.2);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text-2)">
+        <div class="upload-zone focus-upload" id="f-video-zone">
           <div style="font-size:2rem;margin-bottom:.4rem">🎬</div>
           <div style="font-weight:500">點擊或拖曳上傳影片</div>
           <div style="font-size:.75rem;color:var(--text-3);margin-top:.4rem">建議格式 MP4，時長控制在 30 秒內</div>
           <input type="hidden" id="f-video-url" />
         </div>
         <div id="f-video-preview" style="margin-top:.75rem;display:none">
-          <video id="f-video-thumb" controls style="max-width:100%;max-height:240px;border-radius:8px;border:1px solid rgba(0,0,0,.1)"></video>
+          <video id="f-video-thumb" controls style="max-width:100%;max-height:240px;border-radius:8px;border:1px solid var(--border)"></video>
           <button type="button" class="btn btn--danger-ghost btn--sm" id="f-video-clear" style="margin-top:.5rem">移除影片</button>
         </div>
         <div class="field-hint" style="margin-top:.5rem;font-size:.75rem;color:var(--text-3)">若同時上傳圖片與影片，前台優先顯示影片。</div>
@@ -188,13 +179,33 @@
 <script src="js/admin.js?v=6"></script>
 <script>
 let allFocus = [];
+const L = (zh, en) => getLang() === 'en' ? en : zh;
+const HEX6 = /^#[0-9a-fA-F]{6}$/;
+/* Only allow http(s) or relative URLs into src. */
+function safeUrl(u) {
+  const s = String(u || '').trim();
+  if (!s) return '';
+  if (/^https?:\/\//i.test(s) || /^\/\//.test(s)) return s;
+  if (/^[a-z][a-z0-9+.\-]*:/i.test(s)) return '';
+  return s;
+}
+async function reloadFocus() {
+  allFocus = (await DB.getAll('focus_themes', { orderBy:'year', ascending:false })) || [];
+  renderTable();
+}
 
 const STATUS_BADGE = { active:'badge--green', completed:'badge--gray', planned:'badge--gold' };
 
 function renderTable() {
   const tbody = document.getElementById('focus-tbody');
-  if (allFocus.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state__icon">🎯</div><div class="empty-state__title">${t('focus.empty')}</div></div></td></tr>`;
+  const searchEl = document.getElementById('search-focus');
+  searchEl.placeholder = L('搜尋年份、主題…', 'Search year or title…');
+  const q = searchEl.value.trim().toLowerCase();
+  const rows = !q ? allFocus : allFocus.filter(f =>
+    [f.year, f.title_zh, f.title_en].some(v => String(v ?? '').toLowerCase().includes(q)));
+  if (rows.length === 0) {
+    const msg = allFocus.length ? L('沒有符合搜尋的年度主題', 'No themes match your search') : t('focus.empty');
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state__icon">🎯</div><div class="empty-state__title">${esc(msg)}</div></div></td></tr>`;
     return;
   }
   const tEdit = t('btn.edit');
@@ -205,28 +216,27 @@ function renderTable() {
     planned: t('focus.status.planned')
   };
 
-  tbody.innerHTML = allFocus.map(f => {
+  const title = f => (getLang() === 'en' ? (f.title_en || f.title_zh) : (f.title_zh || f.title_en)) || '—';
+  tbody.innerHTML = rows.map(f => {
     const mediaInfo = f.video_url ? '🎬' : (f.image_url ? '🖼️' : '—');
+    const dot = HEX6.test(f.color || '') ? `<span class="focus-dot" style="background:${esc(f.color)}"></span>` : '';
     return `
       <tr>
-        <td class="td-mono" style="font-weight:700">${f.year || '—'}</td>
-        <td>${f.icon ? f.icon + ' ' : ''}${escapeHtml(f.title_zh || f.title_en || '—')}</td>
-        <td><span class="badge ${STATUS_BADGE[f.status]||'badge--gray'}">${STATUS_LABEL[f.status]||f.status}</span></td>
+        <td class="td-mono" style="font-weight:700">${esc(f.year || '—')}</td>
+        <td>${dot}${f.icon ? esc(f.icon) + ' ' : ''}${esc(title(f))}</td>
+        <td><span class="badge ${STATUS_BADGE[f.status]||'badge--gray'}">${esc(STATUS_LABEL[f.status]||f.status||'—')}</span></td>
         <td>${mediaInfo}</td>
-        <td style="color:var(--text-3);font-size:.75rem">${fmtDate(f.updated_at)}</td>
+        <td style="color:var(--text-3);font-size:.75rem">${esc(fmtDate(f.updated_at))}</td>
         <td><div class="td-actions">
-          <button class="btn btn--ghost btn--sm" onclick="editFocus('${f.id}')">${tEdit}</button>
-          <button class="btn btn--danger-ghost btn--sm" onclick="deleteFocus('${f.id}')">${tDel}</button>
+          <button class="btn btn--ghost btn--sm" data-act="edit" data-id="${esc(f.id)}">${esc(tEdit)}</button>
+          <button class="btn btn--danger-ghost btn--sm" data-act="delete" data-id="${esc(f.id)}">${esc(tDel)}</button>
         </div></td>
       </tr>`;
   }).join('');
 }
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
-
 function setFocusImage(url) {
+  url = safeUrl(url);
   document.getElementById('f-image-url').value = url || '';
   const preview = document.getElementById('f-image-preview');
   const zone = document.getElementById('f-image-zone');
@@ -235,6 +245,7 @@ function setFocusImage(url) {
 }
 
 function setFocusVideo(url) {
+  url = safeUrl(url);
   document.getElementById('f-video-url').value = url || '';
   const preview = document.getElementById('f-video-preview');
   const zone = document.getElementById('f-video-zone');
@@ -251,6 +262,15 @@ function setFocusColor(hex) {
   } else if (!v) {
     document.getElementById('f-color-picker').value = '#0099ff';
   }
+  markSwatch(v);
+}
+function markSwatch(v) {
+  const val = String(v || '').toLowerCase();
+  document.querySelectorAll('.color-swatch').forEach(b => {
+    const on = b.dataset.color.toLowerCase() === val;
+    b.classList.toggle('selected', on);
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
 }
 
 function openNewModal() {
@@ -286,18 +306,23 @@ async function editFocus(id) {
 }
 
 async function deleteFocus(id) {
-  const f = await DB.getById('focus_themes', id);
+  const f = allFocus.find(x => String(x.id) === String(id)) || await DB.getById('focus_themes', id);
   if (!f) return;
-  confirmAction(t('msg.confirm_del_title'), `${f.year} ${f.title_zh || f.title_en || ''} — ${t('msg.confirm_del_text')}`, async () => {
-    const ok = await DB.delete('focus_themes', id);
-    if (!ok) return;
-    allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
-    renderTable();
-    showToast(t('msg.deleted'), 'success');
-  });
+  const name = `${f.year || ''} ${f.title_zh || f.title_en || ''}`.trim();
+  confirmAction(
+    L(`刪除年度主題「${name}」？`, `Delete focus theme “${name}”?`),
+    L('前台將不再顯示這個年度主題。', 'It will no longer appear on the public site.') + ' ' + t('msg.confirm_del_text'),
+    async () => {
+      const ok = await DB.delete('focus_themes', id);
+      if (!ok) return;
+      await reloadFocus();
+      showToast(t('msg.deleted'), 'success');
+    });
 }
 
 document.getElementById('btn-save-focus').addEventListener('click', async () => {
+  const modal = document.getElementById('focus-modal');
+  if (!validateFields(modal)) return;
   const id = document.getElementById('focus-id').value || null;
   const data = {
     year:         parseInt(document.getElementById('f-year').value, 10) || null,
@@ -313,21 +338,42 @@ document.getElementById('btn-save-focus').addEventListener('click', async () => 
     image_url:    document.getElementById('f-image-url').value || null,
     video_url:    document.getElementById('f-video-url').value || null,
   };
-  if (!data.year || !data.title_zh) { showToast(t('msg.save_fail'), 'error'); return; }
+  if (!data.year) {
+    document.getElementById('f-year').closest('.field').classList.add('field--error');
+    document.getElementById('f-year').focus();
+    showToast(L('請輸入有效的年份', 'Please enter a valid year'), 'warn');
+    return;
+  }
+  if (data.color && !HEX6.test(data.color)) {
+    document.getElementById('f-color').closest('.field').classList.add('field--error');
+    showToast(L('主色需為 #RRGGBB 格式，例如 #00c95d', 'Color must look like #RRGGBB, e.g. #00c95d'), 'warn');
+    document.getElementById('f-color').focus();
+    return;
+  }
   const btn = document.getElementById('btn-save-focus');
   btn.disabled = true;
-  const result = id
-    ? await DB.update('focus_themes', id, data)
-    : await DB.insert('focus_themes', data);
-  btn.disabled = false;
+  let result;
+  try {
+    result = id
+      ? await DB.update('focus_themes', id, data)
+      : await DB.insert('focus_themes', data);
+  } finally {
+    btn.disabled = false;
+  }
   if (!result) return;
   showToast(id ? t('msg.updated') : t('msg.created'), 'success');
   closeModal('focus-modal');
-  allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
-  renderTable();
+  await reloadFocus();
 });
 
 document.getElementById('btn-new-focus').addEventListener('click', openNewModal);
+document.getElementById('search-focus').addEventListener('input', renderTable);
+document.getElementById('focus-tbody').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  if (b.dataset.act === 'edit') editFocus(b.dataset.id);
+  else if (b.dataset.act === 'delete') deleteFocus(b.dataset.id);
+});
 
 function bindFocusMedia() {
   const imgZone  = document.getElementById('f-image-zone');
@@ -340,7 +386,7 @@ function bindFocusMedia() {
     if (!file.type.startsWith('image/')) { showToast(t('msg.upload_invalid'), 'error'); return; }
     showToast(t('msg.uploading'), 'info');
     const url = await uploadToMedia(file, 'focus', { maxW: 1920, maxH: 1080 });
-    if (url) setFocusImage(url);
+    if (url) { setFocusImage(url); document.getElementById('focus-modal').dataset.dirty = '1'; }
   });
   document.getElementById('f-image-clear').addEventListener('click', e => { e.preventDefault(); setFocusImage(''); });
 
@@ -354,7 +400,7 @@ function bindFocusMedia() {
     if (!file.type.startsWith('video/')) { showToast('請選擇影片檔案', 'error'); return; }
     showToast(t('msg.uploading'), 'info');
     const url = await uploadToMedia(file, 'focus', { compress:false });
-    if (url) setFocusVideo(url);
+    if (url) { setFocusVideo(url); document.getElementById('focus-modal').dataset.dirty = '1'; }
   });
   document.getElementById('f-video-clear').addEventListener('click', e => { e.preventDefault(); setFocusVideo(''); });
 }
@@ -362,15 +408,17 @@ function bindFocusMedia() {
 function bindColorControls() {
   const picker = document.getElementById('f-color-picker');
   const input  = document.getElementById('f-color');
-  picker.addEventListener('input', e => { input.value = e.target.value; });
+  picker.addEventListener('input', e => { input.value = e.target.value; markSwatch(e.target.value); });
   input.addEventListener('input', e => {
     const v = e.target.value.trim();
     if (/^#[0-9a-fA-F]{6}$/.test(v)) picker.value = v;
+    markSwatch(v);
   });
   document.querySelectorAll('.color-swatch').forEach(btn => {
     btn.addEventListener('click', e => {
       e.preventDefault();
       setFocusColor(btn.dataset.color);
+      document.getElementById('focus-modal').dataset.dirty = '1';
     });
   });
 }
@@ -378,10 +426,9 @@ function bindColorControls() {
 document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.get();
   if (!user) return;
-  allFocus = await DB.getAll('focus_themes', { orderBy:'year', ascending:false });
-  renderTable();
   bindFocusMedia();
   bindColorControls();
+  await reloadFocus();
 });
 document.addEventListener('admin-lang-changed', () => renderTable());
 </script>

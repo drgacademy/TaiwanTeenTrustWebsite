@@ -31,52 +31,7 @@
 <div class="admin-layout">
 
   <!-- Sidebar -->
-  <aside class="admin-sidebar" id="admin-sidebar">
-    <div class="sidebar-brand">
-      <img src="../assets/logo-real.png" alt="TTT" style="width:28px;height:28px;border-radius:7px;object-fit:cover;object-position:left center;flex-shrink:0">
-      <div><div class="sidebar-brand-text" data-i18n="brand.name">TTT Admin</div><div class="sidebar-brand-sub" data-i18n="brand.sub">管理後台</div></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.main">主選單</div>
-      <a href="dashboard.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span data-i18n="nav.dashboard">儀表板</span>
-      </a>
-      <a href="members.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span data-i18n="nav.members">團隊成員</span>
-      </a>
-      <a href="projects.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="nav.projects">專案管理</span>
-      </a>
-      <a href="blog.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span data-i18n="nav.blog">部落格文章</span>
-      </a>
-      <a href="map-locations.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span data-i18n="nav.map">地圖資料點</span>
-      </a>
-      <a href="applications.html" class="sidebar-link active">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span data-i18n="nav.applications">加入申請</span>
-      </a>
-      <a href="users.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M18 8v6"/><path d="M21 11h-6"/></svg><span data-i18n="nav.users">管理員帳號</span>
-      </a>
-      <a href="settings.html" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i18n="nav.settings">網站設定</span>
-      </a>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-section-label" data-i18n="nav.system">系統</div>
-      <a href="../index.html" target="_blank" class="sidebar-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span data-i18n="nav.preview">前台預覽</span>
-      </a>
-    </div>
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-avatar">A</div>
-        <div><div class="sidebar-user-name">admin</div><div class="sidebar-user-role" data-i18n="user.role.admin">管理員</div></div>
-      </div>
-      <button class="btn-logout" data-i18n="btn.logout">登出</button>
-    </div>
-  </aside>
+  <aside class="admin-sidebar" id="admin-sidebar" aria-label="管理選單"></aside>
 
   <!-- Main -->
   <div class="admin-main">
@@ -177,44 +132,52 @@ const STATUS_LABELS = {
 };
 
 function statusBadge(s) {
-  const label = STATUS_LABELS[s] || s;
-  return `<span class="status-badge ${s}"><span class="status-dot"></span>${label}</span>`;
+  const key = STATUS_LABELS[s] ? s : 'pending';
+  const label = STATUS_LABELS[s] || s || STATUS_LABELS.pending;
+  return `<span class="status-badge ${key}"><span class="status-dot"></span>${esc(label)}</span>`;
 }
 
 function fmtTs(iso) {
   if (!iso) return '—';
-  return new Date(iso).toLocaleString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const d = new Date(iso);
+  if (isNaN(d)) return '—';
+  return d.toLocaleString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
 
-function esc(s) {
-  return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
-}
+/* Safe JS string literal for inline onclick="fn(...)" attributes */
+function jsArg(v) { return esc(JSON.stringify(String(v ?? ''))); }
+/* Display value: escaped, or an em dash when empty */
+function show(v) { return (v === null || v === undefined || v === '') ? '—' : esc(v); }
+/* Position of the record in the full list (oldest = #1), independent of filters */
+function rowNum(a) { return appList.indexOf(a) + 1; }
 
 function renderTable(list) {
   const tbody = document.getElementById('apps-tbody');
   if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-state__icon">📭</div><div class="empty-state__title">目前尚無申請記錄</div></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-state__icon">📭</div><div class="empty-state__title">${appList.length ? '沒有符合條件的申請' : '目前尚無申請記錄'}</div></div></td></tr>`;
+    document.getElementById('apps-count').textContent = `共 ${appList.length} 筆申請`;
     return;
   }
   tbody.innerHTML = list.map((a) => {
-    const num = appList.indexOf(a) + 1;
     return `<tr>
-      <td><span class="app-num">#${num}</span></td>
-      <td><strong>${esc(a.name_zh)}</strong></td>
-      <td>${esc(a.name_en)}</td>
-      <td style="font-size:.8rem;color:var(--text-2)">${esc(a.email || '—')}</td>
-      <td>${esc(a.school)}</td>
-      <td>${esc(a.graduation_year)}</td>
-      <td style="font-size:.8rem;color:var(--text-3)">${fmtTs(a.created_at)}</td>
+      <td><span class="app-num">#${rowNum(a)}</span></td>
+      <td><strong>${show(a.name_zh)}</strong></td>
+      <td>${show(a.name_en)}</td>
+      <td style="font-size:.8rem;color:var(--text-2)">${show(a.email)}</td>
+      <td>${show(a.school)}</td>
+      <td>${show(a.graduation_year)}</td>
+      <td style="font-size:.8rem;color:var(--text-3)">${esc(fmtTs(a.created_at))}</td>
       <td>${statusBadge(a.status)}</td>
       <td style="text-align:right">
         <div class="td-actions" style="justify-content:flex-end">
-          <button class="btn btn--ghost btn--sm" onclick="openDetail('${a.id}')">查看</button>
+          <button class="btn btn--ghost btn--sm" onclick="openDetail(${jsArg(a.id)})">查看</button>
         </div>
       </td>
     </tr>`;
   }).join('');
-  document.getElementById('apps-count').textContent = `共 ${appList.length} 筆申請`;
+  document.getElementById('apps-count').textContent = list.length === appList.length
+    ? `共 ${appList.length} 筆申請`
+    : `顯示 ${list.length} / 共 ${appList.length} 筆申請`;
 }
 
 function applyFilters() {
@@ -233,7 +196,7 @@ function applyFilters() {
 async function loadApps() {
   const { data, error } = await sb.from('join_applications').select('*').order('created_at', { ascending: true });
   if (error) {
-    showToast('讀取失敗：' + error.message, 'error');
+    showToast('讀取失敗：' + friendlyError(error), 'error');
     return;
   }
   appList = data || [];
@@ -241,27 +204,30 @@ async function loadApps() {
 }
 
 function openDetail(id) {
-  const a = appList.find(x => x.id === id);
+  const a = appList.find(x => String(x.id) === String(id));
   if (!a) return;
-  currentAppId = id;
-  const num = appList.indexOf(a) + 1;
-  document.getElementById('app-modal-title').textContent = `申請 #${num} — ${a.name_zh}`;
+  currentAppId = a.id;
+  /* textContent: no HTML interpretation */
+  document.getElementById('app-modal-title').textContent = `申請 #${rowNum(a)} — ${a.name_zh || a.name_en || ''}`;
+  const emailOk = /^[^\s@<>"']+@[^\s@<>"']+$/.test(String(a.email || ''));
   document.getElementById('app-status-select').value = a.status || 'pending';
   document.getElementById('app-modal-body').innerHTML = `
     <div class="detail-row">
-      <div class="detail-field"><label>中文全名</label><p>${esc(a.name_zh)}</p></div>
-      <div class="detail-field"><label>英文全名</label><p>${esc(a.name_en)}</p></div>
+      <div class="detail-field"><label>中文全名</label><p>${show(a.name_zh)}</p></div>
+      <div class="detail-field"><label>英文全名</label><p>${show(a.name_en)}</p></div>
     </div>
     <div class="detail-row">
-      <div class="detail-field"><label>電子郵件</label><p><a href="mailto:${esc(a.email)}" style="color:var(--accent)">${esc(a.email || '—')}</a></p></div>
-      <div class="detail-field"><label>申請時間</label><p>${fmtTs(a.created_at)}</p></div>
+      <div class="detail-field"><label>電子郵件</label><p>${emailOk
+        ? `<a href="mailto:${esc(encodeURIComponent(a.email).replace(/%40/g, '@'))}" style="color:var(--accent)">${esc(a.email)}</a>`
+        : show(a.email)}</p></div>
+      <div class="detail-field"><label>申請時間</label><p>${esc(fmtTs(a.created_at))}</p></div>
     </div>
     <div class="detail-row">
-      <div class="detail-field"><label>高中全名</label><p>${esc(a.school)}</p></div>
-      <div class="detail-field"><label>畢業年份</label><p>${esc(a.graduation_year)}</p></div>
+      <div class="detail-field"><label>高中全名</label><p>${show(a.school)}</p></div>
+      <div class="detail-field"><label>畢業年份</label><p>${show(a.graduation_year)}</p></div>
     </div>
-    <div class="detail-field"><label>為什麼想要加入 Taiwan Teen Trust？</label><p>${esc(a.reason_join)}</p></div>
-    <div class="detail-field"><label>在 TTT 可以學到什麼？實現什麼？</label><p>${esc(a.expected_gains)}</p></div>
+    <div class="detail-field"><label>為什麼想要加入 Taiwan Teen Trust？</label><p>${show(a.reason_join)}</p></div>
+    <div class="detail-field"><label>在 TTT 可以學到什麼？實現什麼？</label><p>${show(a.expected_gains)}</p></div>
   `;
   openModal('app-detail-modal');
 }
@@ -276,7 +242,7 @@ document.getElementById('btn-save-status').addEventListener('click', async () =>
   const { error } = await sb.from('join_applications').update({ status: newStatus }).eq('id', currentAppId);
   if (error) {
     btn.disabled = false;
-    showToast('更新失敗：' + error.message, 'error');
+    showToast('更新失敗：' + friendlyError(error), 'error');
     return;
   }
 
@@ -312,9 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = await Auth.check();
   if (!user) return;
 
-  await initSidebar();
-  injectSidebarLangToggle();
-  applyI18n();
+  /* Sidebar, language toggle and i18n are set up by admin.js */
 
   /* Role check: only admin role can access this page */
   const { data: adminRow } = await sb.from('admin_users').select('role').eq('user_id', user.id).single();
