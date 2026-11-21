@@ -1,40 +1,32 @@
--- Rebuild the homepage visitor counter (site/index.html -> rpc('increment_reach')).
--- Idempotent: safe to run on a project where parts already exist.
+-- Fix the homepage visitor counter (site/index.html -> rpc('increment_reach')).
+-- Existing table public.site_stats is key/value: (key text, value bigint, updated_at timestamptz).
+-- The counter lives in the row with key = 'reach_count'.
+-- Idempotent and non-destructive: never resets an existing count.
 -- Run in Supabase Dashboard -> SQL Editor.
 
-create table if not exists public.site_stats (
-  id          int primary key default 1,
-  reach_count bigint not null default 0,
-  constraint site_stats_single_row check (id = 1)
-);
-
--- In case the table existed without the column.
-alter table public.site_stats add column if not exists reach_count bigint not null default 0;
-
-insert into public.site_stats (id, reach_count)
-values (1, 0)
-on conflict (id) do nothing;
-
--- Visitors can only read the counter; writes go through the RPC below.
-alter table public.site_stats enable row level security;
-
-drop policy if exists "site_stats public read" on public.site_stats;
-create policy "site_stats public read"
-  on public.site_stats for select
-  to anon, authenticated
-  using (true);
-
--- Atomically +1 and return the new value (the page expects a number).
 create or replace function public.increment_reach()
 returns bigint
-language sql
+language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  new_val bigint;
+begin
   update public.site_stats
-     set reach_count = reach_count + 1
-   where id = 1
-  returning reach_count;
+     set value = value + 1,
+         updated_at = now()
+   where key = 'reach_count'
+  returning value into new_val;
+
+  if not found then
+    insert into public.site_stats (key, value, updated_at)
+    values ('reach_count', 1, now())
+    returning value into new_val;
+  end if;
+
+  return new_val;
+end;
 $$;
 
 revoke all on function public.increment_reach() from public;
